@@ -18,6 +18,7 @@ class SimulatedTask:
     Represents a task within the uniprocessor scheduling simulator.
     Mirrors `struct task_descriptor` from kernel/schedulers/include/scheduler_interface.h.
     """
+
     pid: int
     arrival_time_us: int
     total_burst_us: int

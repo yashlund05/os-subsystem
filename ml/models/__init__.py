@@ -1,5 +1,5 @@
 """Model definitions and policy interfaces."""
 
-from ml.models.policy_interface import PolicyModel, ModelType, PolicyDecision
+from ml.models.policy_interface import ModelType, PolicyDecision, PolicyModel
 
 __all__ = ["PolicyModel", "ModelType", "PolicyDecision"]

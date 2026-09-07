@@ -2,6 +2,7 @@
 
 import random
 from typing import List
+
 from simulator.scheduling.task import SimulatedTask
 
 
@@ -11,6 +12,7 @@ class SyntheticWorkloadGenerator:
     - Burst sizes via Pareto distribution (alpha in [1.1, 1.8])
     - Inter-arrival times via Exponential distribution (Poisson arrival process)
     """
+
     def __init__(self, seed: int = 42) -> None:
         self.rng = random.Random(seed)
 
@@ -19,7 +21,7 @@ class SyntheticWorkloadGenerator:
         num_tasks: int,
         alpha: float = 1.3,
         min_burst_us: int = 100,
-        mean_inter_arrival_us: float = 500.0
+        mean_inter_arrival_us: float = 500.0,
     ) -> List[SimulatedTask]:
         """
         Generates tasks with Pareto-distributed CPU bursts and Poisson arrival timestamps.
@@ -35,14 +37,10 @@ class SyntheticWorkloadGenerator:
             # Pareto burst duration: x = x_m / (U^(1/alpha))
             u = self.rng.random()
             burst = int(min_burst_us / (u ** (1.0 / alpha)))
-            burst = max(min_burst_us, min(burst, 10_000_000)) # Clamped
+            burst = max(min_burst_us, min(burst, 10_000_000))  # Clamped
 
             tasks.append(
-                SimulatedTask(
-                    pid=pid,
-                    arrival_time_us=current_time_us,
-                    total_burst_us=burst
-                )
+                SimulatedTask(pid=pid, arrival_time_us=current_time_us, total_burst_us=burst)
             )
 
         return tasks

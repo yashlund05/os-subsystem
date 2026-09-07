@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from enum import Enum
-from typing import List, Optional, Sequence
+from typing import List, Sequence
 
 
 class ModelType(str, Enum):
@@ -16,6 +16,7 @@ class ModelType(str, Enum):
 @dataclass
 class PolicyDecision:
     """Output decision from a policy evaluation."""
+
     task_index: int
     dynamic_quantum_us: int
     priority_score: float
@@ -26,6 +27,7 @@ class PolicyModel(ABC):
     """
     Abstract base class for all uniprocessor scheduling and allocation policies.
     """
+
     def __init__(self, model_type: ModelType, input_dim: int = 16) -> None:
         self.model_type = model_type
         self.input_dim = input_dim
@@ -50,6 +52,7 @@ class DummyReferencePolicy(PolicyModel):
     Placeholder/Scaffold policy implementing Shortest Remaining Time First heuristic
     as a baseline until Phase 2 DRL is integrated.
     """
+
     def __init__(self) -> None:
         super().__init__(model_type=ModelType.FP32_REFERENCE, input_dim=16)
 
@@ -60,11 +63,7 @@ class DummyReferencePolicy(PolicyModel):
             rem_burst = feat[0] if len(feat) > 0 else 1.0
             score = 1.0 / (rem_burst + 1e-5)
             decisions.append(
-                PolicyDecision(
-                    task_index=idx,
-                    dynamic_quantum_us=5000,
-                    priority_score=score
-                )
+                PolicyDecision(task_index=idx, dynamic_quantum_us=5000, priority_score=score)
             )
         return decisions
 

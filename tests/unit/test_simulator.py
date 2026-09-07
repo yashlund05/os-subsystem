@@ -1,17 +1,12 @@
 """Unit tests for the uniprocessor scheduling simulator and task representations."""
 
-import pytest
+from ml.models.policy_interface import DummyReferencePolicy, ModelType
 from simulator.scheduling.task import SimulatedTask, TaskState
 from simulator.workloads.synthetic import SyntheticWorkloadGenerator
-from ml.models.policy_interface import DummyReferencePolicy, ModelType
 
 
 def test_simulated_task_lifecycle():
-    task = SimulatedTask(
-        pid=101,
-        arrival_time_us=1000,
-        total_burst_us=5000
-    )
+    task = SimulatedTask(pid=101, arrival_time_us=1000, total_burst_us=5000)
     assert task.pid == 101
     assert task.remaining_burst_us == 5000
     assert task.state == TaskState.READY
@@ -49,10 +44,7 @@ def test_dummy_reference_policy():
     assert policy.model_type == ModelType.FP32_REFERENCE
 
     # Test evaluation on 2 tasks
-    features = [
-        [100.0] + [0.0] * 15,
-        [500.0] + [0.0] * 15
-    ]
+    features = [[100.0] + [0.0] * 15, [500.0] + [0.0] * 15]
     decisions = policy.evaluate(features)
     assert len(decisions) == 2
     # Shorter remaining burst should get higher priority score

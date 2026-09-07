@@ -18,6 +18,7 @@ class BenchmarkResult:
     Standard benchmark result representation across all experiments.
     Matches schema in docs/Schema.md.
     """
+
     experiment_id: str
     subsystem: SubsystemType
     algorithm: str
@@ -38,5 +39,5 @@ class BenchmarkResult:
             "metrics": self.metrics,
             "metadata": self.metadata,
             "guardrail_fallback_trips": self.guardrail_fallback_trips,
-            "notes": self.notes
+            "notes": self.notes,
         }

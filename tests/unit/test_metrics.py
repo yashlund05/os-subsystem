@@ -1,8 +1,9 @@
 """Unit tests for metrics and memory fragmentation formulas."""
 
 import pytest
-from simulator.memory.heap import SimulatedHeap, MemoryBlock
+
 from benchmarks.result_schema import BenchmarkResult, SubsystemType
+from simulator.memory.heap import MemoryBlock, SimulatedHeap
 
 
 def test_heap_fragmentation_metrics():
@@ -40,9 +41,9 @@ def test_benchmark_result_serialization():
         metrics={
             "mean_turnaround_time_us": 1420.5,
             "mean_waiting_time_us": 320.1,
-            "total_context_switches": 42
+            "total_context_switches": 42,
         },
-        guardrail_fallback_trips=0
+        guardrail_fallback_trips=0,
     )
     d = res.to_dict()
     assert d["experiment_id"] == "exp-001"

@@ -20,6 +20,7 @@ class SimulatedHeap:
     Simulates contiguous heap memory space and computes external/internal fragmentation.
     Implements formal equations from docs/Metrics.md.
     """
+
     def __init__(self, total_size_bytes: int = 64 * 1024 * 1024) -> None:
         self.total_size_bytes = total_size_bytes
         self.blocks: List[MemoryBlock] = [
