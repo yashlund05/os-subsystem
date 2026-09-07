@@ -1,0 +1,82 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.dylib
+*.dll
+
+# C/C++ Build Artifacts
+build/
+bin/
+lib/
+out/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile.cmake
+*.o
+*.obj
+*.a
+*.lib
+
+# Python Environments & Tooling
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+wheels/
+
+# Datasets, Traces, & Data Pipelines (Strict no-commit rule)
+datasets/
+data/
+*.parquet
+*.feather
+*.csv.gz
+*.tar.gz
+*.tar.xz
+*.bin
+*.npy
+*.npz
+*.h5
+*.hdf5
+traces/
+*.trace
+
+# Machine Learning Checkpoints & Weights
+models/
+checkpoints/
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.engine
+*.plan
+*.tflite
+
+# Experimental Results & Logs
+results/
+logs/
+experiments/results/
+experiments/plots/
+*.log
+
+# Environment & Secrets
+.env
+.env.local
+*.secret
+
+# IDEs & System
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db

@@ -1,0 +1,16 @@
+{
+  "scheduler_name": "NeuroOS-Lite-Default",
+  "min_quantum_us": 1000,
+  "max_quantum_us": 50000,
+  "default_quantum_us": 5000,
+  "guardrail": {
+    "max_queue_depth": 1024,
+    "drift_sigma_threshold": 3.0,
+    "fallback_scheduler": "MLFQ"
+  },
+  "pareto_loss_weights": {
+    "alpha_turnaround": 1.0,
+    "beta_starvation": 0.5,
+    "gamma_context_switch": 0.2
+  }
+}

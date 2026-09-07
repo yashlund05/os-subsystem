@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools>=65.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neuroos-lite"
+version = "0.1.0"
+description = "Asymmetric Local GPU-Trained Neural Preemption and Memory Partitioning for Low-Latency OS Subsystems"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [
+    { name = "NeuroOS-Lite Research Team" }
+]
+keywords = [
+    "operating-systems",
+    "sched-ext",
+    "reinforcement-learning",
+    "quantization",
+    "low-latency",
+    "systems-for-ai",
+    "kernel-scheduling",
+    "memory-partitioning"
+]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: C",
+    "Programming Language :: C++",
+    "Topic :: System :: Operating System Kernels",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence"
+]
+
+dependencies = [
+    "numpy>=1.24.0",
+    "pydantic>=2.0.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "mypy>=1.5.0",
+    "ruff>=0.1.0",
+    "black>=23.7.0"
+]
+ml = [
+    "torch>=2.1.0",
+    "torchvision>=0.16.0"
+]
+analysis = [
+    "matplotlib>=3.7.0",
+    "pandas>=2.0.0",
+    "scipy>=1.11.0"
+]
+all = [
+    "neuroos-lite[dev,ml,analysis]"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["simulator*", "ml*", "benchmarks*", "experiments*", "telemetry*"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-ra -q --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "C4"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true

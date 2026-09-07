@@ -1,0 +1,40 @@
+name: C/C++ Build Validation
+
+'on':
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-and-test-headers:
+    name: Build C/C++ Interfaces (${{ matrix.os }} - ${{ matrix.compiler }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        compiler: [gcc, clang, msvc]
+        exclude:
+          - os: ubuntu-latest
+            compiler: msvc
+          - os: macos-latest
+            compiler: msvc
+          - os: macos-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: gcc
+          - os: windows-latest
+            compiler: clang
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Configure CMake
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build C Scaffolding & Headers
+        run: cmake --build build --config Release
+
+      - name: Run C Header Sanity Checks
+        run: ctest --test-dir build --output-on-failure

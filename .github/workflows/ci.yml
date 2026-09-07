@@ -1,0 +1,70 @@
+name: CI
+
+'on':
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  python-validation:
+    name: Python Tests & Linting
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install .[dev]
+
+      - name: Lint and formatting check
+        run: |
+          ruff check .
+          ruff format --check .
+
+      - name: Static type checking
+        run: |
+          mypy simulator benchmarks ml --ignore-missing-imports
+
+      - name: Run unit test suite
+        run: |
+          pytest tests/unit -v --cov=simulator --cov=benchmarks
+
+  repo-structure-check:
+    name: Repository Structure & Doc Hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate required documents exist
+        run: |
+          for doc in docs/PRD.md docs/TRD.md docs/Rules.md docs/Architecture.md \
+                     docs/Flow.md docs/Schema.md docs/Phases.md docs/Metrics.md \
+                     docs/Experimental-Protocol.md docs/IMPLEMENTATION_STATUS.md \
+                     README.md LICENSE CONTRIBUTING.md; do
+            if [ ! -f "$doc" ]; then
+              echo "Error: Required document $doc is missing!"
+              exit 1
+            fi
+          done
+          echo "All authoritative documentation files verified."
+
+      - name: Assert no large datasets or binaries committed
+        run: |
+          find . -type f \( -name "*.pt" -o -name "*.pth" -o -name "*.onnx" -o -name "*.parquet" -o -name "*.csv.gz" \) | grep -v "/\.git/" && {
+            echo "Error: Forbidden binary/dataset artifact found in repository!"
+            exit 1
+          } || echo "Repository dataset hygiene check passed."

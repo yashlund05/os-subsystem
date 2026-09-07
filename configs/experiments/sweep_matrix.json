@@ -1,0 +1,12 @@
+{
+  "matrix_title": "Full Subsystem Comparative Sweep",
+  "scheduling": {
+    "algorithms": ["FCFS", "SJF", "SRTF", "RR_5ms", "RR_20ms", "MLFQ", "NeuroOS-Lite"],
+    "workloads": ["pareto_bursts", "poisson_arrivals", "google_cluster_slice", "spec_cpu2017", "convoy_trigger"],
+    "load_factors": [0.10, 0.20, 0.40, 0.60, 0.80, 0.90, 0.95, 0.98]
+  },
+  "memory": {
+    "allocators": ["Fixed_MFT", "First_Fit", "Best_Fit", "Buddy", "NeuroOS-Lite"],
+    "workload_traces": ["synthetic_churn", "google_alloc_slice", "spec_alloc_churn", "alternating_odd_even_trigger"]
+  }
+}
