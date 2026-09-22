@@ -27,9 +27,12 @@
 | **Knowledge Distillation** | `userspace/distillation/`| `NOT IMPLEMENTED` | QAT distillation to int8 scheduled for Phase 2 (Week 4). |
 | **Policy Shared Table** | `userspace/policy/` | `SCAFFOLDED` | Abstract policy interface defined. |
 | **User-Space Telemetry** | `userspace/telemetry/` | `NOT IMPLEMENTED` | SPSC drain daemon scheduled for Phase 1 (Week 1). |
-| **Cycle-Accurate Simulator** | `simulator/` | `SCAFFOLDED` | Abstract simulator queues and workload models scaffolded for Phase 1. |
-| **CPU Schedulers** | `schedulers/` | `SCAFFOLDED` | `scheduler_interface.h` defined. FCFS, SJF, SRTF, RR, MLFQ baselines scheduled for Week 2. |
-| **Memory Allocators** | `allocators/` | `SCAFFOLDED` | `allocator_interface.h` defined. Fixed, First-Fit, Best-Fit, Buddy scheduled for Week 2. |
+| **Cycle-Accurate Simulator** | `simulator/` | `IMPLEMENTED` | Discrete-event engine with cycle-accurate context-switch accounting and queue metrics. |
+| **CPU Schedulers** | `schedulers/` | `IMPLEMENTED` | FCFS, SJF, SRTF, Round Robin (parametric q), and MLFQ fully operational. |
+| **Memory Allocators** | `allocators/` | `IMPLEMENTED` | Fixed Partitioning (MFT), Dynamic First-Fit, Best-Fit, and Binary Buddy operational. |
+| **Workload Engine** | `simulator/workloads/`| `IMPLEMENTED` | Pareto bursts, Poisson arrivals, Google Borg trace parser, and adversarial triggers. |
+| **Benchmark Runner** | `benchmarks/runner.py` | `IMPLEMENTED` | Automated runner producing structured JSON conforming to Schema.md. |
+| **Team Activity Log** | `WORK_LOG.md` | `IMPLEMENTED` | Multi-member coordination tracking active ownership and chronological updates. |
 | **SPSC Ring Buffer** | `telemetry/ring_buffer/`| `SCAFFOLDED` | Wait-free circular ring buffer header `ring_buffer.h` scaffolded. |
 | **eBPF & PMU Telemetry** | `telemetry/ebpf/`, `pmu/`| `NOT IMPLEMENTED` | Linux perf event streaming scheduled for Phase 1. |
 | **ML Training & Datasets** | `ml/` | `SCAFFOLDED` | Strict dataset hygiene policy established. PyTorch modules scheduled for Phase 2. |
