@@ -28,6 +28,7 @@ task_telemetry {
     uint16_t branch_mispred_delta; /* Branch misprediction delta (16 bits) */
     uint16_t mem_footprint_kb;     /* Task memory working set in KB (16 bits) */
     uint16_t flags;                /* State flags: burst phase, priority, guardrail status (16 bits) */
+    uint16_t _pad;                 /* Padding to reach 16 bytes (16 bits) */
 };
 
 #if defined(_MSC_VER)

@@ -132,6 +132,7 @@ class SchedulingSimulationEngine:
             # - Task burst completion (running_task.remaining_burst_us)
             # - Quantum expiration (current_slice_remaining_us)
             # - Next pending task arrival
+            assert running_task is not None
             time_to_completion = running_task.remaining_burst_us
             time_to_quantum_end = (
                 current_slice_remaining_us if current_slice_remaining_us > 0 else time_to_completion
@@ -159,6 +160,7 @@ class SchedulingSimulationEngine:
             if running_task.remaining_burst_us <= 0:
                 running_task.state = TaskState.COMPLETED
                 running_task.completion_time_us = current_time_us
+                assert running_task.turnaround_time_us is not None
                 running_task.waiting_time_us = (
                     running_task.turnaround_time_us - running_task.total_burst_us
                 )
