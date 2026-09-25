@@ -15,7 +15,7 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
 ### Phase 1: Foundations & Classical Baselines (Weeks 1–2)
 
 #### Week 1: Scaffolding, Telemetry Interfaces & Workload Traces
-- **Status**: `[PLANNED]` (Repository Foundation Complete)
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Configure isolated development environment with Linux 6.12+ and `sched_ext` headers.
   - Implement synthetic burst generation tools (Pareto $\alpha \in [1.1, 1.8]$, Poisson $\rho \in [0.10, 0.98]$, Uniform).
@@ -23,7 +23,7 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
   - Implement memory-mapped lock-free circular SPSC ring buffer for 16-byte `task_telemetry` structs.
 
 #### Week 2: Classical Subsystem Baselines (Simulator Core)
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Implement cycle-accurate uniprocessor CPU scheduling baselines:
     - Non-preemptive: FCFS, SJF.

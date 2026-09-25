@@ -1,6 +1,6 @@
 # Implementation Status & Subsystem Registry
 
-**Current Repository State**: `FOUNDATION / SCAFFOLDING STAGE`  
+**Current Repository State**: `PHASE 1 COMPLETED`  
 **Last Updated**: September 2026
 
 ---
@@ -21,20 +21,20 @@
 | **Kernel Core Headers** | `kernel/include/` | `SCAFFOLDED` | `telemetry_event.h` (16-byte packed) and `neuroos_kernel.h` (16->8->1 MLP definition). |
 | **Kernel `sched_ext` Driver** | `kernel/sched_ext/` | `NOT IMPLEMENTED` | Scheduled for Phase 3 (Week 5). |
 | **In-Kernel SIMD Inference** | `kernel/inference/` | `NOT IMPLEMENTED` | Pure C AVX2/NEON implementation scheduled for Phase 2 (Week 4). Target $\le 45\text{ ns}$. |
-| **Kernel Telemetry Producer** | `kernel/telemetry/` | `NOT IMPLEMENTED` | PMU hook scheduled for Phase 1 (Week 1). |
+| **Kernel Telemetry Producer** | `kernel/telemetry/` | `IMPLEMENTED` | PMU hook and eBPF tracepoints scheduled for Phase 1 (Week 1) completed. |
 | **Kernel Guardrails** | `kernel/guardrails/` | `SCAFFOLDED` | $O(1)$ Red-Black/MLFQ fallback thresholds defined. |
 | **User-Space DRL Trainer** | `userspace/trainer/` | `NOT IMPLEMENTED` | PyTorch PPO/SAC GPU worker scheduled for Phase 2 (Week 3). |
 | **Knowledge Distillation** | `userspace/distillation/`| `NOT IMPLEMENTED` | QAT distillation to int8 scheduled for Phase 2 (Week 4). |
 | **Policy Shared Table** | `userspace/policy/` | `SCAFFOLDED` | Abstract policy interface defined. |
-| **User-Space Telemetry** | `userspace/telemetry/` | `NOT IMPLEMENTED` | SPSC drain daemon scheduled for Phase 1 (Week 1). |
+| **User-Space Telemetry** | `userspace/telemetry/` | `IMPLEMENTED` | SPSC drain daemon in Python completed. |
 | **Cycle-Accurate Simulator** | `simulator/` | `IMPLEMENTED` | Discrete-event engine with cycle-accurate context-switch accounting and queue metrics. |
 | **CPU Schedulers** | `schedulers/` | `IMPLEMENTED` | FCFS, SJF, SRTF, Round Robin (parametric q), and MLFQ fully operational. |
 | **Memory Allocators** | `allocators/` | `IMPLEMENTED` | Fixed Partitioning (MFT), Dynamic First-Fit, Best-Fit, and Binary Buddy operational. |
 | **Workload Engine** | `simulator/workloads/`| `IMPLEMENTED` | Pareto bursts, Poisson arrivals, Google Borg trace parser, and adversarial triggers. |
 | **Benchmark Runner** | `benchmarks/runner.py` | `IMPLEMENTED` | Automated runner producing structured JSON conforming to Schema.md. |
 | **Team Activity Log** | `WORK_LOG.md` | `IMPLEMENTED` | Multi-member coordination tracking active ownership and chronological updates. |
-| **SPSC Ring Buffer** | `telemetry/ring_buffer/`| `SCAFFOLDED` | Wait-free circular ring buffer header `ring_buffer.h` scaffolded. |
-| **eBPF & PMU Telemetry** | `telemetry/ebpf/`, `pmu/`| `NOT IMPLEMENTED` | Linux perf event streaming scheduled for Phase 1. |
+| **SPSC Ring Buffer** | `telemetry/ring_buffer/`| `IMPLEMENTED` | Wait-free circular ring buffer header and implementation completed. |
+| **eBPF & PMU Telemetry** | `telemetry/ebpf/`, `pmu/`| `IMPLEMENTED` | Linux perf event streaming and PMU counters completed. |
 | **ML Training & Datasets** | `ml/` | `SCAFFOLDED` | Strict dataset hygiene policy established. PyTorch modules scheduled for Phase 2. |
 | **Benchmark Suite** | `benchmarks/` | `SCAFFOLDED` | Metric collection schema defined. Full benchmark matrix scheduled for Phase 4 (Week 7). |
 | **Experiments & Results** | `experiments/` | `SCAFFOLDED` | Runner structures scaffolded; no synthetic/fake results generated. |
