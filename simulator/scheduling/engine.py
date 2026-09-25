@@ -160,10 +160,9 @@ class SchedulingSimulationEngine:
             if running_task.remaining_burst_us <= 0:
                 running_task.state = TaskState.COMPLETED
                 running_task.completion_time_us = current_time_us
-                assert running_task.turnaround_time_us is not None
-                running_task.waiting_time_us = (
-                    running_task.turnaround_time_us - running_task.total_burst_us
-                )
+                tt = running_task.turnaround_time_us
+                assert tt is not None
+                running_task.waiting_time_us = tt - running_task.total_burst_us
                 self.scheduler.on_task_completion(running_task, current_time_us)
                 completed_tasks.append(running_task)
                 running_task = None
@@ -213,14 +212,23 @@ class SchedulingSimulationEngine:
                 overhead_ratio=0.0,
             )
 
-        tats = [t.turnaround_time_us for t in completed_tasks if t.turnaround_time_us is not None]
-        ntats = [
-            t.normalized_turnaround_time
-            for t in completed_tasks
-            if t.normalized_turnaround_time is not None
-        ]
+        tats = []
+        ntats = []
+        rts = []
+        for t in completed_tasks:
+            tt = t.turnaround_time_us
+            if tt is not None:
+                tats.append(tt)
+
+            ntt = t.normalized_turnaround_time
+            if ntt is not None:
+                ntats.append(ntt)
+
+            rt = t.response_time_us
+            if rt is not None:
+                rts.append(rt)
+
         wts = [max(0, t.waiting_time_us) for t in completed_tasks]
-        rts = [t.response_time_us for t in completed_tasks if t.response_time_us is not None]
 
         mean_tat = float(np.mean(tats)) if tats else 0.0
         mean_ntat = float(np.mean(ntats)) if ntats else 0.0

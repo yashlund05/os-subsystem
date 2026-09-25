@@ -38,21 +38,7 @@ target_include_directories(neuroos_core_scaffold INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/schedulers/include
     ${CMAKE_CURRENT_SOURCE_DIR}/allocators/include
     ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/pmu
 )
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # Phase 1 Telemetry Implementation Library (Linux Only due to PMU/eBPF)
-    add_library(neuroos_telemetry STATIC
-        telemetry/ring_buffer/ring_buffer.c
-        telemetry/pmu/pmu_reader.c
-    )
-    target_include_directories(neuroos_telemetry PUBLIC
-        ${CMAKE_CURRENT_SOURCE_DIR}/kernel/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer/include
-        ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/pmu
-    )
-endif()
 
 # Scaffolding Test: Interface and Header Validation
 add_executable(test_headers_scaffold
