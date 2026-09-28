@@ -17,6 +17,26 @@ This document serves as the single source of truth for ongoing engineering progr
 
 ## Chronological Work Log
 
+### [2026-09-28] — Phase 2B Implementation: Gymnasium CPU Scheduling Environment
+- **Status**: `COMPLETED`
+- **Contributors**: ML & Simulation Team (Member 3, Member 2, Pair AI Assistant)
+- **Completed Work**:
+  - Implemented `BurstEstimator` (`userspace/trainer/burst_estimator.py`) modeling runtime kernel burst prediction ($\alpha$-filter + Gaussian noise) without accessing oracle ground-truth bursts.
+  - Implemented `ObservationEncoder` (`userspace/trainer/observation.py`) mapping ready-queue candidates to exactly `NEUROOS_INPUT_DIM = 16` per-candidate features (10 task-specific + 6 global context features), directly compatible with the in-kernel micro-core.
+  - Implemented `RewardCalculator` (`userspace/trainer/reward.py`) providing multi-objective, independently toggleable terms (step wait penalty normalized by queue size, max wait starvation penalty, context switch penalty, completion bonus, tail threshold proxy).
+  - Implemented `SchedulerEnv` (`userspace/trainer/env.py`) adhering to Gymnasium API standards (`reset`, `step`, `action_masks`), with discrete task selection ($K=16$) and graceful fallback safety handling.
+  - Implemented `ClassicalSchedulerWrapper` (`userspace/trainer/wrapper.py`) allowing FCFS, SJF, SRTF, RoundRobin, and MLFQ to run inside the Gymnasium environment for direct apples-to-apples comparison.
+  - Implemented `make_scheduler_env` (`ml/training/env_factory.py`) with disjoint seed ranges for training (`1000..49999`) and evaluation (`50000..99999`).
+  - Unit test suite: added 8 new unit tests in `tests/unit/test_scheduler_env.py` (total 30 tests in repo, 100% passing).
+  - Code coverage maintained at 91% across 1,273 statements.
+  - Ruff check and formatting clean across all 100 repository files.
+- **Handoff & Next Steps for Team**:
+  - **Member 3 (ML Lead)**: Can directly instantiate `SchedulerEnv` or `make_scheduler_env("train")` with Stable-Baselines3 / CleanRL `MaskablePPO` using `env.action_masks()` to train the continuous and discrete policy models.
+  - **Member 4 (Quantization Lead)**: The 16-D per-candidate feature vector produced by `ObservationEncoder` is directly formatted for the planned 16 $\to$ 8 $\to$ 1 student distillation model.
+  - **Member 1 (Kernel Lead)**: The discrete action dispatch semantics and PMU feature bindings align with `kernel/include/neuroos_kernel.h`.
+
+---
+
 ### [2026-09-22] — Phase 1 Implementation: Foundations & Classical Baselines
 - **Status**: `COMPLETED`
 - **Contributors**: Simulation & Systems Team (Member 2, Member 1, Pair AI Assistant)
