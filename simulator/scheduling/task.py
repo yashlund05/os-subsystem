@@ -32,10 +32,20 @@ class SimulatedTask:
     priority_level: int = 0
     state: TaskState = TaskState.READY
 
-    # Hardware PMU simulated metrics
-    cache_misses: int = 0
-    branch_mispredictions: int = 0
+    # Hardware PMU simulated metrics (functions of elapsed execution time only)
+    cache_miss_rate: float = 0.02
+    branch_mispred_rate: float = 0.01
     memory_footprint_kb: int = 4096
+
+    @property
+    def cache_misses(self) -> int:
+        """Returns PMU cache misses accumulated strictly during elapsed execution."""
+        return int(self.executed_burst_us * self.cache_miss_rate)
+
+    @property
+    def branch_mispredictions(self) -> int:
+        """Returns PMU branch mispredictions accumulated strictly during elapsed execution."""
+        return int(self.executed_burst_us * self.branch_mispred_rate)
 
     def __post_init__(self) -> None:
         self.remaining_burst_us = self.total_burst_us

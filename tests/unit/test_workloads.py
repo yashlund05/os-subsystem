@@ -43,6 +43,8 @@ def test_cluster_trace_parser():
     assert tasks[1].pid == 103
     assert tasks[2].pid == 102
     assert tasks[0].total_burst_us == 500
+    assert tasks[1].cache_miss_rate == 20 / 800
+    tasks[1].executed_burst_us = tasks[1].total_burst_us
     assert tasks[1].cache_misses == 20
 
 

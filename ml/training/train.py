@@ -113,10 +113,10 @@ def train_single_run(
 
     reward_config = RewardConfig(
         w_wait=rew_cfg.get("w_wait", rew_cfg.get("step_wait_penalty_weight", 1.0)),
-        w_completion=rew_cfg.get("w_completion", rew_cfg.get("completion_bonus", 2.0)),
-        w_switch=rew_cfg.get("w_switch", rew_cfg.get("context_switch_penalty_weight", 0.05)),
+        w_completion=rew_cfg.get("w_completion", rew_cfg.get("completion_bonus", 0.0)),
+        w_switch=rew_cfg.get("w_switch", rew_cfg.get("context_switch_penalty_weight", 0.02)),
         w_starvation=rew_cfg.get("w_starvation", rew_cfg.get("max_wait_penalty_weight", 0.1)),
-        w_tail_threshold=rew_cfg.get("w_tail_threshold", rew_cfg.get("tail_penalty_weight", 0.5)),
+        w_tail_threshold=rew_cfg.get("w_tail_threshold", rew_cfg.get("tail_penalty_weight", 0.1)),
     )
 
     ppo_config = PPOConfig(

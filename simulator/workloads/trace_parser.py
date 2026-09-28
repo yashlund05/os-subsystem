@@ -27,13 +27,17 @@ class ClusterTraceParser:
             branch_mispred = int(float(row.get("branch_mispred", 0)))
             mem_kb = int(float(row.get("mem_kb", row.get("memory_kb", 4096))))
 
+            burst = max(1, burst)
+            cache_rate = cache_misses / burst if cache_misses > 0 else 0.02
+            branch_rate = branch_mispred / burst if branch_mispred > 0 else 0.01
+
             tasks.append(
                 SimulatedTask(
                     pid=pid,
                     arrival_time_us=arrival,
-                    total_burst_us=max(1, burst),
-                    cache_misses=cache_misses,
-                    branch_mispredictions=branch_mispred,
+                    total_burst_us=burst,
+                    cache_miss_rate=cache_rate,
+                    branch_mispred_rate=branch_rate,
                     memory_footprint_kb=mem_kb,
                 )
             )

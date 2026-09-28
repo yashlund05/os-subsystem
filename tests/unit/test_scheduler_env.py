@@ -66,6 +66,7 @@ def test_reward_calculator_toggles():
         enable_wait_penalty=True,
         enable_completion_bonus=True,
         enable_switch_penalty=True,
+        norm_step_us=5000.0,
     )
     calc = RewardCalculator(cfg)
 

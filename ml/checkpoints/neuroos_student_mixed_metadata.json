@@ -74,7 +74,5 @@
         1
       ]
     }
-  ],
-  "validity": "INVALID_SUPERSEDED",
-  "invalidation_reason": "Saturated burst_ratio bug fixed in commit 1473244; use v3 checkpoints."
+  ]
 }

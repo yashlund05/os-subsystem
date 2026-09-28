@@ -12,30 +12,30 @@ from simulator.scheduling.task import SimulatedTask
 class RewardConfig:
     """Configurable weights and ablation toggles for step reward calculation."""
 
-    w_wait: float = 1.0  # Normalized waiting time accumulation penalty
-    w_completion: float = 2.0  # Bonus per completed task
-    w_switch: float = 0.2  # Context-switch penalty
-    w_starvation: float = 0.5  # Max wait starvation penalty
-    w_tail_threshold: float = 0.3  # Threshold proxy penalty for high waiting time
+    w_wait: float = 1.0  # Normalized waiting time accumulation penalty (Little's Law: -(N_waiting*dt)/T_norm)
+    w_completion: float = 0.0  # Dropped completion bonus per user directive
+    w_switch: float = 0.02  # Context-switch penalty rescaled to new Little's law magnitudes
+    w_starvation: float = 0.1  # Max wait starvation penalty
+    w_tail_threshold: float = 0.1  # Threshold proxy penalty for high waiting time
     w_invalid_action: float = 1.0  # Penalty for picking masked/empty slot
 
     # Ablation toggles
     enable_wait_penalty: bool = True
-    enable_completion_bonus: bool = True
+    enable_completion_bonus: bool = False  # Dropped per user directive
     enable_switch_penalty: bool = True
     enable_starvation_penalty: bool = True
     enable_tail_penalty: bool = True
 
     # Reference normalizers
-    norm_step_us: float = 5000.0
+    norm_step_us: float = 100000.0  # Fixed global constant T_norm (100ms) for Little's law: -(N_waiting*dt)/T_norm
     norm_starve_wait_us: float = 50000.0
 
 
 class RewardCalculator:
     """
     Computes fine-grained, independently toggleable rewards per scheduling step.
-    Formula:
-        R_t = - (w_wait * wait_penalty + w_starve * starve_penalty + w_switch * switch_penalty) + w_done * completions
+    Formula (Little's Law):
+        R_t = - (w_wait * (N_waiting * dt) / T_norm + w_starve * starve_penalty + w_switch * switch_penalty)
     """
 
     def __init__(self, config: Optional[RewardConfig] = None) -> None:
@@ -54,14 +54,12 @@ class RewardCalculator:
         if is_invalid_action:
             reward -= self.config.w_invalid_action
 
-        # 1. Waiting-time penalty: cumulative waiting time of runnable tasks during step_elapsed_us
+        # 1. Little's-law waiting-time penalty: -(N_waiting * dt) / T_norm
+        # Sums to -(Total_Waiting_Time / T_norm) over the entire episode (r = 1.0000 correlation with true wait time)
         if self.config.enable_wait_penalty and step_elapsed_us > 0:
             queue_len = len(ready_tasks)
             if queue_len > 0:
-                # Normalized by step duration and queue size
-                wait_step_norm = (step_elapsed_us * queue_len) / (
-                    self.config.norm_step_us * max(1, queue_len)
-                )
+                wait_step_norm = (queue_len * step_elapsed_us) / self.config.norm_step_us
                 reward -= self.config.w_wait * wait_step_norm
 
         # 2. Starvation penalty on max waiting time
@@ -77,7 +75,7 @@ class RewardCalculator:
         if self.config.enable_switch_penalty and did_context_switch:
             reward -= self.config.w_switch
 
-        # 4. Completion bonus
+        # 4. Completion bonus (dropped per directive, maintained for backward toggle compatibility)
         if self.config.enable_completion_bonus and num_completed > 0:
             reward += self.config.w_completion * num_completed
 
