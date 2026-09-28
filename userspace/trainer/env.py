@@ -232,6 +232,8 @@ class SchedulerEnv(gym.Env):
         # Check quantum expiration
         elif self.current_slice_remaining_us <= 0 and self.running_task:
             self.running_task.state = TaskState.READY
+            # Priority demotion on quantum exhaustion (for multi-level feedback tracking)
+            self.running_task.priority_level = min(3, self.running_task.priority_level + 1)
             self.ready_queue.append(self.running_task)
             self.running_task = None
             self.current_slice_remaining_us = 0

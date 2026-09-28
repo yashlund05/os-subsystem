@@ -84,8 +84,17 @@ def classical_select_action(policy_name: str, candidates: List[SimulatedTask], c
                 best_r = t.remaining_burst_us
                 best_idx = i
         return best_idx
-    elif policy_name in ("RR-5ms", "MLFQ"):
-        # Default circular / priority-tier selection maps to top candidate (or index 0)
+    elif policy_name == "MLFQ":
+        # Multi-Level Feedback Queue: pick task with lowest priority_level (0 is highest)
+        best_idx = 0
+        best_lvl = getattr(candidates[0], "priority_level", 0)
+        for i, t in enumerate(candidates):
+            lvl = getattr(t, "priority_level", 0)
+            if lvl < best_lvl:
+                best_lvl = lvl
+                best_idx = i
+        return best_idx
+    elif policy_name == "RR-5ms":
         return 0
     return 0
 
@@ -166,7 +175,7 @@ def run_evaluation_suite(
                         max_steps=1000,
                         top_k=16,
                     )
-                    env.burst_estimator.noise_std = noise_sigma
+                    env.burst_estimator.noise_std_frac = noise_sigma
 
                     obs, info = env.reset(seed=s)
                     done = False

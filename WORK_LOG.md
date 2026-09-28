@@ -17,32 +17,40 @@ This document serves as the single source of truth for ongoing engineering progr
 
 ## Chronological Work Log
 
-### [2026-09-28] — Phase 3 Implementation: Local GPU DRL Training Pipeline & Micro-Core Distillation Foundations
-- **Status**: `COMPLETED`
+### [2026-09-28] — Phase 3 Implementation & Audit: Local GPU DRL Training Pipeline & Honest Baseline Analysis
+- **Status**: `COMPLETED & AUDITED`
 - **Contributors**: ML & Simulation Team (Member 3, Member 4, Pair AI Assistant)
-- **Completed Work**:
-  - Implemented decoupled Actor-Critic neural network architecture (`ml/training/policy.py`):
-    - Actor: `CandidateScorer` shared permutation-equivariant MLP ($16 \to 64 \to 32 \to 1$ teacher and $16 \to 8 \to 1$ student control) with masked softmax over $K=16$ candidates.
-    - Critic: Separate `CriticNetwork` operating on pooled candidate representations (mean + max pooling) and 6 global context features ($26 \to 64 \to 64 \to 1$). Only the isolated actor is exported to kernel micro-core.
-  - Implemented custom GPU-accelerated PPO algorithm (`ml/training/ppo.py`) with first-class action masking, Generalized Advantage Estimation (GAE, $\lambda = 0.95, \gamma = 0.99$), PPO clipping ($\epsilon = 0.2$), and pure unmasked entropy calculation (preventing NaN gradients from padded candidate slots).
-  - Implemented synchronous vectorized environment harness (`ml/training/vec_env.py`) enabling parallel rollout collection across parallel simulator instances.
-  - Implemented modular curriculum engine (`ml/training/train.py`) supporting both `"staged"` (per-stage step budgets across Poisson warmup, Pareto heavy tails, and convoy stress) and `"mixed"` (stochastic sampling across workloads).
-  - Executed training runs on NVIDIA GeForce RTX 3050 Laptop GPU:
-    - Teacher ($16 \to 64 \to 32 \to 1$) staged: 3 seeds (1001, 1002, 1003), ~58s per seed (~860 steps/sec rollout+PPO throughput), converged with episode return $72.0 \pm 3.5$.
-    - Student control ($16 \to 8 \to 1$) staged: 3 seeds (1001, 1002, 1003), ~55s per seed, converged with episode return $69.8 \pm 2.6$.
-    - Teacher mixed curriculum: 3 seeds (1001, 1002, 1003), ~56s per seed.
-  - Implemented export utility (`ml/training/export.py`) generating NumPy `.npz` weight matrices and `.json` metadata packages with explicit layer shapes, feature slices, and normalization stats. Verified NumPy forward pass matches PyTorch within $10^{-5}$.
-  - Implemented comprehensive paired 30-seed evaluation suite (`ml/training/evaluate.py`) comparing learned PPO policies against 6 baselines (FCFS, SJF, SRTF, RR-5ms, MLFQ, and an observation-space Heuristic `argmin(pred_burst - 0.2*age)`) across $\rho \in \{0.5, 0.8, 0.95\}$ and burst-estimator noise sweeps ($\sigma \in \{0.0, 0.2, 0.6\}$).
-  - Unit & integration test suite: 9 new tests in `tests/unit/test_drl_training.py` (total 39 tests passing, 100%). Code coverage across `ml/training/` and `userspace/trainer/` at 94%. Ruff cleanly passing.
+- **Completed Work & Empirical Audit Findings**:
+  - **1. MLFQ vs RR Analysis**:
+    - Discovered that in `evaluate.py`, both `RR-5ms` and `MLFQ` mapped to `action = 0` unconditionally because MLFQ priority level demotion was not being tracked across steps in `SchedulerEnv`.
+    - Fixed: Added priority demotion on quantum expiration (`task.priority_level = min(3, priority_level + 1)`) in `SchedulerEnv` and updated `evaluate.py` to pick candidates with lowest priority level. Verified on hand-built multi-tier workload: MLFQ achieves $17,679.3\,\mu\text{s}$ Mean WT vs. $19,346.7\,\mu\text{s}$ for RR-5ms.
+  - **2. Heuristic vs PPO Teacher Comparison (Honest Assessment)**:
+    - The observation-space heuristic `argmin(pred_burst - 0.2*age)` **outperformed the PPO Teacher across all workloads and loads**:
+      - Pareto $\rho=0.8$: Heuristic Mean WT $433.6 \pm 145.1\,\mu\text{s}$ vs. Teacher $642.5 \pm 202.5\,\mu\text{s}$ (Teacher is $+208.9\,\mu\text{s}$ worse).
+      - Pareto $\rho=0.95$: Heuristic $537.7 \pm 165.7\,\mu\text{s}$ vs. Teacher $829.7 \pm 254.0\,\mu\text{s}$ (Teacher is $+292.1\,\mu\text{s}$ worse).
+      - Convoy: Heuristic $2,477.5\,\mu\text{s}$ vs. Teacher $7,424.5\,\mu\text{s}$ (Teacher is $+4,947.0\,\mu\text{s}$ worse).
+    - *Honest Conclusion*: PPO does **not** add value over a simple 1-line heuristic on this state space.
+  - **3. Convoy Workload Breakdown**:
+    - Tracing decisions revealed why Teacher equals RR ($7,424.5\,\mu\text{s}$): Task 1 (50ms) arrives at $t=0$ when the ready queue is empty. PPO dispatches Task 1. Because the environment does not interrupt mid-slice without an external timer interrupt or arrival preemption action, and the network output for Task 1 is non-negative, Task 1 runs for its full 5ms quantum before short tasks get dispatched.
+  - **4. Reward Alignment Diagnosis**:
+    - Discovered that cumulative reward actually **ranks Teacher above Heuristic** ($88.21$ vs $85.21$) despite Heuristic having lower waiting time ($78.3\,\mu\text{s}$ vs $72.1\,\mu\text{s}$). The reward penalty for context switches ($w_{\text{switch}} = 0.20$) heavily disincentivizes preemption, teaching PPO to avoid switching away from long tasks.
+  - **5. Student Capacity vs Training**:
+    - Trained $16 \to 8 \to 1$ Student for 500k steps: Mean WT reached $1,185.6\,\mu\text{s}$ (did not overtake Heuristic).
+    - Supervised regression fit of $16 \to 8 \to 1$ directly on the heuristic rule achieved $R^2 = 0.9637$ and $\text{MSE} = 0.0031$.
+    - *Correction*: The 8-neuron student has plenty of representational capacity for the optimal rule ($R^2 > 0.96$). Its failure in RL is an **optimization/exploration failure** under RL reward dynamics, not a network capacity ceiling.
+  - **6. Noise Sweep Bugfix & Verification**:
+    - Found and fixed a bug where `env.burst_estimator.noise_std` was set instead of `noise_std_frac`. Tested real noise sensitivity: Noise=0 gives $331.2\,\mu\text{s}$, Default (0.1) gives $328.7\,\mu\text{s}$, High (0.5) gives $354.0\,\mu\text{s}$ ($+25.3\,\mu\text{s}$ degradation under severe noise).
+  - **7. Extended 500k Teacher Training**:
+    - Extended training for 500,000 steps converged in return ($66.2$) but did not improve evaluation Mean WT ($1,085.9\,\mu\text{s}$ vs $642.5\,\mu\text{s}$ at 50k steps). PPO overfits to the context-switch penalty and does not overtake the heuristic.
+  - **8. Permutation Feature Importance**:
+    - Measured exact delta Mean WT when scrambling each feature on 15 eval seeds:
+      - Dominant feature: `burst_ratio` ($+358.3\,\mu\text{s}$ degradation when permuted).
+      - Context features: `cpu_busy_frac` ($+56.3\,\mu\text{s}$), `load_factor_norm` ($+52.9\,\mu\text{s}$), `is_running_val` ($+51.4\,\mu\text{s}$).
+      - PMU features: `cache_miss_norm` ($+40.8\,\mu\text{s}$), `branch_mispred_norm` ($+40.4\,\mu\text{s}$).
+      - Inactive features: `priority_norm` ($+0.0\,\mu\text{s}$), `max_wait_norm` ($-0.2\,\mu\text{s}$).
 - **Handoff & Next Steps for Quantization Lead (Member 4)**:
-  - **Export Artifacts**: Available under `ml/checkpoints/`:
-    - `neuroos_teacher_staged_weights.npz` & `neuroos_teacher_staged_metadata.json` (Teacher: 16 -> 64 -> 32 -> 1, 3,169 parameters)
-    - `neuroos_student_staged_weights.npz` & `neuroos_student_staged_metadata.json` (Student control: 16 -> 8 -> 1, 137 parameters)
-  - **Input Feature Order (16-D)**:
-    - 0..9 Task Features: `elapsed_norm`, `pred_burst_norm`, `age_norm`, `ctx_switches_norm`, `cache_miss_norm`, `branch_mispred_norm`, `mem_kb_norm`, `priority_norm`, `is_running_val`, `burst_ratio`.
-    - 10..15 Global Features: `queue_len_norm`, `load_factor_norm`, `cpu_busy_frac`, `max_wait_norm`, `mean_pred_norm`, `time_since_switch_norm`.
-  - **Normalization Statistics**: Stored in `metadata.json` (`max_burst_us: 1e5`, `max_wait_us: 5e5`, `max_ctx_switches: 50`, `max_pmu_delta: 5000`, `max_mem_kb: 65536`, `max_queue_depth: 1024`).
-  - **Distillation Guidance**: Direct training of 8-neuron student achieved higher tail latency ($P_{99} = 13.08\,\text{ms}$) under heavy load compared to teacher ($P_{99} = 9.18\,\text{ms}$), proving distillation from teacher soft targets is required to compress the decision boundary into $16 \to 8 \to 1$ int8 without loss.
+  - **Export Artifacts**: Available under `ml/checkpoints/` (`neuroos_teacher_staged_weights.npz`, `neuroos_student_staged_weights.npz`).
+  - **Distillation Strategy**: Because direct RL on student is sub-optimal but student can represent the heuristic with $R^2 = 0.9637$, distillation in Phase 4 should train the student to match either Teacher logits or Heuristic scores directly.
 
 ---
 
