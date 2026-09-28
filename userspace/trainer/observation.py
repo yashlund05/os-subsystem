@@ -115,8 +115,9 @@ class ObservationEncoder:
             mem_kb_norm = float(np.clip(task.memory_footprint_kb / self.max_mem_kb, 0.0, 5.0))
             priority_norm = float(np.clip(task.priority_level / 10.0, 0.0, 5.0))
             is_running_val = 1.0 if is_running else 0.0
+            # Bounded, monotonic remaining-time estimate: clip((pred_burst - elapsed) / max_burst, 0.0, 1.0)
             burst_ratio = float(
-                np.clip(elapsed_norm / max(0.01, pred_burst_norm + elapsed_norm), 0.0, 1.0)
+                np.clip((pred_burst - task.executed_burst_us) / self.max_burst_us, 0.0, 1.0)
             )
 
             task_features = [
