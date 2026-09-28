@@ -1,0 +1,98 @@
+{
+  "experiment": "ppo_quick",
+  "architecture": "student",
+  "curriculum_mode": "mixed",
+  "git_hash": "e2df730f1b8c7ea6fc772d1af2c0d8d25a993ece",
+  "runs": [
+    {
+      "run_name": "ppo_quick_student_mixed_s42",
+      "seed": 42,
+      "total_timesteps": 2048,
+      "wall_clock_seconds": 2.72,
+      "converged": true,
+      "final_mean_return": 39.507,
+      "logs": [
+        {
+          "timesteps": 256,
+          "progress": 0.0,
+          "mean_return": 54.184,
+          "policy_loss": -0.00013,
+          "value_loss": 80.25552,
+          "entropy": 0.5613,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 0.31
+        },
+        {
+          "timesteps": 512,
+          "progress": 0.125,
+          "mean_return": 45.074,
+          "policy_loss": -2e-05,
+          "value_loss": 78.33641,
+          "entropy": 0.5392,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 0.61
+        },
+        {
+          "timesteps": 768,
+          "progress": 0.25,
+          "mean_return": 38.923,
+          "policy_loss": -1e-05,
+          "value_loss": 73.4806,
+          "entropy": 0.612,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 0.96
+        },
+        {
+          "timesteps": 1024,
+          "progress": 0.375,
+          "mean_return": 38.828,
+          "policy_loss": -0.0,
+          "value_loss": 78.718,
+          "entropy": 0.5487,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 1.27
+        },
+        {
+          "timesteps": 1280,
+          "progress": 0.5,
+          "mean_return": 34.381,
+          "policy_loss": -3e-05,
+          "value_loss": 74.89514,
+          "entropy": 0.5133,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 1.63
+        },
+        {
+          "timesteps": 1536,
+          "progress": 0.625,
+          "mean_return": 39.178,
+          "policy_loss": -6e-05,
+          "value_loss": 75.14328,
+          "entropy": 0.5485,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 2.0
+        },
+        {
+          "timesteps": 1792,
+          "progress": 0.75,
+          "mean_return": 38.42,
+          "policy_loss": -3e-05,
+          "value_loss": 72.90747,
+          "entropy": 0.5242,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 2.35
+        },
+        {
+          "timesteps": 2048,
+          "progress": 0.875,
+          "mean_return": 40.821,
+          "policy_loss": 1e-05,
+          "value_loss": 71.07427,
+          "entropy": 0.5547,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 2.72
+        }
+      ]
+    }
+  ]
+}

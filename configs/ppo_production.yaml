@@ -1,0 +1,59 @@
+# Full GPU training configuration for RTX 3050 (200k steps, CUDA, checkpoints)
+experiment:
+  name: "ppo_production"
+  device: "cuda"  # Will fallback to cpu if cuda unavailable
+  seed: 1001
+  num_training_seeds: 3  # [1001, 1002, 1003]
+  export_dir: "ml/checkpoints"
+
+curriculum:
+  mode: "staged"  # "staged" (per-stage budgets) or "mixed"
+  total_timesteps: 50000
+  stages:
+    - name: "stage1_warmup"
+      budget_steps: 15000
+      workload_type: "poisson"
+      load_factor: 0.6
+      pareto_alpha: 1.8
+    - name: "stage2_heavy_tail"
+      budget_steps: 25000
+      workload_type: "pareto"
+      load_factor: 0.85
+      pareto_alpha: 1.3
+    - name: "stage3_adversarial"
+      budget_steps: 10000
+      workload_type: "convoy"
+      load_factor: 0.95
+      pareto_alpha: 1.2
+
+environment:
+  num_envs: 8
+  num_tasks: 50
+  load_factor: 0.85
+  top_k: 16
+
+network:
+  architecture: "teacher"  # "teacher" (16->64->32->1) or "student" (16->8->1)
+  actor_hidden_dims: [64, 32]
+  critic_hidden_dims: [64, 64]
+
+reward:
+  step_wait_penalty_weight: 1.0
+  max_wait_penalty_weight: 0.1
+  context_switch_penalty_weight: 0.05
+  completion_bonus: 2.0
+  tail_penalty_weight: 0.5
+
+ppo:
+  learning_rate: 0.0003
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  value_coef: 0.5
+  entropy_coef_start: 0.02
+  entropy_coef_end: 0.002
+  max_grad_norm: 0.5
+  num_rollout_steps: 128
+  num_epochs: 4
+  batch_size: 128
+  target_kl: 0.02

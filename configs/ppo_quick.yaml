@@ -1,0 +1,47 @@
+# Quick CPU-friendly training configuration for CI / fast validation (< 60s)
+experiment:
+  name: "ppo_quick"
+  device: "cpu"
+  seed: 42
+  num_training_seeds: 1
+  export_dir: "ml/checkpoints"
+
+curriculum:
+  mode: "mixed"  # "mixed" or "staged"
+  workload_mix:
+    pareto: 0.6
+    poisson: 0.2
+    convoy: 0.2
+  total_timesteps: 2048
+
+environment:
+  num_envs: 4
+  num_tasks: 30
+  load_factor: 0.8
+  top_k: 16
+
+network:
+  architecture: "student"  # "student" (16->8->1) or "teacher" (16->64->32->1)
+  actor_hidden_dims: [8]
+  critic_hidden_dims: [32, 32]
+
+reward:
+  step_wait_penalty_weight: 1.0
+  max_wait_penalty_weight: 0.1
+  context_switch_penalty_weight: 0.05
+  completion_bonus: 2.0
+  tail_penalty_weight: 0.5
+
+ppo:
+  learning_rate: 0.0005
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_epsilon: 0.2
+  value_coef: 0.5
+  entropy_coef_start: 0.02
+  entropy_coef_end: 0.001
+  max_grad_norm: 0.5
+  num_rollout_steps: 64
+  num_epochs: 4
+  batch_size: 64
+  target_kl: 0.03

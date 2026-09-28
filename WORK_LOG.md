@@ -17,6 +17,35 @@ This document serves as the single source of truth for ongoing engineering progr
 
 ## Chronological Work Log
 
+### [2026-09-28] — Phase 3 Implementation: Local GPU DRL Training Pipeline & Micro-Core Distillation Foundations
+- **Status**: `COMPLETED`
+- **Contributors**: ML & Simulation Team (Member 3, Member 4, Pair AI Assistant)
+- **Completed Work**:
+  - Implemented decoupled Actor-Critic neural network architecture (`ml/training/policy.py`):
+    - Actor: `CandidateScorer` shared permutation-equivariant MLP ($16 \to 64 \to 32 \to 1$ teacher and $16 \to 8 \to 1$ student control) with masked softmax over $K=16$ candidates.
+    - Critic: Separate `CriticNetwork` operating on pooled candidate representations (mean + max pooling) and 6 global context features ($26 \to 64 \to 64 \to 1$). Only the isolated actor is exported to kernel micro-core.
+  - Implemented custom GPU-accelerated PPO algorithm (`ml/training/ppo.py`) with first-class action masking, Generalized Advantage Estimation (GAE, $\lambda = 0.95, \gamma = 0.99$), PPO clipping ($\epsilon = 0.2$), and pure unmasked entropy calculation (preventing NaN gradients from padded candidate slots).
+  - Implemented synchronous vectorized environment harness (`ml/training/vec_env.py`) enabling parallel rollout collection across parallel simulator instances.
+  - Implemented modular curriculum engine (`ml/training/train.py`) supporting both `"staged"` (per-stage step budgets across Poisson warmup, Pareto heavy tails, and convoy stress) and `"mixed"` (stochastic sampling across workloads).
+  - Executed training runs on NVIDIA GeForce RTX 3050 Laptop GPU:
+    - Teacher ($16 \to 64 \to 32 \to 1$) staged: 3 seeds (1001, 1002, 1003), ~58s per seed (~860 steps/sec rollout+PPO throughput), converged with episode return $72.0 \pm 3.5$.
+    - Student control ($16 \to 8 \to 1$) staged: 3 seeds (1001, 1002, 1003), ~55s per seed, converged with episode return $69.8 \pm 2.6$.
+    - Teacher mixed curriculum: 3 seeds (1001, 1002, 1003), ~56s per seed.
+  - Implemented export utility (`ml/training/export.py`) generating NumPy `.npz` weight matrices and `.json` metadata packages with explicit layer shapes, feature slices, and normalization stats. Verified NumPy forward pass matches PyTorch within $10^{-5}$.
+  - Implemented comprehensive paired 30-seed evaluation suite (`ml/training/evaluate.py`) comparing learned PPO policies against 6 baselines (FCFS, SJF, SRTF, RR-5ms, MLFQ, and an observation-space Heuristic `argmin(pred_burst - 0.2*age)`) across $\rho \in \{0.5, 0.8, 0.95\}$ and burst-estimator noise sweeps ($\sigma \in \{0.0, 0.2, 0.6\}$).
+  - Unit & integration test suite: 9 new tests in `tests/unit/test_drl_training.py` (total 39 tests passing, 100%). Code coverage across `ml/training/` and `userspace/trainer/` at 94%. Ruff cleanly passing.
+- **Handoff & Next Steps for Quantization Lead (Member 4)**:
+  - **Export Artifacts**: Available under `ml/checkpoints/`:
+    - `neuroos_teacher_staged_weights.npz` & `neuroos_teacher_staged_metadata.json` (Teacher: 16 -> 64 -> 32 -> 1, 3,169 parameters)
+    - `neuroos_student_staged_weights.npz` & `neuroos_student_staged_metadata.json` (Student control: 16 -> 8 -> 1, 137 parameters)
+  - **Input Feature Order (16-D)**:
+    - 0..9 Task Features: `elapsed_norm`, `pred_burst_norm`, `age_norm`, `ctx_switches_norm`, `cache_miss_norm`, `branch_mispred_norm`, `mem_kb_norm`, `priority_norm`, `is_running_val`, `burst_ratio`.
+    - 10..15 Global Features: `queue_len_norm`, `load_factor_norm`, `cpu_busy_frac`, `max_wait_norm`, `mean_pred_norm`, `time_since_switch_norm`.
+  - **Normalization Statistics**: Stored in `metadata.json` (`max_burst_us: 1e5`, `max_wait_us: 5e5`, `max_ctx_switches: 50`, `max_pmu_delta: 5000`, `max_mem_kb: 65536`, `max_queue_depth: 1024`).
+  - **Distillation Guidance**: Direct training of 8-neuron student achieved higher tail latency ($P_{99} = 13.08\,\text{ms}$) under heavy load compared to teacher ($P_{99} = 9.18\,\text{ms}$), proving distillation from teacher soft targets is required to compress the decision boundary into $16 \to 8 \to 1$ int8 without loss.
+
+---
+
 ### [2026-09-28] — Phase 2B Implementation: Gymnasium CPU Scheduling Environment
 - **Status**: `COMPLETED`
 - **Contributors**: ML & Simulation Team (Member 3, Member 2, Pair AI Assistant)
