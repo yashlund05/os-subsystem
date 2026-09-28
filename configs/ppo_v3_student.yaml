@@ -1,0 +1,56 @@
+curriculum:
+  mode: staged
+  stages:
+  - budget_steps: 15000
+    load_factor: 0.6
+    name: stage1_warmup
+    pareto_alpha: 1.8
+    workload_type: poisson
+  - budget_steps: 25000
+    load_factor: 0.85
+    name: stage2_heavy_tail
+    pareto_alpha: 1.3
+    workload_type: pareto
+  - budget_steps: 10000
+    load_factor: 0.95
+    name: stage3_adversarial
+    pareto_alpha: 1.2
+    workload_type: convoy
+  total_timesteps: 8192
+environment:
+  load_factor: 0.85
+  num_envs: 4
+  num_tasks: 50
+  top_k: 16
+experiment:
+  device: cpu
+  export_dir: ml/checkpoints
+  name: ppo_v3_student
+  num_training_seeds: 3
+  seed: 1001
+network:
+  actor_hidden_dims:
+  - 8
+  architecture: student
+  critic_hidden_dims:
+  - 32
+  - 32
+ppo:
+  batch_size: 128
+  clip_epsilon: 0.2
+  entropy_coef_end: 0.002
+  entropy_coef_start: 0.02
+  gae_lambda: 0.95
+  gamma: 0.99
+  learning_rate: 0.0003
+  max_grad_norm: 0.5
+  num_epochs: 4
+  num_rollout_steps: 128
+  target_kl: 0.02
+  value_coef: 0.5
+reward:
+  completion_bonus: 2.0
+  context_switch_penalty_weight: 0.05
+  max_wait_penalty_weight: 0.1
+  step_wait_penalty_weight: 1.0
+  tail_penalty_weight: 0.5

@@ -2,13 +2,13 @@
   "experiment": "ppo_quick",
   "architecture": "student",
   "curriculum_mode": "mixed",
-  "git_hash": "e2df730f1b8c7ea6fc772d1af2c0d8d25a993ece",
+  "git_hash": "96a6e34f6fb568007276942ff7d79504b56ec3dc",
   "runs": [
     {
       "run_name": "ppo_quick_student_mixed_s42",
       "seed": 42,
       "total_timesteps": 2048,
-      "wall_clock_seconds": 2.72,
+      "wall_clock_seconds": 6.15,
       "converged": true,
       "final_mean_return": 39.507,
       "logs": [
@@ -16,83 +16,85 @@
           "timesteps": 256,
           "progress": 0.0,
           "mean_return": 54.184,
-          "policy_loss": -0.00013,
-          "value_loss": 80.25552,
+          "policy_loss": -9e-05,
+          "value_loss": 80.26203,
           "entropy": 0.5613,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.31
+          "elapsed_seconds": 0.76
         },
         {
           "timesteps": 512,
           "progress": 0.125,
           "mean_return": 45.074,
           "policy_loss": -2e-05,
-          "value_loss": 78.33641,
+          "value_loss": 78.37672,
           "entropy": 0.5392,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.61
+          "elapsed_seconds": 1.55
         },
         {
           "timesteps": 768,
           "progress": 0.25,
           "mean_return": 38.923,
-          "policy_loss": -1e-05,
-          "value_loss": 73.4806,
-          "entropy": 0.612,
+          "policy_loss": -0.0,
+          "value_loss": 73.48826,
+          "entropy": 0.6187,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.96
+          "elapsed_seconds": 2.32
         },
         {
           "timesteps": 1024,
           "progress": 0.375,
           "mean_return": 38.828,
-          "policy_loss": -0.0,
-          "value_loss": 78.718,
+          "policy_loss": 0.0,
+          "value_loss": 78.91826,
           "entropy": 0.5487,
           "approx_kl": 0.0,
-          "elapsed_seconds": 1.27
+          "elapsed_seconds": 3.22
         },
         {
           "timesteps": 1280,
           "progress": 0.5,
           "mean_return": 34.381,
-          "policy_loss": -3e-05,
-          "value_loss": 74.89514,
+          "policy_loss": -2e-05,
+          "value_loss": 75.37284,
           "entropy": 0.5133,
           "approx_kl": 0.0,
-          "elapsed_seconds": 1.63
+          "elapsed_seconds": 3.94
         },
         {
           "timesteps": 1536,
           "progress": 0.625,
           "mean_return": 39.178,
-          "policy_loss": -6e-05,
-          "value_loss": 75.14328,
-          "entropy": 0.5485,
+          "policy_loss": -2e-05,
+          "value_loss": 75.83673,
+          "entropy": 0.5484,
           "approx_kl": 0.0,
-          "elapsed_seconds": 2.0
+          "elapsed_seconds": 4.68
         },
         {
           "timesteps": 1792,
           "progress": 0.75,
           "mean_return": 38.42,
           "policy_loss": -3e-05,
-          "value_loss": 72.90747,
+          "value_loss": 73.75538,
           "entropy": 0.5242,
           "approx_kl": 0.0,
-          "elapsed_seconds": 2.35
+          "elapsed_seconds": 5.42
         },
         {
           "timesteps": 2048,
           "progress": 0.875,
           "mean_return": 40.821,
-          "policy_loss": 1e-05,
-          "value_loss": 71.07427,
-          "entropy": 0.5547,
+          "policy_loss": 0.0,
+          "value_loss": 71.91579,
+          "entropy": 0.5546,
           "approx_kl": 0.0,
-          "elapsed_seconds": 2.72
+          "elapsed_seconds": 6.15
         }
       ]
     }
-  ]
+  ],
+  "validity": "INVALID_SUPERSEDED",
+  "invalidation_reason": "Saturated burst_ratio bug fixed in commit 1473244; use v3 checkpoints."
 }

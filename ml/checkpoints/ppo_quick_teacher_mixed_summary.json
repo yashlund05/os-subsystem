@@ -1,0 +1,100 @@
+{
+  "experiment": "ppo_quick",
+  "architecture": "teacher",
+  "curriculum_mode": "mixed",
+  "git_hash": "96a6e34f6fb568007276942ff7d79504b56ec3dc",
+  "runs": [
+    {
+      "run_name": "ppo_quick_teacher_mixed_s42",
+      "seed": 42,
+      "total_timesteps": 2048,
+      "wall_clock_seconds": 8.46,
+      "converged": true,
+      "final_mean_return": 38.451,
+      "logs": [
+        {
+          "timesteps": 256,
+          "progress": 0.0,
+          "mean_return": 54.147,
+          "policy_loss": -0.00014,
+          "value_loss": 78.27414,
+          "entropy": 0.5281,
+          "approx_kl": 1e-05,
+          "elapsed_seconds": 2.4
+        },
+        {
+          "timesteps": 512,
+          "progress": 0.125,
+          "mean_return": 45.242,
+          "policy_loss": -4e-05,
+          "value_loss": 74.02465,
+          "entropy": 0.5111,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 3.19
+        },
+        {
+          "timesteps": 768,
+          "progress": 0.25,
+          "mean_return": 39.523,
+          "policy_loss": -1e-05,
+          "value_loss": 73.19823,
+          "entropy": 0.5783,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 4.07
+        },
+        {
+          "timesteps": 1024,
+          "progress": 0.375,
+          "mean_return": 39.37,
+          "policy_loss": -1e-05,
+          "value_loss": 74.94868,
+          "entropy": 0.564,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 4.98
+        },
+        {
+          "timesteps": 1280,
+          "progress": 0.5,
+          "mean_return": 35.382,
+          "policy_loss": -3e-05,
+          "value_loss": 72.87826,
+          "entropy": 0.5169,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 5.9
+        },
+        {
+          "timesteps": 1536,
+          "progress": 0.625,
+          "mean_return": 40.114,
+          "policy_loss": -1e-05,
+          "value_loss": 76.17831,
+          "entropy": 0.5552,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 6.76
+        },
+        {
+          "timesteps": 1792,
+          "progress": 0.75,
+          "mean_return": 38.352,
+          "policy_loss": 9e-05,
+          "value_loss": 70.77218,
+          "entropy": 0.4907,
+          "approx_kl": 0.0,
+          "elapsed_seconds": 7.62
+        },
+        {
+          "timesteps": 2048,
+          "progress": 0.875,
+          "mean_return": 38.982,
+          "policy_loss": -0.00017,
+          "value_loss": 71.82872,
+          "entropy": 0.5316,
+          "approx_kl": 1e-05,
+          "elapsed_seconds": 8.46
+        }
+      ]
+    }
+  ],
+  "validity": "INVALID_SUPERSEDED",
+  "invalidation_reason": "Saturated burst_ratio bug fixed in commit 1473244; use v3 checkpoints."
+}
