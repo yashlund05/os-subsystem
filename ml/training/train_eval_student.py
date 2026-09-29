@@ -18,7 +18,13 @@ def main():
     y_samples = []
 
     for s in range(1000, 1030):
-        env = SchedulerEnv(workload_generator=lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8), top_k=16)
+        # Sample both Pareto and Multi-burst workloads for rich training diversity
+        wl_gen = (
+            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8))
+            if s % 2 == 0 else
+            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_multiburst_process_workload(10, 10, 1.3, 200))
+        )
+        env = SchedulerEnv(workload_generator=wl_gen, top_k=16)
         obs, _ = env.reset(seed=s)
         done = False
         while not done:
@@ -27,8 +33,12 @@ def main():
             for idx in valid:
                 feat = obs['candidates'][idx]
                 X_samples.append(feat)
-                y_samples.append(-feat[1] + 1.0 * feat[2])
-            scores = [-obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] for i in valid]
+                p_cue = max(0.0, float(feat[15] - feat[9]))
+                y_samples.append(-feat[1] + 1.0 * feat[2] + 2.0 * p_cue)
+            scores = [
+                -obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] + 2.0 * max(0.0, float(obs['candidates'][i, 15] - obs['candidates'][i, 9]))
+                for i in valid
+            ]
             act = valid[np.argmax(scores)]
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
@@ -41,8 +51,9 @@ def main():
     y_ols = X @ w
     r2_ols = 1.0 - np.sum((y - y_ols)**2) / np.sum((y - np.mean(y))**2)
     print(f"Closed-form OLS R2: {r2_ols:.6f}")
-    print(f"Weights on feat[1] (burst_est) and feat[2] (age): {w[1]:.4f}, {w[2]:.4f}")
-    print(f"Max abs weight on all other 14 features: {np.max(np.abs(np.delete(w, [1, 2]))):.2e}")
+    print(f"Weights on feat[1] (burst_est), feat[2] (age), feat[9] (preempt_cue): {w[1]:.4f}, {w[2]:.4f}, {w[9]:.4f}")
+    other_indices = [i for i in range(16) if i not in [1, 2, 9]]
+    print(f"Max abs weight on all other 13 features: {np.max(np.abs(w[other_indices])):.2e}")
 
     # 2. Standardized Neural Net 16->8->1 training
     y_mean = np.mean(y)
@@ -68,11 +79,12 @@ def main():
     r2_nn = 1.0 - np.sum((y - pred_raw)**2) / np.sum((y - np.mean(y))**2)
     print(f"Standardized Target Neural Net (16->8->1) R2: {r2_nn:.6f}, final loss: {loss.item():.6f}")
 
-    # 3. Evaluate across Pareto, Poisson, Convoy
+    # 3. Evaluate across Pareto, Poisson, Convoy, and Multi-burst
     workloads = [
         ("Pareto rho=0.8", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8)),
         ("Poisson rho=0.8", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8)),
         ("Convoy", lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100)),
+        ("Multi-Burst", lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200)),
     ]
 
     print(f"\n{'Workload':<18} | {'Top-1 Agree':<18} | {'Student Mean WT':<22} | {'Heuristic Mean WT':<22}")
@@ -94,7 +106,10 @@ def main():
                 valid = np.where(mask == 1)[0]
                 if len(valid) > 1:
                     total_dec += 1
-                    scores_h = [-obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] for i in valid]
+                    scores_h = [
+                        -obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] + 2.0 * max(0.0, float(obs['candidates'][i, 15] - obs['candidates'][i, 9]))
+                        for i in valid
+                    ]
                     act_h = valid[np.argmax(scores_h)]
                     with torch.no_grad():
                         c_t = torch.from_numpy(obs['candidates']).float()
@@ -103,7 +118,10 @@ def main():
                     act_s = int(np.argmax(s_out))
                     if act_h == act_s:
                         matches += 1
-                scores = [-obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] for i in valid]
+                scores = [
+                    -obs['candidates'][i, 1] + 1.0 * obs['candidates'][i, 2] + 2.0 * max(0.0, float(obs['candidates'][i, 15] - obs['candidates'][i, 9]))
+                    for i in valid
+                ]
                 act = valid[np.argmax(scores)]
                 obs, _, term, trunc, _ = env.step(act)
                 done = term or trunc

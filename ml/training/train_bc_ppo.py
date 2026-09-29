@@ -27,16 +27,18 @@ def pretrain_actor_bc(
     device: torch.device,
     epochs: int = 500,
 ) -> float:
-    """Pretrain policy actor using Behavior Cloning on the heuristic rule."""
+    """Pretrain policy actor using Behavior Cloning on the heuristic rule with preemption cue."""
     print("Collecting BC pretraining data from heuristic decisions...")
     X_list = []
     y_list = []
 
     for s in train_seeds:
-        env = SchedulerEnv(
-            workload_generator=lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8),
-            top_k=16,
+        wl_gen = (
+            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8))
+            if s % 2 == 0 else
+            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_multiburst_process_workload(10, 10, 1.3, 200))
         )
+        env = SchedulerEnv(workload_generator=wl_gen, top_k=16)
         obs, _ = env.reset(seed=s)
         done = False
         while not done:
@@ -45,8 +47,9 @@ def pretrain_actor_bc(
             for idx in valid:
                 feat = obs["candidates"][idx]
                 X_list.append(feat)
-                y_list.append(-feat[1] + 1.0 * feat[2])
-            scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] for i in valid]
+                # Target: -pred_burst_norm + 1.0 * age_norm + 2.0 * preempt_cue
+                y_list.append(-feat[1] + 1.0 * feat[2] + 2.0 * feat[9])
+            scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] + 2.0 * obs["candidates"][i, 9] for i in valid]
             act = valid[np.argmax(scores)]
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
@@ -82,11 +85,12 @@ def evaluate_policy_on_eval_seeds(
     eval_seeds: List[int],
     device: torch.device,
 ) -> Dict[str, float]:
-    """Evaluates policy on fixed eval seeds across Pareto, Poisson, and Convoy."""
+    """Evaluates policy on fixed eval seeds across Pareto, Poisson, Convoy, and Multi-burst."""
     workloads = {
         "pareto_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
         "poisson_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
         "convoy": lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
+        "multiburst": lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
     }
 
     results = {}
@@ -118,8 +122,8 @@ def train_bc_ppo_run(
     arch_name: str,
     actor_hidden_dims: List[int],
     train_seed: int,
-    total_steps: int = 50000,
-    eval_interval: int = 10000,
+    total_steps: int = 100000,
+    eval_interval: int = 25000,
     device: torch.device = torch.device("cuda"),
 ) -> Dict[str, Any]:
     """Runs BC initialization followed by PPO fine-tuning with eval learning curves."""
@@ -147,13 +151,13 @@ def train_bc_ppo_run(
         epochs=400,
     )
 
-    eval_seeds = list(range(50000, 50010))  # Fixed 10 eval seeds for fast curve tracking
+    eval_seeds = list(range(50000, 50010))  # Fixed 10 eval seeds for curve tracking
 
     # Step 0 eval (post-BC)
     eval_curves: List[Dict[str, Any]] = []
     e0 = evaluate_policy_on_eval_seeds(policy, eval_seeds, device)
     eval_curves.append({"step": 0, **e0})
-    print(f"  [Step 0 / BC Init] Eval Pareto WT: {e0['pareto_rho08']:.1f} us | Poisson: {e0['poisson_rho08']:.1f} us | Convoy: {e0['convoy']:.1f} us")
+    print(f"  [Step 0 / BC Init] Pareto: {e0['pareto_rho08']:.1f} us | Poisson: {e0['poisson_rho08']:.1f} us | Convoy: {e0['convoy']:.1f} us | MultiBurst: {e0['multiburst']:.1f} us")
 
     # 3. Setup Vector Scheduler Env with Little's Law Reward
     rew_cfg = RewardConfig(
@@ -165,7 +169,7 @@ def train_bc_ppo_run(
     )
 
     ppo_config = PPOConfig(
-        learning_rate=0.0001,  # Lower LR for fine-tuning
+        learning_rate=0.0001,
         gamma=0.99,
         gae_lambda=0.95,
         clip_epsilon=0.2,
@@ -182,9 +186,15 @@ def train_bc_ppo_run(
     num_envs = 8
     env_fns = [
         (lambda idx=i: SchedulerEnv(
-            workload_generator=lambda seed: SyntheticWorkloadGenerator(
-                seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
-            ).generate_pareto_bursts(50, 1.3, 200, 0.8),
+            workload_generator=(
+                (lambda seed: SyntheticWorkloadGenerator(
+                    seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
+                ).generate_pareto_bursts(50, 1.3, 200, 0.8))
+                if idx % 2 == 0 else
+                (lambda seed: SyntheticWorkloadGenerator(
+                    seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
+                ).generate_multiburst_process_workload(10, 10, 1.3, 200))
+            ),
             top_k=16,
             reward_config=rew_cfg,
         ))
@@ -211,7 +221,8 @@ def train_bc_ppo_run(
             elapsed = time.time() - start_time
             print(
                 f"  [Step {trainer.total_timesteps}/{total_steps}] "
-                f"Pareto WT: {ev['pareto_rho08']:.1f} us | Poisson: {ev['poisson_rho08']:.1f} us | Convoy: {ev['convoy']:.1f} us | "
+                f"Pareto: {ev['pareto_rho08']:.1f} us | Poisson: {ev['poisson_rho08']:.1f} us | "
+                f"Convoy: {ev['convoy']:.1f} us | MultiBurst: {ev['multiburst']:.1f} us | "
                 f"Ploss: {train_metrics['policy_loss']:.4f} | Vloss: {train_metrics['value_loss']:.4f} | Elapsed: {elapsed:.1f}s"
             )
 
@@ -243,7 +254,7 @@ def train_bc_ppo_run(
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     seeds = [1001, 1002, 1003]
-    total_steps = 50000
+    total_steps = 100000
 
     all_results = []
 
@@ -254,7 +265,7 @@ def main():
             actor_hidden_dims=[64, 32],
             train_seed=s,
             total_steps=total_steps,
-            eval_interval=10000,
+            eval_interval=25000,
             device=device,
         )
         all_results.append(res)
@@ -266,7 +277,7 @@ def main():
             actor_hidden_dims=[8],
             train_seed=s,
             total_steps=total_steps,
-            eval_interval=10000,
+            eval_interval=25000,
             device=device,
         )
         all_results.append(res)

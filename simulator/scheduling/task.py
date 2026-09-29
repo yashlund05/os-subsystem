@@ -30,6 +30,7 @@ class SimulatedTask:
     completion_time_us: Optional[int] = None
     context_switches: int = 0
     priority_level: int = 0
+    sleep_time_us: int = 0
     state: TaskState = TaskState.READY
 
     # Hardware PMU simulated metrics (functions of elapsed execution time only)

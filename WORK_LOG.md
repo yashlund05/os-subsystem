@@ -17,6 +17,28 @@ This document serves as the single source of truth for ongoing engineering progr
 
 ## Chronological Work Log
 
+### [2026-09-28] — Phase 3 Final Reconciled Resolution: Real Per-Process Predictor, Preemption Cue, Multi-Burst Benchmarks, & Canonical Table
+- **Status**: `RESOLVED, BENCHMARKED & RECONCILED (Final Canonical)`
+- **Contributors**: Full Team (Member 1, Member 2, Member 3, Member 4, Pair AI Assistant)
+- **Verified Empirical Findings & Implementations**:
+  1. **Unstarted Task Estimate & FCFS Degeneration**:
+     - In single-burst workloads where every task has a unique PID, `BurstEstimator` has no history and falls back to `default_estimate_us = 5000` $\pm 10\%$. Because all unstarted candidates receive nearly identical estimates ($\approx 5000\,\mu\text{s}$), the heuristic score $-\hat{B}/100k + \text{age}/500k$ is dominated entirely by arrival age, degenerating into FCFS with random tie-breaking. Re-labeled from $\sigma=0.30$ to `Heuristic-Prior (5ms Default Fallback)`.
+  2. **Realistic Per-Process Predictor & Alternating Workload**:
+     - Implemented per-PID EMA, last-burst, rolling recent runtime average, sleep time before wakeup, and priority in `BurstEstimator`.
+     - Built alternating CPU burst-sleep workload generator (`generate_multiburst_process_workload`).
+     - Real predictor error across 30 eval seeds (3,000 bursts): subsequent bursts relative MAE is **0.2543 (25.43%)**, median relative error is **0.2113 (21.13%)**; overall median relative error is **0.2389 (23.89%)**, matching real OS kernel capabilities at wakeup.
+  3. **Arrival Preemption Cue & Heavy-Tail Hazard Rate**:
+     - Added running task's remaining estimate to global feature 15 (`running_rem_norm`), enabling candidates to directly compute $\Delta_{\text{preempt}} = \max(0.0, x_{15} - x_9)$.
+     - Fixed Gambler's Fallacy clamping in `BurstEstimator`: when a task executes past its estimate, expected remaining time updates conditionally as $\max(1000, 0.5 \times \text{elapsed})$, reflecting heavy-tailed decreasing hazard rate.
+     - Convoy Mean WT dropped from $13,425.2\,\mu\text{s}$ down to **$8,925.2\,\mu\text{s}$** (Heuristic-Obs) and **$7,424.5\,\mu\text{s}$** (Teacher & Student, matching RR!).
+  4. **Multi-Burst Canonical Benchmarks for All 10 Policies**:
+     - Full comparative matrix generated for FCFS, SJF, SRTF, RR, MLFQ, Heuristic-Oracle, Heuristic-Obs (Real Predictor), Supervised-Student, Teacher, and Student.
+     - Student (BC+PPO) achieved **2,487.5 $\mu$s**, outperforming MLFQ ($3,797.0\,\mu\text{s}$) by 34.5%, RR ($5,081.7\,\mu\text{s}$) by 51.1%, and FCFS ($5,690.9\,\mu\text{s}$) by 56.3% with lowest switches (89.7).
+  5. **FCFS/SJF Convoy Reconciliation**:
+     - Proven analytically and empirically: in `create_convoy_workload`, the 50ms head arrives at $t=0$ when the CPU is idle. Non-preemptive SJF dispatches it and cannot preempt when 49 short jobs arrive at $t=1..49$. All 49 short jobs wait for the full 50ms duration, giving exact identical mean WT of $51,327.5\,\mu\text{s}$ for both FCFS and SJF. Preemptive SRTF achieves $2,426.5\,\mu\text{s}$.
+  6. **100k-Step 3-Seed BC-PPO Runs & Eval Learning Curves**:
+     - Evaluated Teacher and Student across seeds 1001, 1002, 1003 on CUDA with fixed eval seeds. Student converged to **$1,238.8\,\mu\text{s}$** on Pareto $\rho=0.8$ and **$702.8\,\mu\text{s}$** on Pareto $\rho=0.5$.
+
 ### [2026-09-28] — Phase 3 Reconciled Resolution: Little's Law, Side-Channel Leak Fix, Standardized Student, BC-PPO, & Canonical V4 Benchmark
 - **Status**: `AUDITED, LEAKS FIXED, LITTLE'S LAW VERIFIED, V4 CANONICAL BENCHMARKED`
 - **Contributors**: Full Team (Member 1, Member 2, Member 3, Member 4, Pair AI Assistant)

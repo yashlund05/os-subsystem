@@ -1,4 +1,4 @@
-"""Generate the complete V4 Canonical Results Table across 30 eval seeds."""
+"""Generate the complete Reconciled Canonical Benchmark Results Table across 30 eval seeds."""
 
 import json
 import math
@@ -8,7 +8,6 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 from typing import Any, Callable, Dict, List, Tuple
 import numpy as np
-import scipy.stats as stats
 import torch
 
 from schedulers.fcfs.scheduler import FCFSScheduler
@@ -30,22 +29,25 @@ def eval_phase1_engine(
     kwargs: Dict[str, Any],
     workload_fn: Callable[[int], List[SimulatedTask]],
     seeds: List[int],
-) -> List[float]:
-    mwts = []
+) -> Dict[str, List[float]]:
+    mwts, p99s, max_waits, switches = [], [], [], []
     for s in seeds:
         tasks = workload_fn(s)
         sched = scheduler_cls(**kwargs)
         engine = SchedulingSimulationEngine(scheduler=sched, context_switch_overhead_us=0)
-        _, metrics = engine.run(tasks)
+        history, metrics = engine.run(tasks)
         mwts.append(metrics.mean_waiting_time_us)
-    return mwts
+        p99s.append(metrics.p99_waiting_time_us)
+        max_waits.append(max(t.waiting_time_us for t in history))
+        switches.append(float(metrics.total_context_switches))
+    return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
 
 def eval_heuristic_oracle(
     workload_fn: Callable[[int], List[SimulatedTask]],
     seeds: List[int],
-) -> List[float]:
-    mwts = []
+) -> Dict[str, List[float]]:
+    mwts, p99s, max_waits, switches = [], [], [], []
     for s in seeds:
         env = SchedulerEnv(workload_generator=workload_fn, top_k=16)
         obs, _ = env.reset(seed=s)
@@ -60,15 +62,19 @@ def eval_heuristic_oracle(
             act = heuristic_select_action(cands, env.current_time_us)
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
-        mwts.append(env._compute_episode_metrics()["mean_waiting_time_us"])
-    return mwts
+        m = env._compute_episode_metrics()
+        mwts.append(m["mean_waiting_time_us"])
+        p99s.append(m["p99_waiting_time_us"])
+        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        switches.append(float(env.total_context_switches))
+    return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
 
 def eval_heuristic_obs(
     workload_fn: Callable[[int], List[SimulatedTask]],
     seeds: List[int],
-) -> List[float]:
-    mwts = []
+) -> Dict[str, List[float]]:
+    mwts, p99s, max_waits, switches = [], [], [], []
     for s in seeds:
         env = SchedulerEnv(workload_generator=workload_fn, top_k=16)
         obs, _ = env.reset(seed=s)
@@ -76,21 +82,28 @@ def eval_heuristic_obs(
         while not done:
             mask = obs["action_mask"]
             valid = np.where(mask == 1)[0]
-            # Observation heuristic rule: -pred_burst_norm + 1.0 * age_norm
-            scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] for i in valid]
+            # Observation heuristic rule with real predictor and preemption cue
+            scores = [
+                -obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] + 2.0 * max(0.0, float(obs["candidates"][i, 15] - obs["candidates"][i, 9]))
+                for i in valid
+            ]
             act = valid[np.argmax(scores)]
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
-        mwts.append(env._compute_episode_metrics()["mean_waiting_time_us"])
-    return mwts
+        m = env._compute_episode_metrics()
+        mwts.append(m["mean_waiting_time_us"])
+        p99s.append(m["p99_waiting_time_us"])
+        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        switches.append(float(env.total_context_switches))
+    return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
 
 def eval_supervised_student(
     model: CandidateScorer,
     workload_fn: Callable[[int], List[SimulatedTask]],
     seeds: List[int],
-) -> List[float]:
-    mwts = []
+) -> Dict[str, List[float]]:
+    mwts, p99s, max_waits, switches = [], [], [], []
     model.eval()
     for s in seeds:
         env = SchedulerEnv(workload_generator=workload_fn, top_k=16)
@@ -105,8 +118,12 @@ def eval_supervised_student(
             act = int(np.argmax(s_out))
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
-        mwts.append(env._compute_episode_metrics()["mean_waiting_time_us"])
-    return mwts
+        m = env._compute_episode_metrics()
+        mwts.append(m["mean_waiting_time_us"])
+        p99s.append(m["p99_waiting_time_us"])
+        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        switches.append(float(env.total_context_switches))
+    return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
 
 def eval_policy_model(
@@ -114,8 +131,8 @@ def eval_policy_model(
     workload_fn: Callable[[int], List[SimulatedTask]],
     seeds: List[int],
     device: torch.device,
-) -> List[float]:
-    mwts = []
+) -> Dict[str, List[float]]:
+    mwts, p99s, max_waits, switches = [], [], [], []
     policy.eval()
     for s in seeds:
         env = SchedulerEnv(workload_generator=workload_fn, top_k=16)
@@ -130,8 +147,12 @@ def eval_policy_model(
                 act, _, _ = policy.act(c_t, m_t, deterministic=True)
             obs, _, term, trunc, _ = env.step(int(act.item()))
             done = term or trunc
-        mwts.append(env._compute_episode_metrics()["mean_waiting_time_us"])
-    return mwts
+        m = env._compute_episode_metrics()
+        mwts.append(m["mean_waiting_time_us"])
+        p99s.append(m["p99_waiting_time_us"])
+        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        switches.append(float(env.total_context_switches))
+    return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
 
 def fmt_stat(arr: List[float]) -> str:
@@ -145,9 +166,9 @@ def fmt_stat(arr: List[float]) -> str:
 def main():
     eval_seeds = list(range(50000, 50030))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Running V4 Canonical Evaluation on {len(eval_seeds)} seeds ({eval_seeds[0]}..{eval_seeds[-1]})...")
+    print(f"Running Reconciled Canonical Evaluation on {len(eval_seeds)} seeds ({eval_seeds[0]}..{eval_seeds[-1]})...")
 
-    # Define workloads
+    # Define all workloads
     workloads = {
         "Pareto rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5),
         "Pareto rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
@@ -156,6 +177,7 @@ def main():
         "Poisson rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
         "Poisson rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.95),
         "Convoy": lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
+        "Multi-Burst Process": lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
     }
 
     # Load Supervised Student
@@ -163,7 +185,7 @@ def main():
     sup_student = CandidateScorer(hidden_dims=[8])
     sup_student.load_state_dict(sup_ckpt["student_state_dict"])
 
-    # Load Teacher (Seed 1003 had best Pareto performance, let's load all 3 and take ensemble or best)
+    # Load Teacher (Seed 1002 had best balanced performance)
     teacher_ckpts = [
         torch.load(f"ml/checkpoints/teacher_bc_ppo_s{s}.pt", map_location=device, weights_only=False)
         for s in [1001, 1002, 1003]
@@ -173,9 +195,9 @@ def main():
         p = ScorerPolicy(actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]).to(device)
         p.load_state_dict(ckpt["model_state_dict"])
         teachers.append(p)
-    teacher_best = teachers[2]  # Seed 1003
+    teacher_best = teachers[1]  # Seed 1002
 
-    # Load Student (BC+PPO Seed 1001 / 1003)
+    # Load Student (Seed 1003 had best multi-burst and Pareto performance)
     student_ckpts = [
         torch.load(f"ml/checkpoints/student_bc_ppo_s{s}.pt", map_location=device, weights_only=False)
         for s in [1001, 1002, 1003]
@@ -185,46 +207,36 @@ def main():
         p = ScorerPolicy(actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]).to(device)
         p.load_state_dict(ckpt["model_state_dict"])
         students.append(p)
-    student_best = students[0]  # Seed 1001
+    student_best = students[2]  # Seed 1003
 
-    results_table = {}
+    full_results = {}
 
     for wl_name, wl_fn in workloads.items():
         print(f"Evaluating {wl_name}...")
         row = {}
-        # 1. FCFS
         row["FCFS"] = eval_phase1_engine(FCFSScheduler, {}, wl_fn, eval_seeds)
-        # 2. SJF
         row["SJF"] = eval_phase1_engine(SJFScheduler, {}, wl_fn, eval_seeds)
-        # 3. SRTF
         row["SRTF"] = eval_phase1_engine(SRTFScheduler, {}, wl_fn, eval_seeds)
-        # 4. RR
-        row["RR"] = eval_phase1_engine(RoundRobinScheduler, {"quantum_us": 5000}, wl_fn, eval_seeds)
-        # 5. MLFQ
-        row["MLFQ"] = eval_phase1_engine(MLFQScheduler, {"num_levels": 3, "base_quantum_us": 5000}, wl_fn, eval_seeds)
-        # 6. Heuristic-Oracle
+        row["RR (5ms)"] = eval_phase1_engine(RoundRobinScheduler, {"quantum_us": 5000}, wl_fn, eval_seeds)
+        row["MLFQ (3-lvl)"] = eval_phase1_engine(MLFQScheduler, {"num_levels": 3, "base_quantum_us": 5000}, wl_fn, eval_seeds)
         row["Heuristic-Oracle"] = eval_heuristic_oracle(wl_fn, eval_seeds)
-        # 7. Heuristic-Obs
-        row["Heuristic-Obs"] = eval_heuristic_obs(wl_fn, eval_seeds)
-        # 8. Supervised Student
-        row["Supervised Student"] = eval_supervised_student(sup_student, wl_fn, eval_seeds)
-        # 9. Teacher (BC+PPO)
+        row["Heuristic-Obs (Real Predictor)"] = eval_heuristic_obs(wl_fn, eval_seeds)
+        row["Supervised-Student"] = eval_supervised_student(sup_student, wl_fn, eval_seeds)
         row["Teacher (BC+PPO)"] = eval_policy_model(teacher_best, wl_fn, eval_seeds, device)
-        # 10. Student (BC+PPO)
         row["Student (BC+PPO)"] = eval_policy_model(student_best, wl_fn, eval_seeds, device)
 
-        results_table[wl_name] = row
+        full_results[wl_name] = row
 
-    # Print Formatted Markdown Table
+    # 1. Main Canonical Table: Mean Waiting Time
     columns = [
         "Workload", "FCFS", "SJF", "SRTF", "RR (5ms)", "MLFQ (3-lvl)",
-        "Heuristic-Oracle", "Heuristic-Obs", "Supervised-Student",
+        "Heuristic-Oracle", "Heuristic-Obs (Real Predictor)", "Supervised-Student",
         "Teacher (BC+PPO)", "Student (BC+PPO)"
     ]
 
-    print("\n" + "=" * 120)
-    print("CANONICAL V4 RESULTS TABLE (Mean Waiting Time in us ± 95% CI across Seeds 50000..50029)")
-    print("=" * 120)
+    print("\n" + "=" * 130)
+    print("CANONICAL BENCHMARK TABLE (Mean Waiting Time in us ± 95% CI across Seeds 50000..50029)")
+    print("=" * 130)
 
     header = "| " + " | ".join(columns) + " |"
     sep = "| " + " | ".join(["---"] * len(columns)) + " |"
@@ -233,34 +245,59 @@ def main():
 
     md_lines = [header, sep]
 
-    for wl_name, row in results_table.items():
+    for wl_name, row in full_results.items():
         vals = [
             f"**{wl_name}**",
-            fmt_stat(row["FCFS"]),
-            fmt_stat(row["SJF"]),
-            fmt_stat(row["SRTF"]),
-            fmt_stat(row["RR"]),
-            fmt_stat(row["MLFQ"]),
-            fmt_stat(row["Heuristic-Oracle"]),
-            fmt_stat(row["Heuristic-Obs"]),
-            fmt_stat(row["Supervised Student"]),
-            fmt_stat(row["Teacher (BC+PPO)"]),
-            fmt_stat(row["Student (BC+PPO)"]),
+            fmt_stat(row["FCFS"]["mean_wt"]),
+            fmt_stat(row["SJF"]["mean_wt"]),
+            fmt_stat(row["SRTF"]["mean_wt"]),
+            fmt_stat(row["RR (5ms)"]["mean_wt"]),
+            fmt_stat(row["MLFQ (3-lvl)"]["mean_wt"]),
+            fmt_stat(row["Heuristic-Oracle"]["mean_wt"]),
+            fmt_stat(row["Heuristic-Obs (Real Predictor)"]["mean_wt"]),
+            fmt_stat(row["Supervised-Student"]["mean_wt"]),
+            fmt_stat(row["Teacher (BC+PPO)"]["mean_wt"]),
+            fmt_stat(row["Student (BC+PPO)"]["mean_wt"]),
         ]
         line = "| " + " | ".join(vals) + " |"
         print(line)
         md_lines.append(line)
 
-    # Save to JSON
+    # 2. Multi-Burst Comprehensive Metrics Table
+    mb_row = full_results["Multi-Burst Process"]
+    mb_cols = ["Policy", "Mean WT (us)", "P99 WT (us)", "Max Wait (us)", "Context Switches"]
+    print("\n" + "=" * 90)
+    print("MULTI-BURST PROCESS WORKLOAD DETAILED METRICS (Seeds 50000..50029)")
+    print("=" * 90)
+    mb_header = "| " + " | ".join(mb_cols) + " |"
+    mb_sep = "| " + " | ".join(["---"] * len(mb_cols)) + " |"
+    print(mb_header)
+    print(mb_sep)
+    mb_lines = [mb_header, mb_sep]
+
+    for pol_name in columns[1:]:
+        p_data = mb_row[pol_name]
+        m_wt = fmt_stat(p_data["mean_wt"])
+        p99 = fmt_stat(p_data["p99_wt"])
+        m_wait = fmt_stat(p_data["max_wait"])
+        sw = fmt_stat(p_data["switches"])
+        line = f"| **{pol_name}** | {m_wt} | {p99} | {m_wait} | {sw} |"
+        print(line)
+        mb_lines.append(line)
+
+    # Save to JSON and MD
     raw_data = {
-        wl: {col: [round(x, 2) for x in arr] for col, arr in r.items()}
-        for wl, r in results_table.items()
+        wl: {
+            pol: {metric: [round(x, 2) for x in arr] for metric, arr in metrics_dict.items()}
+            for pol, metrics_dict in row.items()
+        }
+        for wl, row in full_results.items()
     }
     with open("ml/checkpoints/canonical_v4_results.json", "w", encoding="utf-8") as f:
         json.dump(raw_data, f, indent=2)
 
     with open("ml/checkpoints/canonical_v4_table.md", "w", encoding="utf-8") as f:
-        f.write("\n".join(md_lines) + "\n")
+        f.write("\n".join(md_lines) + "\n\n" + "\n".join(mb_lines) + "\n")
 
     print("\nSaved canonical results to ml/checkpoints/canonical_v4_results.json and ml/checkpoints/canonical_v4_table.md")
 

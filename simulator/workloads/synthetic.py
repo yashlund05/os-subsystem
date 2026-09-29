@@ -80,7 +80,9 @@ class SyntheticWorkloadGenerator:
         Enables genuine, imperfect EMA prediction without ground-truth oracle access.
         """
         # 1. Establish per-process baseline characteristics
-        process_means: Dict[int, float] = {}
+        process_burst_means: Dict[int, float] = {}
+        process_sleep_means: Dict[int, float] = {}
+        process_prios: Dict[int, int] = {}
         process_cache_rate: Dict[int, float] = {}
         process_branch_rate: Dict[int, float] = {}
         process_mem: Dict[int, int] = {}
@@ -88,41 +90,49 @@ class SyntheticWorkloadGenerator:
         for pid in range(1, num_processes + 1):
             u = self.rng.random()
             mu = float(min_burst_us / (u ** (1.0 / alpha)))
-            process_means[pid] = max(min_burst_us, min(mu, 500000))
+            b_mean = max(min_burst_us, min(mu, 200000))
+            process_burst_means[pid] = b_mean
+            # Interactive processes (short burst) sleep longer; batch processes sleep shorter
+            s_mean = max(1000.0, min(500000.0, 5_000_000.0 / b_mean))
+            process_sleep_means[pid] = s_mean
+            process_prios[pid] = 0 if b_mean < 2000 else (1 if b_mean < 10000 else 2)
             process_cache_rate[pid] = self.rng.uniform(0.01, 0.05)
             process_branch_rate[pid] = self.rng.uniform(0.005, 0.02)
             process_mem[pid] = int(self.rng.uniform(512, 16384))
 
-        # Overall expected burst across all processes
-        avg_burst = float(sum(process_means.values()) / max(1, len(process_means)))
-        mean_inter_arrival_us = avg_burst / max(0.01, min(0.99, load_factor))
-
         tasks: List[SimulatedTask] = []
-        current_time_us = 0
-        total_tasks = num_processes * bursts_per_process
 
-        # Interleave burst arrivals across processes
-        for burst_idx in range(bursts_per_process):
-            pids = list(range(1, num_processes + 1))
-            self.rng.shuffle(pids)
-            for pid in pids:
-                inter_arrival = max(1, int(self.rng.expovariate(1.0 / mean_inter_arrival_us)))
-                current_time_us += inter_arrival
+        # Generate alternating burst-sleep sequences for each process
+        for pid in range(1, num_processes + 1):
+            t_curr = self.rng.randint(0, 10000)  # Staggered process start offsets
+            for burst_idx in range(bursts_per_process):
+                # Burst duration drawn from per-process lognormal distribution around mean
+                b_factor = float(math.exp(self.rng.gauss(0.0, within_process_sigma)))
+                burst = max(min_burst_us, int(process_burst_means[pid] * b_factor))
 
-                # Burst length drawn from per-process lognormal distribution around process mean
-                factor = float(math.exp(self.rng.gauss(0.0, within_process_sigma)))
-                b = int(process_means[pid] * factor)
-                burst = max(min_burst_us, min(b, 10_000_000))
+                # Sleep duration prior to this wakeup
+                if burst_idx == 0:
+                    sleep = 0
+                else:
+                    s_factor = float(math.exp(self.rng.gauss(0.0, 0.20)))
+                    sleep = max(100, int(process_sleep_means[pid] * s_factor))
 
                 tasks.append(
                     SimulatedTask(
                         pid=pid,
-                        arrival_time_us=current_time_us,
+                        arrival_time_us=t_curr,
                         total_burst_us=burst,
+                        sleep_time_us=sleep,
+                        priority_level=process_prios[pid],
                         cache_miss_rate=process_cache_rate[pid],
                         branch_mispred_rate=process_branch_rate[pid],
                         memory_footprint_kb=process_mem[pid],
                     )
                 )
 
+                # Next burst arrives after execution plus sleep
+                t_curr += burst + sleep
+
+        # Sort all interleaved tasks by arrival time
+        tasks.sort(key=lambda t: (t.arrival_time_us, t.pid))
         return tasks

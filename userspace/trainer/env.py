@@ -222,7 +222,7 @@ class SchedulerEnv(gym.Env):
             assert tt is not None
             self.running_task.waiting_time_us = tt - self.running_task.total_burst_us
             self.burst_estimator.on_task_completion(
-                self.running_task.pid, self.running_task.total_burst_us
+                self.running_task.pid, self.running_task.total_burst_us, self.current_time_us
             )
             self.completed_tasks.append(self.running_task)
             self.running_task = None
