@@ -2,13 +2,13 @@
   "experiment": "ppo_quick",
   "architecture": "student",
   "curriculum_mode": "mixed",
-  "git_hash": "881a09bfd9f721c38fce25d509ae355cfab32069",
+  "git_hash": "19a5b033ae1b82d44e83be83542a9552b418455b",
   "runs": [
     {
       "run_name": "ppo_quick_student_mixed_s42",
       "seed": 42,
       "total_timesteps": 2048,
-      "wall_clock_seconds": 1.36,
+      "wall_clock_seconds": 2.24,
       "converged": true,
       "final_mean_return": -0.78,
       "logs": [
@@ -20,7 +20,7 @@
           "value_loss": 0.03872,
           "entropy": 0.5613,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.19
+          "elapsed_seconds": 0.21
         },
         {
           "timesteps": 512,
@@ -30,7 +30,7 @@
           "value_loss": 0.02675,
           "entropy": 0.5419,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.36
+          "elapsed_seconds": 0.41
         },
         {
           "timesteps": 768,
@@ -40,7 +40,7 @@
           "value_loss": 0.0279,
           "entropy": 0.6188,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.52
+          "elapsed_seconds": 0.62
         },
         {
           "timesteps": 1024,
@@ -50,7 +50,7 @@
           "value_loss": 0.02357,
           "entropy": 0.5488,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.68
+          "elapsed_seconds": 0.85
         },
         {
           "timesteps": 1280,
@@ -60,7 +60,7 @@
           "value_loss": 0.01916,
           "entropy": 0.5134,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.84
+          "elapsed_seconds": 1.15
         },
         {
           "timesteps": 1536,
@@ -70,7 +70,7 @@
           "value_loss": 0.02131,
           "entropy": 0.5555,
           "approx_kl": 0.0,
-          "elapsed_seconds": 1.01
+          "elapsed_seconds": 1.52
         },
         {
           "timesteps": 1792,
@@ -80,7 +80,7 @@
           "value_loss": 0.02246,
           "entropy": 0.5242,
           "approx_kl": 0.0,
-          "elapsed_seconds": 1.21
+          "elapsed_seconds": 1.87
         },
         {
           "timesteps": 2048,
@@ -90,7 +90,7 @@
           "value_loss": 0.02288,
           "entropy": 0.5477,
           "approx_kl": 0.0,
-          "elapsed_seconds": 1.36
+          "elapsed_seconds": 2.24
         }
       ]
     }
