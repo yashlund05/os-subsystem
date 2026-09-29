@@ -26,8 +26,13 @@ endif()
 # Core include directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/kernel/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/inference
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/guardrails
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/sched_ext
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/telemetry
     ${CMAKE_CURRENT_SOURCE_DIR}/schedulers/include
     ${CMAKE_CURRENT_SOURCE_DIR}/allocators/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer
     ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer/include
 )
 
@@ -35,8 +40,31 @@ include_directories(
 add_library(neuroos_core_scaffold INTERFACE)
 target_include_directories(neuroos_core_scaffold INTERFACE
     ${CMAKE_CURRENT_SOURCE_DIR}/kernel/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/inference
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/guardrails
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/sched_ext
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/telemetry
     ${CMAKE_CURRENT_SOURCE_DIR}/schedulers/include
     ${CMAKE_CURRENT_SOURCE_DIR}/allocators/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer
+    ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer/include
+)
+
+# Phase 2-3: Quantized inference + guardrail + dispatch + telemetry core (portable C11)
+add_library(neuroos_fastpath STATIC
+    kernel/inference/micro_infer.c
+    kernel/guardrails/guardrail.c
+    kernel/sched_ext/neuroos_sched.c
+    kernel/telemetry/pmu_hook.c
+    telemetry/ring_buffer/ring_buffer.c
+)
+target_include_directories(neuroos_fastpath PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/include
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/inference
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/guardrails
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/sched_ext
+    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/telemetry
+    ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer
     ${CMAKE_CURRENT_SOURCE_DIR}/telemetry/ring_buffer/include
 )
 
@@ -46,9 +74,15 @@ add_executable(test_headers_scaffold
 )
 target_link_libraries(test_headers_scaffold PRIVATE neuroos_core_scaffold)
 
+# Phase 4: Overhead micro-benchmark (REAL rdtsc measurements on hardware)
+add_executable(overhead_bench
+    kernel/inference/overhead_bench.c
+)
+target_link_libraries(overhead_bench PRIVATE neuroos_fastpath)
+
 # Testing support
 enable_testing()
 add_test(NAME HeaderInterfaceSanity COMMAND test_headers_scaffold)
 
-message(STATUS "NeuroOS-Lite Foundation build configured successfully.")
-message(STATUS "Build target: test_headers_scaffold")
+message(STATUS "NeuroOS-Lite Phase 1-4 build configured successfully.")
+message(STATUS "Build targets: test_headers_scaffold, neuroos_fastpath, overhead_bench")

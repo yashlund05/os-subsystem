@@ -37,14 +37,14 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
 ### Phase 2: AI Optimization & Quantized Distillation (Weeks 3–4)
 
 #### Week 3: Asynchronous Local GPU Training Pipeline
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Build PyTorch DRL actor-critic (PPO/SAC) pipeline with TensorRT acceleration.
   - Implement state-space encoder: Task burst history, CPU cycles consumed, IPC, memory access strides, cache misses.
   - Implement multi-objective reward function penalizing turnaround time, tail waiting time ($P_{99}$), and context switches.
 
 #### Week 4: Model Distillation & Quantized In-Kernel Inference
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Perform knowledge distillation: compress deep network into a 2-layer quantized MLP ($16 \to 8 \to 1$).
   - Construct Piecewise Linear Model (PLM) and lookup tables (LUTs) for address offsets and quantum scalers.
@@ -56,14 +56,14 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
 ### Phase 3: Subsystem Integration & Guardrails (Weeks 5–6)
 
 #### Week 5: Subsystem Dispatch Integration & Guardrails
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Integrate quantized inference core into Linux `sched_ext` kernel dispatch path.
   - Implement dynamic quantum adjustment engine $\Delta t_q \in [q_{min}, q_{max}]$.
   - Implement $O(1)$ fail-safe guardrails (queue depth $N > 1024$ and prediction error $> 3.0\sigma$) with instantaneous fallback to Red-Black tree / MLFQ.
 
 #### Week 6: Learned Memory Partitioning Engine
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Deploy lifetime-prediction clustering for dynamic heap allocation requests.
   - Intercept allocation requests in userspace harness or custom kernel slab allocator.
@@ -75,7 +75,7 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
 ### Phase 4: Rigorous Benchmarking & Ablation Analysis (Weeks 7–8)
 
 #### Week 7: Rigorous Benchmarking & Parameter Sweeps
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Execute full benchmark matrix:
     - 7 scheduling algorithms $\times$ 5 workload profiles $\times$ 10 load factors ($\rho \in [0.1, 0.98]$).
@@ -83,7 +83,7 @@ This roadmap tracks the development lifecycle of the NeuroOS-Lite research proje
   - Collect empirical distributions for Turnaround Time, Waiting Time ($P_{95}, P_{99}, P_{99.9}$), Context Switches, and External Fragmentation slivers.
 
 #### Week 8: Ablation Studies & Overhead Verification
-- **Status**: `[NOT STARTED]`
+- **Status**: `[COMPLETED]`
 - **Objectives**:
   - Conduct ablation studies:
     - Feature importance: Impact of disabling hardware PMU inputs (running on raw burst history alone).

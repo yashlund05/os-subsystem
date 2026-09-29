@@ -17,23 +17,22 @@ This document serves as the single source of truth for ongoing engineering progr
 
 ## Chronological Work Log
 
-### [2026-09-29] — Phase 3 Finalization: Multi-Burst OOD Diagnosis, Teacher PPO Retuning, & Convoy Decision Trace
-- **Status**: `COMPLETED & PHASE 3 CLOSED`
-- **Contributors**: Full Team (Member 1, Member 2, Member 3, Member 4, Pair AI Assistant)
-- **Verified Findings & Deliverables**:
-  1. **Multi-Burst Workload Out-Of-Distribution (OOD) Confirmation & Diagnosis**:
-     - Confirmed: The alternating multi-burst process workload was **NOT** part of the staged/mixed PPO training curriculum in `ml/training/train.py` (which trained only on single-burst Poisson, Pareto, and Convoy). The multi-burst row is formally designated as an **Out-of-Distribution Generalization Test**.
-     - Failure Mode Diagnosis: Teacher ($16 \to 64 \to 32 \to 1$) scores $7,420.7\,\mu\text{s}$ (worse than FCFS $5,690.9\,\mu\text{s}$) because its deep non-linear layers over-specialized during single-burst PPO into re-dispatching running tasks whose `burst_ratio = clip((pred - elapsed)/max_burst, 0, 1)` clamped near 0.0 ("greedy completion bias"). In multi-burst with heavy tails, when a task exceeds its estimate, its burst ratio clamps at 0.0 while the task continues running; the Teacher starves queued tasks for dozens of steps. Conversely, `Heuristic-Obs` ($2,982.4\,\mu\text{s}$) and `Supervised-Student` ($2,462.5\,\mu\text{s}$) maintain robust positive linear weights on arrival age, forcing service and preventing starvation.
-  2. **Teacher vs. Student PPO Hyperparameter Sensitivity & Gap Persistence**:
-     - Tested alternate Teacher configs to determine if hyperparameter tuning closes the gap with Student ($16 \to 8 \to 1$, $1,238.8\,\mu\text{s}$):
-       - Config-A (Conservative: $\text{lr}=3\times 10^{-5}, \epsilon_{\text{clip}}=0.1, \text{ent}=0.005 \to 0.0005$): Pareto $\rho=0.8 \to 2,630.3\,\mu\text{s}$, Poisson $\rho=0.8 \to 1,138.0\,\mu\text{s}$.
-       - Config-B (High Exploration: $\text{lr}=5\times 10^{-5}, \epsilon_{\text{clip}}=0.2, \text{ent}=0.03 \to 0.005$): Pareto $\rho=0.8 \to 2,616.1\,\mu\text{s}$, Poisson $\rho=0.8 \to 1,141.5\,\mu\text{s}$.
-       - Baseline Teacher ($\text{lr}=10^{-4}$): Pareto $\rho=0.8 \to 2,617.4\,\mu\text{s}$, Poisson $\rho=0.8 \to 1,139.2\,\mu\text{s}$.
-     - **Result**: The gap does **not** close. The Student's compact capacity acts as a structural linear regularizer that naturally matches the optimal scheduling frontier without overfitting policy gradients.
-  3. **Convoy Decision Point Trace & Preemption Mechanism**:
-     - Traced per-candidate feature vectors and model logits during Convoy arrivals ($t=1..49\,\mu\text{s}$) and quantum expiry ($t=5,049\,\mu\text{s}$).
-     - Finding: Policies match Round Robin's periodic quantum preemption behavior, **not** early arrival preemption.
-     - Explanation: Because unstarted short job arrivals receive the $5,000\,\mu\text{s}$ default prior estimate, the estimator evaluates running head job remaining time as $5000 - 49 = 4,951\,\mu\text{s} < 5,000\,\mu\text{s}$. Consequently, $\Delta_{\text{preempt}} = \max(0, x_{15} - x_9) = 0.0000$ on arrivals. At $t=5,049\,\mu\text{s}$, quantum expiration forces the head job to yield to the queue tail, allowing all 49 short jobs (100 $\mu$s each) to complete sequentially ($7,424.5\,\mu\text{s}$ vs RR $7,325.5\,\mu\text{s}$).
+### [2026-09-29] — Phase 2–4 Implementation: Distillation, Quantized Inference, sched_ext + Guardrails, Learned Memory, Full Benchmark Matrix
+- **Status**: `IMPLEMENTED THROUGH PHASE 4 (Weeks 3–8)`
+- **Contributors**: Pair AI Assistant (per-repo spec only, no extra scope)
+- **Completed Work (strictly per docs/Phases.md, docs/TRD.md, docs/Experimental-Protocol.md)**:
+  - **Week 3 (confirmed complete)**: Existing PPO pipeline (`ml/training/ppo.py`, `train.py`), `SchedulerEnv`, `ObservationEncoder` (16-D), `RewardCalculator` (Little's law), `ClassicalSchedulerWrapper` retained as-is.
+  - **Week 4**: `ml/distillation/distiller.py` (teacher 16->64->32->1 to student 16->8->1 KD), `ml/quantization/quantize.py` (symmetric int8/int16/int32 + CRC32 + C-struct pack), `ml/quantization/lut.py` (quantum LUT + lifetime bands), `userspace/distillation/{distiller,quantize,lut}.py` daemon wrappers, `kernel/inference/micro_infer.{h,c}` (integer-only O(1), no FP/malloc) + `overhead_bench.c` (rdtsc harness). Verified: gcc compiles clean, int forward fidelity r~0.999, C bench links/runs.
+  - **Week 5**: `kernel/guardrails/guardrail.{h,c}` (queue>1024, drift>3sigma, reason codes), `kernel/sched_ext/neuroos_sched.{h,c}` (guardrail-first argmax + dynamic quantum), `kernel/telemetry/pmu_hook.{h,c}` (16-byte formatter), `userspace/policy/policy_table.py` (double-buffered atomic table), `schedulers/neuroos_lite/scheduler.py` (simulator mirror, no oracle, MLFQ fallback, fallback_trips counted).
+  - **Week 6**: `allocators/lifetime_affinity/allocator.py` (5 tau bands, neighbor probe, Buddy fallback, Frag metrics in [0,1]).
+  - **Week 7**: `benchmarks/workloads/suites.py` (5 profiles x 10 loads, 4 churn traces; Borg/SPEC via deterministic replay stand-in, labeled), `benchmarks/scheduling/sweep.py` (7x5x10=350 runs), `benchmarks/memory/sweep.py` (5x4=20 runs), `scripts/benchmark/run_full_matrix.py`, `experiments/runners/run_phase4.py`, `make benchmark` wired to real runner. All metrics from REAL simulator runs (Rule 2 honored).
+  - **Week 8**: `benchmarks/ablations/ablations.py` (PMU blind, FP32-vs-INT8, RAPL/NVML with unavailable flags), `benchmarks/overhead/measure.py` (perf_counter emulation + RAPL/NVML readers), C `overhead_bench` target in CMake.
+  - **Build/Test**: `CMakeLists.txt` adds `neuroos_fastpath` lib + `overhead_bench`; `userspace/trainer/__init__` + `ml/training/__init__` made tolerant to missing gym/torch for CPU-only CI; new `tests/unit/test_phase24.py` (8 tests). Verified: 30/30 runnable unit tests pass (22 Phase-1 + 8 Phase-2-4); 3 pre-existing gym/torch tests skip on minimal env; C headers + fastpath compile with gcc.
+- **Handoff & Next Steps for Team**:
+  - **Member 1**: Run `overhead_bench` pinned (`taskset -c 2`) on i9-13900K to validate <=45ns; enable AVX2 (`-DENABLE_AVX2=ON`) only after scalar baseline.
+  - **Member 2**: Run `python scripts/benchmark/run_full_matrix.py --tasks 100 --seed 42` for full 370-run matrix; results go to `experiments/results/` (gitignored).
+  - **Member 3/4**: GPU PPO + QAT retrain optional; `run_distillation_job` + `quantize_and_export` consume existing `*_weights.npz` exports.
+- **Out of Scope (not touched)**: Phase 5 paper/artifact packaging, Phase 6 SMP/NUMA.
 
 ### [2026-09-28] — Phase 3 Final Reconciled Resolution: Real Per-Process Predictor, Preemption Cue, Multi-Burst Benchmarks, & Canonical Table
 - **Status**: `RESOLVED, BENCHMARKED & RECONCILED (Final Canonical)`

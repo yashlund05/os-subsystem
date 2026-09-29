@@ -41,11 +41,7 @@ format:
 	$(PYTHON) -m ruff format . || true
 
 benchmark:
-	@echo "======================================================================"
-	@echo "[NOTE] Benchmarks are NOT yet implemented in FOUNDATION stage."
-	@echo "Full benchmark matrix (7 schedulers x 5 workloads x 10 load factors)"
-	@echo "will be executed in Phase 4 per docs/Phases.md and docs/Experimental-Protocol.md."
-	@echo "======================================================================"
+	$(PYTHON) scripts/benchmark/run_full_matrix.py --tasks 60 --seed 42
 
 clean:
 	rm -rf $(BUILD_DIR)
