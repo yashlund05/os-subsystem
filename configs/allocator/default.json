@@ -1,0 +1,14 @@
+{
+  "allocator_name": "NeuroOS-Lite-Lifetime-Affinity",
+  "heap_size_bytes": 67108864,
+  "min_block_size_bytes": 64,
+  "lifetime_bins": [
+    { "name": "transient_short", "max_lifetime_us": 1000 },
+    { "name": "medium_burst", "max_lifetime_us": 50000 },
+    { "name": "persistent_long", "max_lifetime_us": 10000000 }
+  ],
+  "guardrail": {
+    "max_search_ticks": 500,
+    "fallback_allocator": "Buddy"
+  }
+}

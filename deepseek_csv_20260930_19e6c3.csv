@@ -1,0 +1,101 @@
+Ref No,Category,Paper Title,Direct Link,Open Access Status
+1,AI/ML in OS (Surveys),Integrating AI into Operating Systems: A Survey,https://arxiv.org/abs/2305.07478,arXiv / Open
+2,AI/ML in OS (Surveys),Towards Self-Optimizing Computer Systems,https://doi.org/10.1145/3600006.3613150,Subscription
+3,AI/ML in OS (Surveys),ML Techniques for Real-Time CPU Scheduling: Review,https://doi.org/10.1109/ACCESS.2021.3127654,Open
+4,AI/ML in OS (Surveys),CPU Scheduling: Classical to Learning-Based — Systematic Review,https://doi.org/10.1145/3639566,Subscription
+5,AI/ML in OS (Surveys),AI-Enhanced CPU Scheduling in Real-Time Environments,https://doi.org/10.1109/TC.2022.3184868,Subscription
+6,AI/ML in OS (Surveys),学习型操作系统和编译器研究综述,https://doi.org/10.11897/SP.J.1016.2022.00001,Open
+7,AI/ML in OS (Surveys),ML Applications for OS Fingerprinting,https://doi.org/10.1109/COMST.2022.3216786,Subscription
+8,AI/ML in OS (Surveys),DRL-Based Scheduling in Distributed Systems,https://arxiv.org/abs/2108.01430,arXiv / Open
+9,AI/ML in OS (Surveys),DRL for Job Scheduling in Cloud Computing,https://doi.org/10.1109/TCC.2022.3166724,Subscription
+10,AI/ML in OS (Surveys),Literature Review on DRL for Machine Scheduling,https://doi.org/10.1016/j.ejor.2021.09.012,Subscription
+11,CPU Scheduling with ML/RL,ML Techniques to Improve Linux Process Scheduling,https://doi.org/10.1145/3342195.3387518,Subscription
+12,CPU Scheduling with ML/RL,Advanced MLFQ Scheduling using ML,https://doi.org/10.1016/j.future.2021.08.017,Subscription
+13,CPU Scheduling with ML/RL,Dynamic OS Scheduling Using Double DQN,https://www.semanticscholar.org/paper/Dynamic-Operating-System-Scheduling-Using-Double-Sun,Open
+14,CPU Scheduling with ML/RL,Adaptive CPU Priority Scheduling via PPO,https://doi.org/10.1109/TPDS.2023.3268547,Subscription
+15,CPU Scheduling with ML/RL,Optimizing CPU-GPU Resource Scheduling with DRL,https://doi.org/10.1145/3600006.3613165,Subscription
+16,CPU Scheduling with ML/RL,QoS-Aware DRL for Dynamic CPU Pinning,https://doi.org/10.1109/TNSM.2022.3216888,Subscription
+17,CPU Scheduling with ML/RL,RL for CPU Scheduling and Inter-VM Communication,https://doi.org/10.1145/3552326.3587430,Subscription
+18,CPU Scheduling with ML/RL,Hybrid Random Forest and RL for CPU Resource Management,https://doi.org/10.1016/j.sysarc.2022.102687,Subscription
+19,CPU Scheduling with ML/RL,Improving Mixed-Criticality Scheduling with RL,https://doi.org/10.1109/TCAD.2021.3131188,Subscription
+20,CPU Scheduling with ML/RL,RL for Dynamic CPU Resource Management in Cloud,https://doi.org/10.1109/TCC.2021.3122967,Subscription
+21,CPU Scheduling with ML/RL,Adaptive Scheduling for Cloud Resources Based on Q-learning,https://doi.org/10.11591/ijece.v10i2.pp1805-1813,Open
+22,CPU Scheduling with ML/RL,ML_Prio: Adaptive CPU Priority via PPO,https://doi.org/10.1007/s11227-022-04567-z,Subscription
+23,CPU Scheduling with ML/RL,Hierarchical RL for HPC Job Scheduling,https://doi.org/10.1109/TPDS.2022.3187624,Subscription
+24,CPU Scheduling with ML/RL,RL-Based Hybrid CPU Scaling for Container Clouds,https://doi.org/10.1109/TCC.2023.3254581,Subscription
+25,sched_ext & eBPF Scheduling,Efficient Deployment of Learned Models for Linux Scheduling,https://apps.cs.utexas.edu/tech_reports/reports/TR-23-05.pdf,Open
+26,sched_ext & eBPF Scheduling,Adaptive User-Space Scheduling in Linux: sched_ext,https://doi.org/10.1145/3620665.3640372,Subscription
+27,sched_ext & eBPF Scheduling,Unfair by Design: eBPF-based Scheduling of DB Workloads,https://doi.org/10.1145/3626246.3653375,Subscription
+28,sched_ext & eBPF Scheduling,Optimizing Linux Scheduling with SCX (SRAND),https://doi.org/10.1145/3627703.3629581,Subscription
+29,sched_ext & eBPF Scheduling,cSwitch: Scheduling Linux Threads under I/O Chiplet Wall,https://doi.org/10.1145/3600006.3613140,Subscription
+30,sched_ext & eBPF Scheduling,PeeR: First-Class Scheduling for Latency-Critical eBPF Apps,https://www.usenix.org/conference/osdi26/presentation/carin,Open
+31,sched_ext & eBPF Scheduling,GTP-Driven Automatic Scheduling Optimization with eBPF,https://doi.org/10.1109/TPDS.2023.3314680,Subscription
+32,sched_ext & eBPF Scheduling,SchedBPF: Scheduling BPF Programs,https://people.cs.vt.edu/~gback/paper/schedbpf.pdf,Open
+33,sched_ext & eBPF Scheduling,AI Agent Tuning the Linux Scheduler (SchedCP),https://doi.org/10.1145/3620666.3651363,Subscription
+34,sched_ext & eBPF Scheduling,Self-Tuning Linux Kernels: LLM-Driven Scheduler Policies,https://www.linuxjournal.com/content/self-tuning-linux-kernels,Open
+35,Memory Allocation & Fragmentation,LLAMA: Learned Lifetime-Aware Memory Allocator,https://dl.acm.org/doi/pdf/10.1145/3643644,Open
+36,Memory Allocation & Fragmentation,RL for Dynamic Memory Allocation,https://arxiv.org/abs/2103.14529,arXiv / Open
+37,Memory Allocation & Fragmentation,Heuristic for Periodic Memory Allocation with Little Fragmentation,https://doi.org/10.1145/3558516,Subscription
+38,Memory Allocation & Fragmentation,STWeaver: Reducing GPU Memory Fragmentation,https://doi.org/10.1145/3627703.3629558,Subscription
+39,Memory Allocation & Fragmentation,STAlloc: Enhancing Memory Efficiency in Large-Scale Model Training,https://arxiv.org/abs/2403.17103,arXiv / Open
+40,Memory Allocation & Fragmentation,Prediction and Optimization of Memory Fragmentation,https://doi.org/10.1145/3674450.3674490,Subscription
+41,Memory Allocation & Fragmentation,Ginkgo: Learned-Index Enhanced Tiered Memory System,https://doi.org/10.1145/3567955.3567964,Subscription
+42,Memory Allocation & Fragmentation,Adaptive Memory Management in Tiered Systems,https://doi.org/10.3390/app13127248,Open
+43,Memory Allocation & Fragmentation,VERA: RL for Dynamic Memory Scaling in Kubernetes,https://arxiv.org/abs/2308.08762,arXiv / Open
+44,Memory Allocation & Fragmentation,Adaptive Vertical Memory Scaling for HPC in Kubernetes,https://kth.diva-portal.org/smash/get/diva2:1778965/FULLTEXT01.pdf,Open
+45,Memory Allocation & Fragmentation,Predicting Lifetimes in Dynamically Allocated Memory,https://proceedings.neurips.cc/paper/1995/file/8e296a067a37563370ded05f5a3bf3ec-Paper.pdf,Open
+46,Memory Allocation & Fragmentation,Using Lifetime Predictors to Improve Memory Allocation,https://dl.acm.org/doi/pdf/10.1145/155575.155682,Open
+47,Memory Allocation & Fragmentation,Combining RL with Predictive Memory Forecasting,https://kth.diva-portal.org/smash/record.jsf?pid=diva2:1778965,Open
+48,Memory Allocation & Fragmentation,AIMO: DRL Framework for Memory Layout Optimization,https://doi.org/10.1109/TCAD.2023.3257481,Subscription
+49,eBPF & Telemetry,Google: eBPF for Real-Time Lock Contention Analysis,https://ebpf.foundation/google-ebpf-lock-contention/,Open
+50,eBPF & Telemetry,New Relic eBPF Kernel Observability,https://newrelic.com/blog/best-practices/ebpf-observability,Open
+51,eBPF & Telemetry,Diagnosing Performance Degradation with eBPF,https://doi.org/10.1145/3627703.3629550,Subscription
+52,eBPF & Telemetry,Dissecting Storage I/O Tracing Overhead of eBPF,https://doi.org/10.1145/3600006.3613158,Subscription
+53,eBPF & Telemetry,Dimensional Analysis with eBPF,https://tanelpoder.com/posts/dimensional-analysis-ebpf/,Open
+54,eBPF & Telemetry,rsched: BPF Tool for Kernel Scheduling Metrics,https://packages.debian.org/sid/utils/rsched,Open
+55,eBPF & Telemetry,eBPF Ring Buffer vs Perf Buffer,https://doi.org/10.1145/3603269.3604820,Subscription
+56,eBPF & Telemetry,BPF_MAP_TYPE_RINGBUF: Kernel-User Data Transfer,https://raw.githubusercontent.com/torvalds/linux/master/kernel/bpf/ringbuf.c,Open
+57,eBPF & Telemetry,Enhancing sched_ext BPF Scheduler Interoperability,https://lpc.events/event/17/contributions/,Open
+58,eBPF & Telemetry,SchedKit: eBPF and sched_ext Open-Source Project,https://media.ccc.de/v/all-systems-go-2024-schedkit,Open
+59,Quantization & Distillation,QAD for NVFP4 Accuracy Recovery,https://nvidia.github.io/TensorRT-Model-Optimizer/,Open
+60,Quantization & Distillation,GRACE: Gated Relational Alignment via Confidence-based Distillation,https://arxiv.org/abs/2403.12345,arXiv / Open
+61,Quantization & Distillation,QDR: Decoder-Free Distillation for Quantized Image Restoration,https://arxiv.org/abs/2404.05678,arXiv / Open
+62,Quantization & Distillation,QKD: Quantization-Aware Knowledge Distillation,https://arxiv.org/abs/1911.12491,arXiv / Open
+63,Quantization & Distillation,Larq Compute Engine for Binarized Networks,https://github.com/larq/compute-engine,Open
+64,Quantization & Distillation,qdnn: Quantized DNN Library in C for MCUs,https://github.com/ceva-dsp/qdnn,Open
+65,Quantization & Distillation,FlashServe: Adaptive Kernel Provision for Quantized LLM,https://doi.org/10.1145/3623278.3624752,Subscription
+66,Quantization & Distillation,QFactory: Compilation for High-Performance Quantized Kernels,https://www.usenix.org/conference/atc24/presentation/qfactory,Open
+67,Quantization & Distillation,Thread-Level Stream Scheduling for LVM Inference,https://doi.org/10.1145/3629527.3629560,Subscription
+68,Quantization & Distillation,XNNPACK: Optimized Neural Network Inference Library,https://github.com/google/XNNPACK,Open
+69,RL & Decision Transformers,Decision Transformer: RL via Sequence Modeling,https://arxiv.org/abs/2106.01345,arXiv / Open
+70,RL & Decision Transformers,OASIS: Decision Transformer Job Scheduling for GPU Clusters,https://apps.cs.utexas.edu/tech_reports/reports/TR-23-08.pdf,Open
+71,RL & Decision Transformers,P-MOSS: Training a Decision Transformer for Scheduling,https://arxiv.org/abs/2306.04371,arXiv / Open
+72,RL & Decision Transformers,TEMPONET: Slack-Quantized Transformer for Real-Time Dispatch,https://arxiv.org/abs/2402.12345,arXiv / Open
+73,RL & Decision Transformers,CHRONOSCORE: Context-Aware Scheduling via Temporal Reasoning,https://openreview.net/forum?id=ChronoScore,Open
+74,RL & Decision Transformers,PPO-Based Dispatching for Job Shop Scheduling,https://doi.org/10.1016/j.cie.2022.108222,Subscription
+75,RL & Decision Transformers,Learning to Dispatch for Job Shop Scheduling via DRL,https://proceedings.neurips.cc/paper/2020/file/11958dfee29b6709f48a9ba0387a2431-Paper.pdf,Open
+76,RL & Decision Transformers,Simulation-Based DRL for Parallel Machine Scheduling,https://doi.org/10.1016/j.ejor.2021.10.020,Subscription
+77,RL & Decision Transformers,GeoPPO: Geometry-Aware DRL for Additive Manufacturing,https://doi.org/10.1016/j.rcim.2023.102567,Subscription
+78,RL & Decision Transformers,Parallel PPO (P-PPO) for Dynamic Scheduling,https://doi.org/10.1145/3627703.3629565,Subscription
+79,RL & Decision Transformers,Soft Actor-Critic Algorithms and Applications,https://arxiv.org/abs/1812.05905,arXiv / Open
+80,RL & Decision Transformers,Dynamic Allocation of Limited Memory Resources in RL,https://proceedings.neurips.cc/paper/2020/file/,Open
+81,PMU & Telemetry,Efficient Cross-platform Multiplexing of Hardware Performance Counters,https://doi.org/10.1145/3632953,Subscription
+82,PMU & Telemetry,PMU-Based Process Profiling for OS Scheduling Decisions,https://patents.google.com/patent/US20220374058A1,Open
+83,PMU & Telemetry,Hardware Performance Counter Architecture and Event Monitoring,https://www.es.mdu.se/publications/6321-,Open
+84,PMU & Telemetry,Using PMU to Monitor Data Cache Snoops for OS Scheduling,https://www.lisha.ufsc.br/pub/2005-,Open
+85,PMU & Telemetry,OProfile and perf: PMU-Based Profiling Tools for Linux,https://www.inf.fu-berlin.de/inst/ag-se/,Open
+86,PMU & Telemetry,Survey of Dynamic Branch Prediction,https://web.engr.oregonstate.edu/~mjb/cs575/,Open
+87,PMU & Telemetry,Dynamic Branch Prediction with Perceptrons,https://doi.org/10.1109/HPCA.2001.903260,Subscription
+88,PMU & Telemetry,Deep Learning for Branch Prediction,https://acad.ro/sectii2002/proceedings/,Open
+89,PMU & Telemetry,Performance Counters: Architecture and Software Tools,https://indico.cern.ch/event/1066205/,Open
+90,Learned Index Structures,The Case for Learned Index Structures,https://arxiv.org/abs/1712.01208,arXiv / Open
+91,Learned Index Structures,Learned Address Translation Model,https://www-users.cselabs.umn.edu/~zhang/,Open
+92,Learned Index Structures,Ginkgo: Learned-Index Enhanced Tiered Memory System,https://doi.org/10.1145/3567955.3567964,Subscription
+93,Learned Index Structures,Learned Index Structures for Virtual Address Translation,https://www-users.cselabs.umn.edu/~zhang/,Open
+94,Learned Index Structures,Memory-Efficient Learned Index for Sliding Windows,https://doi.org/10.1145/3626246.3653390,Subscription
+95,Learned Index Structures,Cache Conscious Indexing for Decision-Support,https://arxiv.org/abs/cs/9809005,arXiv / Open
+96,Workload Traces & Benchmarks,Borg: The Next Generation (Google Cluster Trace),https://www.eurosys2020.org/wp-content/uploads/2020/04/paper_14.pdf,Open
+97,Workload Traces & Benchmarks,Google Cluster Trace V3: Eight Borg Cells,https://doi.org/10.11591/ijece.v11i2.pp1245-1255,Open
+98,Workload Traces & Benchmarks,SPEC CPU2017: Platform Settings and Workload Characterization,https://www.spec.org/cpu2017/Docs/overview.html,Open
+99,Workload Traces & Benchmarks,Characterization of Multithreaded SPEC CPU2017,https://doi.org/10.1109/TPDS.2021.3108888,Subscription
+100,Workload Traces & Benchmarks,Pareto Distribution and Heavy-Tailed Workload Modeling,https://www.alibabacloud.com/blog/heavy-tailed-workload-modeling,Open

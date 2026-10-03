@@ -1,0 +1,47 @@
+{
+  "smp_scaling": {
+    "1_core": {
+      "num_cpus": 1.0,
+      "makespan_us": 387200.0,
+      "mean_turnaround_us": 189305.0,
+      "mean_waiting_us": 184465.0,
+      "utilization": 1.0,
+      "migrations": 0.0
+    },
+    "2_core": {
+      "num_cpus": 2.0,
+      "makespan_us": 194400.0,
+      "mean_turnaround_us": 93045.0,
+      "mean_waiting_us": 88205.0,
+      "utilization": 0.9958847736625515,
+      "migrations": 0.0
+    },
+    "4_core": {
+      "num_cpus": 4.0,
+      "makespan_us": 101300.0,
+      "mean_turnaround_us": 45325.0,
+      "mean_waiting_us": 40485.0,
+      "utilization": 0.9555774925962488,
+      "migrations": 0.0
+    },
+    "8_core": {
+      "num_cpus": 8.0,
+      "makespan_us": 57100.0,
+      "mean_turnaround_us": 21843.75,
+      "mean_waiting_us": 17003.75,
+      "utilization": 0.8476357267950964,
+      "migrations": 0.0
+    }
+  },
+  "numa_allocation": {
+    "local_node_hit_rate": 1.0,
+    "remote_node_rate": 0.0,
+    "fallback_trips": 0.0,
+    "external_fragmentation": 0.8974973508664915
+  },
+  "online_drift_correction": {
+    "trips_without_online_correction": 0.0,
+    "trips_with_online_correction": 0.0,
+    "trip_reduction_ratio": 1.0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "model_architecture": "Quantized_MLP_16_8_1",
+  "input_dim": 16,
+  "hidden_dim": 8,
+  "output_dim": 1,
+  "quantization": {
+    "weight_precision_bits": 8,
+    "bias_precision_bits": 16,
+    "accumulator_precision_bits": 32,
+    "scheme": "symmetric_signed"
+  },
+  "target_latency_ns": 45,
+  "max_allowable_latency_ns": 50
+}
