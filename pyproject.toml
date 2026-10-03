@@ -41,7 +41,7 @@ dependencies = [
     # Pinned: numpy>=2.3 stubs use PEP 695 `type` aliases which mypy
     # (python_version 3.10) cannot parse -> pin to last clean 2.2.x.
     "numpy==2.2.6",
-    "pydantic>=2.0.0",
+    "pydantic==2.13.5",
     "gymnasium==1.3.0"
 ]
 
@@ -51,7 +51,7 @@ dev = [
     "pytest-cov==7.1.0",
     "mypy==2.3.1",
     "ruff==0.16.9",
-    "black>=23.7.0"
+    "black==26.5.1"
 ]
 ml = [
     "torch>=2.1.0",
