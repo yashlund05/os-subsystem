@@ -21,9 +21,9 @@ from userspace.trainer.wrapper import ClassicalSchedulerWrapper
 
 
 def investigate_student_bug():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("INVESTIGATION 1: Supervised Student Bug & Real Rollouts")
-    print("="*60)
+    print("=" * 60)
 
     # (a) Collect observations from real SchedulerEnv rollouts across 30 seeds
     X_samples = []
@@ -31,7 +31,9 @@ def investigate_student_bug():
     y_oracle_list = []
 
     def make_gen():
-        return lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5)
+        return lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.5
+        )
 
     env = SchedulerEnv(workload_generator=make_gen(), top_k=16)
 
@@ -71,7 +73,9 @@ def investigate_student_bug():
     print("    - feat[1] is pred_burst_norm: max_burst = 100,000 us")
     print("    - feat[2] is age_norm:        max_wait  = 500,000 us")
     print("    - Scaling ratio: 0.2 * (500,000 / 100,000) = 1.000!")
-    print("    - Original fit target (-feat[1] + 0.2*feat[2]) inadvertently set age weight to 0.04 in us, attenuating age by 5x!")
+    print(
+        "    - Original fit target (-feat[1] + 0.2*feat[2]) inadvertently set age weight to 0.04 in us, attenuating age by 5x!"
+    )
 
     # Fit student 16 -> 8 -> 1
     torch.manual_seed(42)
@@ -119,7 +123,9 @@ def investigate_student_bug():
             done = term or trunc
 
     agreement = matches / max(1, total_decisions)
-    print(f"(c) Top-1 Action Agreement on Real Observations: {agreement*100:.2f}% ({matches}/{total_decisions})")
+    print(
+        f"(c) Top-1 Action Agreement on Real Observations: {agreement * 100:.2f}% ({matches}/{total_decisions})"
+    )
 
     # (d) In-env Mean Waiting Time across 30 seeds for refitted student
     mwts_stud = []
@@ -161,18 +167,26 @@ def investigate_student_bug():
     print("(d) In-Env Performance (Pareto rho=0.5, 30 seeds):")
     print(f"    - Refitted Student-Supervised Mean WT: {mean_s:.1f} ± {ci_s:.1f} us")
     print(f"    - Observation Heuristic Mean WT:        {mean_h:.1f} ± {ci_h:.1f} us")
-    print(f"    - Paired difference (Student - Heuristic): {np.mean(np.array(mwts_stud) - np.array(mwts_heur)):.2f} us")
+    print(
+        f"    - Paired difference (Student - Heuristic): {np.mean(np.array(mwts_stud) - np.array(mwts_heur)):.2f} us"
+    )
 
 
 def investigate_burst_ratio():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("INVESTIGATION 2: burst_ratio Saturation & Histogram")
-    print("="*60)
+    print("=" * 60)
 
     # Collect histogram under current formula
     for w_name, gen in [
-        ("pareto_0.8", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8)),
-        ("convoy_0.8", lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100)),
+        (
+            "pareto_0.8",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
+        ),
+        (
+            "convoy_0.8",
+            lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
+        ),
     ]:
         env = SchedulerEnv(workload_generator=gen, top_k=16)
         obs, _ = env.reset(seed=50000)
@@ -199,24 +213,38 @@ def investigate_burst_ratio():
         prop_arr = np.array(prop_ratios)
 
         print(f"\n--- Workload: {w_name} (Total candidate instances: {len(curr_arr)}) ---")
-        print("Current formula: np.clip(elapsed_norm / max(0.01, pred_burst_norm + elapsed_norm), 0.0, 1.0)")
-        print(f"  Exact zeros (0.0): {np.sum(curr_arr == 0.0)} ({np.mean(curr_arr == 0.0)*100:.1f}%)")
-        print(f"  Histogram [0-0.2, 0.2-0.4, 0.4-0.6, 0.6-0.8, 0.8-1.0]: {np.histogram(curr_arr, bins=5, range=(0.0, 1.0))[0]}")
+        print(
+            "Current formula: np.clip(elapsed_norm / max(0.01, pred_burst_norm + elapsed_norm), 0.0, 1.0)"
+        )
+        print(
+            f"  Exact zeros (0.0): {np.sum(curr_arr == 0.0)} ({np.mean(curr_arr == 0.0) * 100:.1f}%)"
+        )
+        print(
+            f"  Histogram [0-0.2, 0.2-0.4, 0.4-0.6, 0.6-0.8, 0.8-1.0]: {np.histogram(curr_arr, bins=5, range=(0.0, 1.0))[0]}"
+        )
         print("Proposed formula: np.clip((pred_burst - elapsed) / max_burst, 0.0, 1.0)")
-        print(f"  Histogram [0-0.2, 0.2-0.4, 0.4-0.6, 0.6-0.8, 0.8-1.0]: {np.histogram(prop_arr, bins=5, range=(0.0, 1.0))[0]}")
-        print(f"  Mean={np.mean(prop_arr):.4f}, Std={np.std(prop_arr):.4f}, Min={np.min(prop_arr):.4f}, Max={np.max(prop_arr):.4f}")
+        print(
+            f"  Histogram [0-0.2, 0.2-0.4, 0.4-0.6, 0.6-0.8, 0.8-1.0]: {np.histogram(prop_arr, bins=5, range=(0.0, 1.0))[0]}"
+        )
+        print(
+            f"  Mean={np.mean(prop_arr):.4f}, Std={np.std(prop_arr):.4f}, Min={np.min(prop_arr):.4f}, Max={np.max(prop_arr):.4f}"
+        )
 
 
 def investigate_reward_totals():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("INVESTIGATION 3: Exact Reward Breakdown & Audit on 30 Seeds")
-    print("="*60)
+    print("=" * 60)
 
     # Evaluate exact reward terms for Teacher and Heuristic on Pareto 0.8 across 30 seeds
     device = torch.device("cpu")
-    ckpt = torch.load("ml/checkpoints/ppo_production_teacher_staged_s1001_checkpoint.pt", map_location=device)
+    ckpt = torch.load(
+        "ml/checkpoints/ppo_production_teacher_staged_s1001_checkpoint.pt", map_location=device
+    )
     teacher = ScorerPolicy(actor_hidden_dims=ckpt.get("actor_hidden_dims", [64, 32]))
-    actor_state = {k[len("actor."):]: v for k, v in ckpt["model_state_dict"].items() if k.startswith("actor.")}
+    actor_state = {
+        k[len("actor.") :]: v for k, v in ckpt["model_state_dict"].items() if k.startswith("actor.")
+    }
     teacher.actor.load_state_dict(actor_state)
     teacher.eval()
 
@@ -238,7 +266,9 @@ def investigate_reward_totals():
 
         for seed in range(50000, 50030):
             env = SchedulerEnv(
-                workload_generator=lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
+                workload_generator=lambda s: SyntheticWorkloadGenerator(
+                    seed=s
+                ).generate_pareto_bursts(50, 1.3, 200, 0.8),
                 reward_config=cfg,
                 top_k=16,
             )
@@ -246,7 +276,15 @@ def investigate_reward_totals():
             orig_calc = env.reward_calculator.calculate_reward
             ep_terms = {"wait": 0.0, "starve": 0.0, "switch": 0.0, "comp": 0.0, "tail": 0.0}
 
-            def logged_calc(step_elapsed_us, ready_tasks, num_completed, did_context_switch, is_invalid_action=False):
+            def logged_calc(
+                step_elapsed_us,
+                ready_tasks,
+                num_completed,
+                did_context_switch,
+                is_invalid_action=False,
+                _ep_terms=ep_terms,
+                _orig_calc=orig_calc,
+            ):
                 w_term = 0.0
                 if cfg.enable_wait_penalty and step_elapsed_us > 0:
                     q_len = len(ready_tasks)
@@ -267,19 +305,27 @@ def investigate_reward_totals():
                     cp_term = cfg.w_completion * num_completed
                 tl_term = 0.0
                 if cfg.enable_tail_penalty and ready_tasks:
-                    lw = sum(1 for t in ready_tasks if t.waiting_time_us > cfg.norm_starve_wait_us * 1.5)
+                    lw = sum(
+                        1 for t in ready_tasks if t.waiting_time_us > cfg.norm_starve_wait_us * 1.5
+                    )
                     if lw > 0:
                         tl_term = -cfg.w_tail_threshold * (lw / len(ready_tasks))
 
-                ep_terms["wait"] += w_term
-                ep_terms["starve"] += st_term
-                ep_terms["switch"] += sw_term
-                ep_terms["comp"] += cp_term
-                ep_terms["tail"] += tl_term
+                _ep_terms["wait"] += w_term
+                _ep_terms["starve"] += st_term
+                _ep_terms["switch"] += sw_term
+                _ep_terms["comp"] += cp_term
+                _ep_terms["tail"] += tl_term
 
-                return orig_calc(step_elapsed_us, ready_tasks, num_completed, did_context_switch, is_invalid_action)
+                return _orig_calc(
+                    step_elapsed_us,
+                    ready_tasks,
+                    num_completed,
+                    did_context_switch,
+                    is_invalid_action,
+                )
 
-            env.reward_calculator.calculate_reward = logged_calc
+            env.reward_calculator.calculate_reward = logged_calc  # type: ignore[method-assign]
             obs, _ = env.reset(seed=seed)
             done = False
             ep_total = 0.0
@@ -294,7 +340,9 @@ def investigate_reward_totals():
                         act_t, _, _ = teacher.act(t_c, t_m, deterministic=True)
                         act = int(act_t.item())
                 else:
-                    scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] for i in valid]
+                    scores = [
+                        -obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] for i in valid
+                    ]
                     act = valid[np.argmax(scores)]
 
                 obs, r, term, trunc, _ = env.step(act)
@@ -322,30 +370,42 @@ def investigate_reward_totals():
 
     print("Teacher (w_switch=0.05, 30 seeds):")
     print(f"  Sum of recorded step rewards: {t_tot:.4f}")
-    print(f"  Decomposed terms: wait={t_wait:.4f}, max_wait={t_mwait:.4f}, switch={t_sw:.4f}, comp={t_comp:.4f}, tail={t_tail:.4f}")
-    print(f"  Terms sum: {t_wait + t_mwait + t_sw + t_comp + t_tail:.4f} (Discrepancy: {t_tot - (t_wait + t_mwait + t_sw + t_comp + t_tail):.6f})")
+    print(
+        f"  Decomposed terms: wait={t_wait:.4f}, max_wait={t_mwait:.4f}, switch={t_sw:.4f}, comp={t_comp:.4f}, tail={t_tail:.4f}"
+    )
+    print(
+        f"  Terms sum: {t_wait + t_mwait + t_sw + t_comp + t_tail:.4f} (Discrepancy: {t_tot - (t_wait + t_mwait + t_sw + t_comp + t_tail):.6f})"
+    )
 
     print("Heuristic (w_switch=0.05, 30 seeds):")
     print(f"  Sum of recorded step rewards: {h_tot:.4f}")
-    print(f"  Decomposed terms: wait={h_wait:.4f}, max_wait={h_mwait:.4f}, switch={h_sw:.4f}, comp={h_comp:.4f}, tail={h_tail:.4f}")
-    print(f"  Terms sum: {h_wait + h_mwait + h_sw + h_comp + h_tail:.4f} (Discrepancy: {h_tot - (h_wait + h_mwait + h_sw + h_comp + h_tail):.6f})")
+    print(
+        f"  Decomposed terms: wait={h_wait:.4f}, max_wait={h_mwait:.4f}, switch={h_sw:.4f}, comp={h_comp:.4f}, tail={h_tail:.4f}"
+    )
+    print(
+        f"  Terms sum: {h_wait + h_mwait + h_sw + h_comp + h_tail:.4f} (Discrepancy: {h_tot - (h_wait + h_mwait + h_sw + h_comp + h_tail):.6f})"
+    )
 
     print("\nCompletion Bonus Analysis:")
     print("  Both policies complete exactly 50 tasks -> ep_comp = 50 * 2.0 = +100.0.")
-    print("  Why it is in the comparison: It provides a global terminal offset (+100.0) that ensures episodes finish positive,")
-    print("  but because it is identical for all non-crashing policies, it does NOT affect relative policy ranking.")
+    print(
+        "  Why it is in the comparison: It provides a global terminal offset (+100.0) that ensures episodes finish positive,"
+    )
+    print(
+        "  but because it is identical for all non-crashing policies, it does NOT affect relative policy ranking."
+    )
 
 
 def investigate_real_mlfq():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("INVESTIGATION 4: Real Phase 1 MLFQScheduler Class Verification")
-    print("="*60)
+    print("=" * 60)
 
     # Construct a workload with distinct task types: 2 short interactive jobs and 1 long compute job
     tasks_mlfq = [
         SimulatedTask(pid=1, arrival_time_us=0, total_burst_us=25000),  # Long job
-        SimulatedTask(pid=2, arrival_time_us=1000, total_burst_us=2000), # Short interactive
-        SimulatedTask(pid=3, arrival_time_us=2000, total_burst_us=3000), # Short interactive
+        SimulatedTask(pid=2, arrival_time_us=1000, total_burst_us=2000),  # Short interactive
+        SimulatedTask(pid=3, arrival_time_us=2000, total_burst_us=3000),  # Short interactive
     ]
     tasks_rr = [
         SimulatedTask(pid=1, arrival_time_us=0, total_burst_us=25000),
@@ -366,7 +426,9 @@ def investigate_real_mlfq():
     _, info_rr = wrapper_rr.run_episode(seed=42)
 
     print("Task Completion Times on Handcrafted Workload:")
-    print(f"{'PID':<5} | {'True Burst':<12} | {'MLFQ Completion':<18} | {'RR Completion':<18} | {'Delta (RR - MLFQ)':<18}")
+    print(
+        f"{'PID':<5} | {'True Burst':<12} | {'MLFQ Completion':<18} | {'RR Completion':<18} | {'Delta (RR - MLFQ)':<18}"
+    )
     print("-" * 75)
     for p in [1, 2, 3]:
         c_mlfq = next(t.completion_time_us for t in env_mlfq.completed_tasks if t.pid == p)
@@ -376,23 +438,31 @@ def investigate_real_mlfq():
 
     m_mlfq = info_mlfq["metrics"]["mean_waiting_time_us"]
     m_rr = info_rr["metrics"]["mean_waiting_time_us"]
-    print(f"\nOverall Mean Waiting Time: MLFQ={m_mlfq:.1f} us vs RR={m_rr:.1f} us (MLFQ is {m_rr - m_mlfq:.1f} us faster!)")
+    print(
+        f"\nOverall Mean Waiting Time: MLFQ={m_mlfq:.1f} us vs RR={m_rr:.1f} us (MLFQ is {m_rr - m_mlfq:.1f} us faster!)"
+    )
 
 
 def investigate_estimator_sigma():
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("INVESTIGATION 5: Estimator Noise Sensitivity (sigma = 0.1, 0.3, 0.5)")
-    print("="*60)
+    print("=" * 60)
 
     device = torch.device("cpu")
-    ckpt = torch.load("ml/checkpoints/ppo_production_teacher_staged_s1001_checkpoint.pt", map_location=device)
+    ckpt = torch.load(
+        "ml/checkpoints/ppo_production_teacher_staged_s1001_checkpoint.pt", map_location=device
+    )
     teacher = ScorerPolicy(actor_hidden_dims=ckpt.get("actor_hidden_dims", [64, 32]))
-    actor_state = {k[len("actor."):]: v for k, v in ckpt["model_state_dict"].items() if k.startswith("actor.")}
+    actor_state = {
+        k[len("actor.") :]: v for k, v in ckpt["model_state_dict"].items() if k.startswith("actor.")
+    }
     teacher.actor.load_state_dict(actor_state)
     teacher.eval()
 
     sigmas = [0.10, 0.30, 0.50]
-    print(f"{'Sigma':<8} | {'Heuristic Mean WT (us)':<25} | {'Teacher Mean WT (us)':<25} | {'Gap (Teacher - Heuristic)':<25}")
+    print(
+        f"{'Sigma':<8} | {'Heuristic Mean WT (us)':<25} | {'Teacher Mean WT (us)':<25} | {'Gap (Teacher - Heuristic)':<25}"
+    )
     print("-" * 88)
 
     for sig in sigmas:
@@ -401,7 +471,9 @@ def investigate_estimator_sigma():
         for s in range(50000, 50030):
             # Heuristic
             env = SchedulerEnv(
-                workload_generator=lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8),
+                workload_generator=lambda seed: SyntheticWorkloadGenerator(
+                    seed=seed
+                ).generate_pareto_bursts(50, 1.3, 200, 0.8),
                 top_k=16,
             )
             env.burst_estimator.noise_std_frac = sig
@@ -418,8 +490,11 @@ def investigate_estimator_sigma():
 
             # Teacher
             env = SchedulerEnv(
-                workload_generator=lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8),
-                top_k=16)
+                workload_generator=lambda seed: SyntheticWorkloadGenerator(
+                    seed=seed
+                ).generate_pareto_bursts(50, 1.3, 200, 0.8),
+                top_k=16,
+            )
             env.burst_estimator.noise_std_frac = sig
             obs, _ = env.reset(seed=s)
             done = False
@@ -439,7 +514,9 @@ def investigate_estimator_sigma():
         m_t = np.mean(t_wts)
         ci_t = 1.96 * np.std(t_wts) / math.sqrt(len(t_wts))
         gap = m_t - m_h
-        print(f"{sig:<8.2f} | {m_h:8.1f} ± {ci_h:5.1f} us          | {m_t:8.1f} ± {ci_t:5.1f} us          | {gap:+8.1f} us")
+        print(
+            f"{sig:<8.2f} | {m_h:8.1f} ± {ci_h:5.1f} us          | {m_t:8.1f} ± {ci_t:5.1f} us          | {gap:+8.1f} us"
+        )
 
 
 if __name__ == "__main__":

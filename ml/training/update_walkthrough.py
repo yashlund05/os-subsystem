@@ -1,6 +1,8 @@
 from pathlib import Path
 
-walkthrough_path = Path(r"C:/Users/lundy/.gemini/antigravity/brain/ca7e848d-625a-4512-abb8-13035d438a0d/walkthrough.md")
+walkthrough_path = Path(
+    r"C:/Users/lundy/.gemini/antigravity/brain/ca7e848d-625a-4512-abb8-13035d438a0d/walkthrough.md"
+)
 content = walkthrough_path.read_text(encoding="utf-8")
 
 idx = content.find("## 7. Phase 3 Empirical Audit & Correction Log")

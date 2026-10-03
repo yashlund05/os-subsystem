@@ -39,9 +39,7 @@ class BandBlock:
 class LifetimeAffinityAllocator(BaseAllocator):
     """Banded lifetime-affinity allocator with Buddy fallback."""
 
-    def __init__(
-        self, total_heap_bytes: int = 64 * 1024 * 1024, min_split_bytes: int = 64
-    ) -> None:
+    def __init__(self, total_heap_bytes: int = 64 * 1024 * 1024, min_split_bytes: int = 64) -> None:
         super().__init__(name="NeuroOS-Lite-Mem", total_heap_bytes=total_heap_bytes)
         self.min_split_bytes = min_split_bytes
         self.num_bands = len(BAND_EDGES_US) + 1

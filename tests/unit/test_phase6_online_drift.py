@@ -1,10 +1,11 @@
 """Unit tests for Phase 6 Online Drift Detection and Self-Correction."""
 
 import unittest
-from userspace.drift.online_corrector import OnlineDriftCorrector
-from simulator.scheduling.task import SimulatedTask
-from simulator.scheduling.smp_engine import SMPSchedulingSimulationEngine
+
 from schedulers.smp_neuroos.smp_scheduler import SMPNeuroOSLiteScheduler
+from simulator.scheduling.smp_engine import SMPSchedulingSimulationEngine
+from simulator.scheduling.task import SimulatedTask
+from userspace.drift.online_corrector import OnlineDriftCorrector
 
 
 class TestPhase6OnlineDrift(unittest.TestCase):

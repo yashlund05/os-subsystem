@@ -21,4 +21,9 @@ def quantize_and_export(
     }
     qpolicy, meta = quantize_student(params, version=version)
     npz_p, json_p = save_quantized_policy(qpolicy, meta, export_dir, prefix=prefix)
-    return {"npz": str(npz_p), "json": str(json_p), "checksum": meta["checksum"], "version": version}
+    return {
+        "npz": str(npz_p),
+        "json": str(json_p),
+        "checksum": meta["checksum"],
+        "version": version,
+    }

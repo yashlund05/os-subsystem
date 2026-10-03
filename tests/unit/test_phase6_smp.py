@@ -1,9 +1,10 @@
 """Unit tests for Phase 6 Multi-Core SMP scheduling and work stealing."""
 
 import unittest
-from simulator.scheduling.task import SimulatedTask
-from simulator.scheduling.smp_engine import SMPSchedulingSimulationEngine
+
 from schedulers.smp_neuroos.smp_scheduler import SMPNeuroOSLiteScheduler
+from simulator.scheduling.smp_engine import SMPSchedulingSimulationEngine
+from simulator.scheduling.task import SimulatedTask
 
 
 class TestPhase6SMP(unittest.TestCase):
@@ -33,8 +34,7 @@ class TestPhase6SMP(unittest.TestCase):
     def test_smp_work_stealing(self):
         # Load all tasks initially onto CPU 0 by setting arrival time to 0
         bursty_workload = [
-            SimulatedTask(pid=i + 1, arrival_time_us=0, total_burst_us=3000)
-            for i in range(12)
+            SimulatedTask(pid=i + 1, arrival_time_us=0, total_burst_us=3000) for i in range(12)
         ]
         sched = SMPNeuroOSLiteScheduler(num_cpus=4, num_numa_nodes=2)
         engine = SMPSchedulingSimulationEngine(sched, num_cpus=4, num_numa_nodes=2)

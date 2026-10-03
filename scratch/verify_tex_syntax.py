@@ -4,7 +4,9 @@
 import re
 from pathlib import Path
 
-tex_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex")
+tex_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"
+)
 lines = tex_file.read_text(encoding="ascii").splitlines()
 
 # 1. Check $ balance per line (ignoring escaped \$)
@@ -23,13 +25,13 @@ for i, line in enumerate(lines, 1):
         continue
     if in_verbatim:
         continue
-    
+
     # Check for \mathbf outside math mode or \textbf inside math mode
     # Remove math mode blocks to inspect text mode
-    text_only = re.sub(r'\$[^$]*\$', '', line)
+    text_only = re.sub(r"\$[^$]*\$", "", line)
     if "\\mathbf" in text_only:
         errors.append((i, "\\mathbf in text mode", line))
-    if "\\mu" in text_only and not "\\documentclass" in text_only:
+    if "\\mu" in text_only and "\\documentclass" not in text_only:
         errors.append((i, "\\mu in text mode", line))
     if "\\rho" in text_only:
         errors.append((i, "\\rho in text mode", line))
@@ -41,7 +43,7 @@ for i, line in enumerate(lines, 1):
         errors.append((i, "\\le in text mode", line))
     if "\\ge" in text_only:
         errors.append((i, "\\ge in text mode", line))
-    if "\\to" in text_only and not "\\mbox" in text_only:
+    if "\\to" in text_only and "\\mbox" not in text_only:
         errors.append((i, "\\to in text mode", line))
 
     # Count single $ (ignoring \$)

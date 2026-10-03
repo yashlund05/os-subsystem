@@ -3,7 +3,9 @@
 
 from pathlib import Path
 
-target_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex")
+target_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex"
+)
 
 content = r"""\begin{filecontents*}{references.bib}
 @article{Tsafrir2007,

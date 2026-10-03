@@ -97,7 +97,9 @@ def distill_student_from_teacher(
     # Fidelity: R^2 of student vs teacher on full set
     student.eval()
     with torch.no_grad():
-        s_scores = student(torch.from_numpy(features.astype(np.float32))).detach().numpy().reshape(-1)
+        s_scores = (
+            student(torch.from_numpy(features.astype(np.float32))).detach().numpy().reshape(-1)
+        )
     ss_res = float(np.sum((t_scores - s_scores) ** 2))
     ss_tot = float(np.sum((t_scores - np.mean(t_scores)) ** 2) + 1e-12)
     r2 = 1.0 - ss_res / ss_tot

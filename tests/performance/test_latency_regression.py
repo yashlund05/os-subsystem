@@ -13,7 +13,6 @@ import time
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -110,9 +109,7 @@ def test_fp_student_forward_latency() -> None:
         lats.append(time.perf_counter_ns() - t0)
 
     mean_ns = float(np.mean(lats))
-    assert mean_ns < 500_000, (
-        f"FP student forward mean {mean_ns:.0f} ns exceeds 500 µs soft wall"
-    )
+    assert mean_ns < 500_000, f"FP student forward mean {mean_ns:.0f} ns exceeds 500 µs soft wall"
 
 
 # ---------------------------------------------------------------------------
@@ -149,8 +146,7 @@ def test_fp_student_forward_deterministic() -> None:
     for _ in range(50):
         result = numpy_student_forward(params, feat)
         np.testing.assert_allclose(
-            result, first, rtol=0, atol=0,
-            err_msg="FP student forward is non-deterministic"
+            result, first, rtol=0, atol=0, err_msg="FP student forward is non-deterministic"
         )
 
 

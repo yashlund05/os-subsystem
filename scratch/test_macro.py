@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 """Test the safe figure inclusion macro and verify zero syntax errors."""
 
-import re
-from pathlib import Path
-
 tex_content = r"""
 \documentclass[conference]{IEEEtran}
 \usepackage{graphicx}

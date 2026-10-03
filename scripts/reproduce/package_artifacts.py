@@ -20,8 +20,6 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
-import shutil
-import sys
 import zipfile
 from datetime import datetime
 from pathlib import Path
@@ -142,18 +140,20 @@ def build_manifest(files: list[Path], archive_path: Path) -> dict:
         "version": "1.0.0",
         "generated_at": datetime.utcnow().isoformat() + "Z",
         "paper": "NeuroOS-Lite: Asymmetric Local GPU-Trained Neural Preemption "
-                 "and Memory Partitioning for Low-Latency OS Subsystems",
+        "and Memory Partitioning for Low-Latency OS Subsystems",
         "phase": "Phase 5 — Publication Drafting & Artifact Packaging",
         "archive_sha256": "",  # filled after creation
         "files": [],
     }
     for f in files:
         rel = f.relative_to(ROOT)
-        manifest["files"].append({
-            "path": str(rel).replace("\\", "/"),
-            "sha256": sha256_file(f),
-            "size_bytes": f.stat().st_size,
-        })
+        manifest["files"].append(
+            {
+                "path": str(rel).replace("\\", "/"),
+                "sha256": sha256_file(f),
+                "size_bytes": f.stat().st_size,
+            }
+        )
     return manifest
 
 
@@ -267,8 +267,11 @@ docker run --rm neuroos-lite python ml/training/generate_phase4_canonical_table.
 
 def main():
     parser = argparse.ArgumentParser(description="Package NeuroOS-Lite Phase 5 artifacts.")
-    parser.add_argument("--output", default="neuroos_lite_phase5_artifact.zip",
-                        help="Output ZIP archive path (default: neuroos_lite_phase5_artifact.zip)")
+    parser.add_argument(
+        "--output",
+        default="neuroos_lite_phase5_artifact.zip",
+        help="Output ZIP archive path (default: neuroos_lite_phase5_artifact.zip)",
+    )
     args = parser.parse_args()
 
     output_path = Path(args.output)
@@ -295,9 +298,11 @@ def main():
     print(f"\n[✓] Archive created: {output_path}")
     print(f"    Size: {size_mb:.2f} MB")
     print(f"    Files: {len(files)}")
-    print(f"\nTo verify integrity:")
-    print(f"  python -c \"import hashlib,pathlib; "
-          f"print(hashlib.sha256(pathlib.Path('{output_path}').read_bytes()).hexdigest())\"")
+    print("\nTo verify integrity:")
+    print(
+        f'  python -c "import hashlib,pathlib; '
+        f"print(hashlib.sha256(pathlib.Path('{output_path}').read_bytes()).hexdigest())\""
+    )
 
 
 if __name__ == "__main__":

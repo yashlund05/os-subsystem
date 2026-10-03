@@ -11,7 +11,7 @@ import argparse
 import json
 import math
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 import torch
@@ -23,7 +23,9 @@ from simulator.workloads.synthetic import SyntheticWorkloadGenerator
 from userspace.trainer.env import SchedulerEnv
 
 
-def compute_student_t_ci(values: List[float], confidence: float = 0.95) -> Tuple[float, float, float]:
+def compute_student_t_ci(
+    values: Sequence[float], confidence: float = 0.95
+) -> Tuple[float, float, float]:
     """Returns (mean, std, 95% half-width margin of error)."""
     n = len(values)
     if n < 2:
@@ -56,7 +58,9 @@ def heuristic_select_action(candidates: List[SimulatedTask], current_time_us: in
     return best_idx
 
 
-def classical_select_action(policy_name: str, candidates: List[SimulatedTask], current_time_us: int) -> int:
+def classical_select_action(
+    policy_name: str, candidates: List[SimulatedTask], current_time_us: int
+) -> int:
     """Dispatches action for classical scheduling algorithms."""
     if not candidates:
         return 0
@@ -142,7 +146,9 @@ def run_evaluation_suite(
             case_key = f"load_{rho}"
             results[w_type][case_key] = {}
 
-            print(f"\n--- Evaluating Workload: {w_type.upper()} | Load rho={rho} (Seeds {eval_seeds[0]}..{eval_seeds[-1]}) ---")
+            print(
+                f"\n--- Evaluating Workload: {w_type.upper()} | Load rho={rho} (Seeds {eval_seeds[0]}..{eval_seeds[-1]}) ---"
+            )
 
             for pol_name in policies_to_test:
                 mwts, p99s, max_wts, ctxs = [], [], [], []
@@ -155,7 +161,9 @@ def run_evaluation_suite(
                     elif pol_name == "PPO-NoiseHigh":
                         noise_sigma = 0.60
 
-                    def gen(seed: int, _w_type: str = w_type, _rho: float = rho) -> List[SimulatedTask]:
+                    def gen(
+                        seed: int, _w_type: str = w_type, _rho: float = rho
+                    ) -> List[SimulatedTask]:
                         if _w_type == "convoy":
                             return AdversarialWorkloadGenerator.create_convoy_workload(
                                 num_short_jobs=49, long_burst_us=50000, short_burst_us=100
@@ -202,7 +210,9 @@ def run_evaluation_suite(
                             if pol_name == "Heuristic":
                                 action = heuristic_select_action(candidates, env.current_time_us)
                             else:
-                                action = classical_select_action(pol_name, candidates, env.current_time_us)
+                                action = classical_select_action(
+                                    pol_name, candidates, env.current_time_us
+                                )
 
                         obs, r, term, trunc, info = env.step(action)
                         done = term or trunc
@@ -211,7 +221,7 @@ def run_evaluation_suite(
                     metrics = last_info.get("metrics", env._compute_episode_metrics())
                     mwts.append(metrics["mean_waiting_time_us"])
                     p99s.append(metrics["p99_waiting_time_us"])
-                    max_wts.append(max([t.waiting_time_us for t in env.completed_tasks] or [0.0]))
+                    max_wts.append(max([t.waiting_time_us for t in env.completed_tasks] or [0]))
                     ctxs.append(metrics["total_context_switches"])
 
                 m_mwt, s_mwt, ci_mwt = compute_student_t_ci(mwts)
@@ -241,7 +251,9 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate NeuroOS Policies vs Baselines")
     parser.add_argument("--checkpoint", type=str, default=None, help="Policy checkpoint path (.pt)")
     parser.add_argument("--seeds", type=int, default=30, help="Number of eval seeds (>=30)")
-    parser.add_argument("--output", type=str, default="ml/checkpoints/eval_results.json", help="Output JSON")
+    parser.add_argument(
+        "--output", type=str, default="ml/checkpoints/eval_results.json", help="Output JSON"
+    )
     args = parser.parse_args()
 
     results = run_evaluation_suite(

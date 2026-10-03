@@ -321,8 +321,10 @@ class SchedulerEnv(gym.Env):
         }
 
     def _compute_episode_metrics(self) -> Dict[str, float]:
+        # Only _compute_metrics is used (does not touch scheduler); None is safe here.
         engine = SchedulingSimulationEngine(
-            scheduler=None, context_switch_overhead_us=self.context_switch_overhead_us
+            scheduler=None,  # type: ignore[arg-type]
+            context_switch_overhead_us=self.context_switch_overhead_us,
         )
         summary = engine._compute_metrics(
             completed_tasks=self.completed_tasks,

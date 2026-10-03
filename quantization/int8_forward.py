@@ -47,12 +47,12 @@ def requantize_acc1_to_int8(acc1: Union[int, np.ndarray]) -> Union[int, np.ndarr
     if isinstance(acc1, (int, np.integer)):
         if acc1 <= 0:
             return 0
-        scaled = ((int(acc1) * REQUANT_MULT_M) + REQUANT_ROUNDING_OFFSET) >> REQUANT_SHIFT_S
-        return int(min(127, max(0, scaled)))
+        scaled_int = ((int(acc1) * REQUANT_MULT_M) + REQUANT_ROUNDING_OFFSET) >> REQUANT_SHIFT_S
+        return int(min(127, max(0, scaled_int)))
     else:
         acc_clamped = np.maximum(0, acc1.astype(np.int64))
-        scaled = ((acc_clamped * REQUANT_MULT_M) + REQUANT_ROUNDING_OFFSET) >> REQUANT_SHIFT_S
-        return np.clip(scaled, 0, 127).astype(np.int8)
+        scaled_arr = ((acc_clamped * REQUANT_MULT_M) + REQUANT_ROUNDING_OFFSET) >> REQUANT_SHIFT_S
+        return np.clip(scaled_arr, 0, 127).astype(np.int8)
 
 
 def int8_forward_single(

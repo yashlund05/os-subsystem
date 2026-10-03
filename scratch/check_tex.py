@@ -3,7 +3,9 @@
 
 from pathlib import Path
 
-tex_path = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex")
+tex_path = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"
+)
 lines = tex_path.read_text(encoding="utf-8").splitlines()
 
 non_ascii_found = []
@@ -14,5 +16,5 @@ for i, line in enumerate(lines, 1):
             break
 
 print(f"Total non-ASCII lines found: {len(non_ascii_found)}")
-for idx, ch, repr_ch, line in non_ascii_found[:15]:
+for idx, _ch, repr_ch, line in non_ascii_found[:15]:
     print(f"Line {idx}: {repr_ch} -> {line.strip()[:80]}")

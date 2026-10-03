@@ -5,10 +5,12 @@ from typing import List, Optional, Tuple
 try:
     import numpy as np
 except ImportError:
+
     class _FallbackArray(list):
         @property
         def shape(self):
             return (len(self), len(self[0])) if self and isinstance(self[0], list) else (len(self),)
+
         def __setitem__(self, key, value):
             if isinstance(key, tuple):
                 row, col_slice = key
@@ -18,8 +20,10 @@ except ImportError:
                     self[row][start:stop] = value
                     return
             super().__setitem__(key, value)
+
         def sum(self):
             return sum(self)
+
         def astype(self, dtype):
             return self
 
@@ -29,6 +33,7 @@ except ImportError:
         int8 = int
         int32 = int
         ndarray = _FallbackArray
+
         @staticmethod
         def zeros(shape, dtype=float):
             if isinstance(shape, tuple) and len(shape) > 1:
@@ -39,22 +44,27 @@ except ImportError:
         @staticmethod
         def clip(val, lo, hi):
             return max(lo, min(hi, val))
+
         @staticmethod
         def mean(arr):
             return float(sum(arr)) / float(len(arr)) if arr else 0.0
+
         @staticmethod
         def percentile(arr, q):
-            if not arr: return 0.0
+            if not arr:
+                return 0.0
             s = sorted(arr)
             return float(s[int((q / 100.0) * (len(s) - 1))])
+
         @staticmethod
         def argmax(arr):
             return max(range(len(arr)), key=lambda i: arr[i])
+
         @staticmethod
         def array(arr):
             return _FallbackArray(arr)
 
-    np = _NumpyFallback()
+    np = _NumpyFallback()  # type: ignore[assignment]
 
 from simulator.scheduling.task import SimulatedTask
 from userspace.trainer.burst_estimator import BurstEstimator

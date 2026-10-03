@@ -3,10 +3,11 @@
 import copy
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
+
 try:
     import numpy as np
 except ImportError:
-    np = None
+    np = None  # type: ignore[assignment]
 
 from schedulers.base import BaseScheduler
 from simulator.scheduling.task import SimulatedTask, TaskState

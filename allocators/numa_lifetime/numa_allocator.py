@@ -61,7 +61,11 @@ class NUMALifetimeAllocator(BaseAllocator):
             node_start = n * self.node_heap_bytes
             for b in range(self.num_bands):
                 start = node_start + b * band_size
-                size = band_size if b < self.num_bands - 1 else (self.node_heap_bytes - (b * band_size))
+                size = (
+                    band_size
+                    if b < self.num_bands - 1
+                    else (self.node_heap_bytes - (b * band_size))
+                )
                 node_bands.append([NUMABandBlock(offset=start, size_bytes=size, node_id=n)])
             self.node_bands.append(node_bands)
 
@@ -121,7 +125,9 @@ class NUMALifetimeAllocator(BaseAllocator):
         band_idx = lifetime_to_band(predicted_lifetime_us)
 
         # 1. Primary allocation: local NUMA node designated lifetime band
-        handle = self._band_alloc(preferred_node, band_idx, size_bytes, task_pid, predicted_lifetime_us)
+        handle = self._band_alloc(
+            preferred_node, band_idx, size_bytes, task_pid, predicted_lifetime_us
+        )
         if handle is not None:
             self.local_node_allocations += 1
             return handle
@@ -130,7 +136,9 @@ class NUMALifetimeAllocator(BaseAllocator):
         for delta in (1, -1, 2, -2):
             nb = band_idx + delta
             if 0 <= nb < self.num_bands:
-                handle = self._band_alloc(preferred_node, nb, size_bytes, task_pid, predicted_lifetime_us)
+                handle = self._band_alloc(
+                    preferred_node, nb, size_bytes, task_pid, predicted_lifetime_us
+                )
                 if handle is not None:
                     self.local_node_allocations += 1
                     return handle
@@ -163,7 +171,11 @@ class NUMALifetimeAllocator(BaseAllocator):
         while i < len(band) - 1:
             curr = band[i]
             nxt = band[i + 1]
-            if (not curr.is_allocated) and (not nxt.is_allocated) and (curr.offset + curr.size_bytes == nxt.offset):
+            if (
+                (not curr.is_allocated)
+                and (not nxt.is_allocated)
+                and (curr.offset + curr.size_bytes == nxt.offset)
+            ):
                 curr.size_bytes += nxt.size_bytes
                 band.pop(i + 1)
             else:
@@ -188,7 +200,11 @@ class NUMALifetimeAllocator(BaseAllocator):
                             largest_free = blk.size_bytes
 
         ext_frag = 1.0 - (float(largest_free) / float(free_bytes)) if free_bytes > 0 else 0.0
-        int_frag = max(0.0, (allocated_bytes - requested_bytes) / allocated_bytes) if allocated_bytes > 0 else 0.0
+        int_frag = (
+            max(0.0, (allocated_bytes - requested_bytes) / allocated_bytes)
+            if allocated_bytes > 0
+            else 0.0
+        )
         buf_util = requested_bytes / self.total_heap_bytes if self.total_heap_bytes else 0.0
 
         return AllocatorMetrics(
@@ -215,7 +231,11 @@ class NUMALifetimeAllocator(BaseAllocator):
             node_start = n * self.node_heap_bytes
             for b in range(self.num_bands):
                 start = node_start + b * band_size
-                size = band_size if b < self.num_bands - 1 else (self.node_heap_bytes - (b * band_size))
+                size = (
+                    band_size
+                    if b < self.num_bands - 1
+                    else (self.node_heap_bytes - (b * band_size))
+                )
                 node_bands.append([NUMABandBlock(offset=start, size_bytes=size, node_id=n)])
             self.node_bands.append(node_bands)
         self._handles.clear()
@@ -227,4 +247,3 @@ class NUMALifetimeAllocator(BaseAllocator):
         self.fallback_trips = 0
         self.local_node_allocations = 0
         self.remote_node_allocations = 0
-

@@ -12,11 +12,15 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
-import torch
 
 from simulator.workloads.adversarial import AdversarialWorkloadGenerator
 from simulator.workloads.synthetic import SyntheticWorkloadGenerator
 from userspace.trainer.env import SchedulerEnv
+
+try:
+    import torch
+except ImportError:  # pragma: no cover - torch is optional for unit CI
+    torch = None  # type: ignore[assignment]
 
 INPUT_DIM = 16
 HIDDEN_DIM = 8
@@ -36,7 +40,9 @@ def collect_calibration_features(
         lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
         lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
         lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
-        lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
+        lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(
+            10, 10, 1.3, 200
+        ),
     ]
 
     features_collected: List[np.ndarray] = []
@@ -177,30 +183,32 @@ def export_c_weights_header(
 
     s_x_vals = ", ".join(f"{float(x):.8f}f" for x in meta["scales"]["s_x"])
 
-    lines.extend([
-        "    },",
-        "    /* b1: (8) int16 */",
-        "    .b1 = {",
-        "        " + ", ".join(str(int(b)) for b in b1),
-        "    },",
-        "    /* w2: (1 x 8) int8 */",
-        "    .w2 = {",
-        "        " + ", ".join(str(int(w)) for w in w2.reshape(-1)),
-        "    },",
-        "    /* b2: (1) int32 */",
-        f"    .b2 = {{ {int(b2[0])} }},",
-        f"    .version = {meta['version']}U,",
-        "};",
-        "",
-        f"static const float neuroos_scale_s_x[16] = {{ {s_x_vals} }};",
-        f"#define NEUROOS_SCALE_S_W1    {meta['scales']['s_w1']}f",
-        f"#define NEUROOS_SCALE_S_B1    {meta['scales']['s_b1']}f",
-        f"#define NEUROOS_SCALE_S_W2    {meta['scales']['s_w2']}f",
-        f"#define NEUROOS_SCALE_S_B2    {meta['scales']['s_b2']}f",
-        "",
-        "#endif /* NEUROOS_WEIGHTS_H */",
-        "",
-    ])
+    lines.extend(
+        [
+            "    },",
+            "    /* b1: (8) int16 */",
+            "    .b1 = {",
+            "        " + ", ".join(str(int(b)) for b in b1),
+            "    },",
+            "    /* w2: (1 x 8) int8 */",
+            "    .w2 = {",
+            "        " + ", ".join(str(int(w)) for w in w2.reshape(-1)),
+            "    },",
+            "    /* b2: (1) int32 */",
+            f"    .b2 = {{ {int(b2[0])} }},",
+            f"    .version = {meta['version']}U,",
+            "};",
+            "",
+            f"static const float neuroos_scale_s_x[16] = {{ {s_x_vals} }};",
+            f"#define NEUROOS_SCALE_S_W1    {meta['scales']['s_w1']}f",
+            f"#define NEUROOS_SCALE_S_B1    {meta['scales']['s_b1']}f",
+            f"#define NEUROOS_SCALE_S_W2    {meta['scales']['s_w2']}f",
+            f"#define NEUROOS_SCALE_S_B2    {meta['scales']['s_b2']}f",
+            "",
+            "#endif /* NEUROOS_WEIGHTS_H */",
+            "",
+        ]
+    )
 
     content = "\n".join(lines)
     with open(out, "w", encoding="utf-8") as f:
@@ -214,6 +222,8 @@ def run_quantization_pipeline(
     c_header_path: str = "kernel/include/neuroos_weights.h",
 ) -> Tuple[Dict[str, np.ndarray], Dict[str, Any]]:
     """Full quantization pipeline from PyTorch checkpoint to int8 artifacts."""
+    if torch is None:
+        raise ImportError("torch is required for run_quantization_pipeline but is not installed.")
     print(f"Loading Student checkpoint from {checkpoint_path}...")
     ckpt = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     state = ckpt["model_state_dict"]
@@ -230,7 +240,9 @@ def run_quantization_pipeline(
     print(f"  -> Collected {len(calib_feats)} candidate vectors.")
 
     s_x = calibrate_input_scale(calib_feats, percentile=98.0)
-    print(f"  -> Calibrated per-feature input scales s_x (min={s_x.min():.6f}, max={s_x.max():.6f})")
+    print(
+        f"  -> Calibrated per-feature input scales s_x (min={s_x.min():.6f}, max={s_x.max():.6f})"
+    )
 
     qpolicy, meta = quantize_student_policy(float_weights, s_x=s_x, version=1)
 

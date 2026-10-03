@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
 import time
-from typing import Dict
+from typing import Dict, List
 
 import numpy as np
 import torch
@@ -25,9 +25,12 @@ eval_seeds = list(range(50000, 50030))
 
 def eval_30(policy: ScorerPolicy) -> Dict[str, float]:
     policy.eval()
-    pareto_wts, poisson_wts = [], []
+    pareto_wts: List[float] = []
+    poisson_wts: List[float] = []
+
     def wl_pareto(s):
         return SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8)
+
     def wl_poisson(s):
         return SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8)
 
@@ -88,7 +91,9 @@ def main():
         },
     ]
 
-    rew_cfg = RewardConfig(w_wait=1.0, w_completion=0.0, w_switch=0.02, w_starvation=0.1, w_tail_threshold=0.1)
+    rew_cfg = RewardConfig(
+        w_wait=1.0, w_completion=0.0, w_switch=0.02, w_starvation=0.1, w_tail_threshold=0.1
+    )
 
     results = []
 
@@ -105,7 +110,9 @@ def main():
         pretrain_actor_bc(teacher, list(range(1001, 1011)), device, epochs=300)
 
         e0 = eval_30(teacher)
-        print(f"  Step 0: Pareto 0.8 = {e0['pareto_08']:.1f} us, Poisson 0.8 = {e0['poisson_08']:.1f} us")
+        print(
+            f"  Step 0: Pareto 0.8 = {e0['pareto_08']:.1f} us, Poisson 0.8 = {e0['poisson_08']:.1f} us"
+        )
 
         env_fns = [
             (
@@ -133,7 +140,9 @@ def main():
 
         ef = eval_30(teacher)
         elapsed = time.time() - t0
-        print(f"  Step 50k ({elapsed:.1f}s): Pareto 0.8 = {ef['pareto_08']:.1f} us, Poisson 0.8 = {ef['poisson_08']:.1f} us")
+        print(
+            f"  Step 50k ({elapsed:.1f}s): Pareto 0.8 = {ef['pareto_08']:.1f} us, Poisson 0.8 = {ef['poisson_08']:.1f} us"
+        )
         results.append({"name": c["name"], "step0": e0, "step50k": ef})
 
     print("\n" + "=" * 70)
@@ -141,8 +150,12 @@ def main():
     print("=" * 70)
     for r in results:
         print(f"{r['name']}:")
-        print(f"  Pareto rho=0.8: {r['step0']['pareto_08']:.1f} us -> {r['step50k']['pareto_08']:.1f} us")
-        print(f"  Poisson rho=0.8: {r['step0']['poisson_08']:.1f} us -> {r['step50k']['poisson_08']:.1f} us")
+        print(
+            f"  Pareto rho=0.8: {r['step0']['pareto_08']:.1f} us -> {r['step50k']['pareto_08']:.1f} us"
+        )
+        print(
+            f"  Poisson rho=0.8: {r['step0']['poisson_08']:.1f} us -> {r['step50k']['poisson_08']:.1f} us"
+        )
 
 
 if __name__ == "__main__":

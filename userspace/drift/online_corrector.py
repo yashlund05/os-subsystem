@@ -10,7 +10,6 @@ Mirrors kernel/inference/online_corrector.{h,c}:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass

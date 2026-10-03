@@ -4,7 +4,9 @@
 import re
 from pathlib import Path
 
-tex_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\conference_101719.tex")
+tex_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\conference_101719.tex"
+)
 lines = tex_file.read_text(encoding="ascii").splitlines()
 
 # Search for unescaped _ outside of math mode, verbatim, and bibtex
@@ -29,11 +31,11 @@ for i, line in enumerate(lines, 1):
         continue
     if in_verbatim:
         continue
-    
+
     # Remove $...$ math mode
-    no_math = re.sub(r'\$[^$]*\$', '', line)
+    no_math = re.sub(r"\$[^$]*\$", "", line)
     # Remove equation environments
     # Remove \_
     no_escaped = no_math.replace(r"\_", "")
-    if "_" in no_escaped and not "\\begin{equation}" in line:
+    if "_" in no_escaped and "\\begin{equation}" not in line:
         print(f"Line {i}: unescaped underscore -> {line}")

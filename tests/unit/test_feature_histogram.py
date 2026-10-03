@@ -11,7 +11,9 @@ def test_remaining_burst_feature_histogram_non_saturation():
     """Verifies that burst_ratio (remaining burst estimate) does not degenerate to all zeros or ones."""
     # Test Pareto workload
     env = SchedulerEnv(
-        workload_generator=lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
+        workload_generator=lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.8
+        ),
         top_k=16,
     )
     obs, _ = env.reset(seed=50000)
@@ -34,7 +36,9 @@ def test_remaining_burst_feature_histogram_non_saturation():
 
     # Must NOT have 80%+ exact zeros anymore
     zero_fraction = np.mean(arr == 0.0)
-    assert zero_fraction < 0.20, f"burst_ratio still degenerates with {zero_fraction*100:.1f}% zeros"
+    assert zero_fraction < 0.20, (
+        f"burst_ratio still degenerates with {zero_fraction * 100:.1f}% zeros"
+    )
 
     # Variance must be positive across candidate tasks
     assert np.std(arr) > 0.001, "burst_ratio has zero variance across candidates"
@@ -43,7 +47,9 @@ def test_remaining_burst_feature_histogram_non_saturation():
 def test_convoy_remaining_burst_histogram():
     """Verifies that convoy workload candidates show distinct remaining burst ratios."""
     env = SchedulerEnv(
-        workload_generator=lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
+        workload_generator=lambda s: AdversarialWorkloadGenerator.create_convoy_workload(
+            49, 50000, 100
+        ),
         top_k=16,
     )
     obs, _ = env.reset(seed=50000)

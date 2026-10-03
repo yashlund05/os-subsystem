@@ -40,7 +40,7 @@ def eval_phase1_engine(
         history, metrics = engine.run(tasks)
         mwts.append(metrics.mean_waiting_time_us)
         p99s.append(metrics.p99_waiting_time_us)
-        max_waits.append(max(t.waiting_time_us for t in history))
+        max_waits.append(float(max(t.waiting_time_us for t in history)))
         switches.append(float(metrics.total_context_switches))
     return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
@@ -67,7 +67,7 @@ def eval_heuristic_oracle(
         m = env._compute_episode_metrics()
         mwts.append(m["mean_waiting_time_us"])
         p99s.append(m["p99_waiting_time_us"])
-        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        max_waits.append(float(max(t.waiting_time_us for t in env.completed_tasks)))
         switches.append(float(env.total_context_switches))
     return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
@@ -86,7 +86,9 @@ def eval_heuristic_obs(
             valid = np.where(mask == 1)[0]
             # Observation heuristic rule with real predictor and preemption cue
             scores = [
-                -obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] + 2.0 * max(0.0, float(obs["candidates"][i, 15] - obs["candidates"][i, 9]))
+                -obs["candidates"][i, 1]
+                + 1.0 * obs["candidates"][i, 2]
+                + 2.0 * max(0.0, float(obs["candidates"][i, 15] - obs["candidates"][i, 9]))
                 for i in valid
             ]
             act = valid[np.argmax(scores)]
@@ -95,7 +97,7 @@ def eval_heuristic_obs(
         m = env._compute_episode_metrics()
         mwts.append(m["mean_waiting_time_us"])
         p99s.append(m["p99_waiting_time_us"])
-        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        max_waits.append(float(max(t.waiting_time_us for t in env.completed_tasks)))
         switches.append(float(env.total_context_switches))
     return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
@@ -123,7 +125,7 @@ def eval_supervised_student(
         m = env._compute_episode_metrics()
         mwts.append(m["mean_waiting_time_us"])
         p99s.append(m["p99_waiting_time_us"])
-        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        max_waits.append(float(max(t.waiting_time_us for t in env.completed_tasks)))
         switches.append(float(env.total_context_switches))
     return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
@@ -152,7 +154,7 @@ def eval_policy_model(
         m = env._compute_episode_metrics()
         mwts.append(m["mean_waiting_time_us"])
         p99s.append(m["p99_waiting_time_us"])
-        max_waits.append(max(t.waiting_time_us for t in env.completed_tasks))
+        max_waits.append(float(max(t.waiting_time_us for t in env.completed_tasks)))
         switches.append(float(env.total_context_switches))
     return {"mean_wt": mwts, "p99_wt": p99s, "max_wait": max_waits, "switches": switches}
 
@@ -168,45 +170,71 @@ def fmt_stat(arr: List[float]) -> str:
 def main():
     eval_seeds = list(range(50000, 50030))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(f"Running Reconciled Canonical Evaluation on {len(eval_seeds)} seeds ({eval_seeds[0]}..{eval_seeds[-1]})...")
+    print(
+        f"Running Reconciled Canonical Evaluation on {len(eval_seeds)} seeds ({eval_seeds[0]}..{eval_seeds[-1]})..."
+    )
 
     # Define all workloads
     workloads = {
-        "Pareto rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5),
-        "Pareto rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
-        "Pareto rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.95),
-        "Poisson rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.5),
-        "Poisson rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
-        "Poisson rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.95),
+        "Pareto rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.5
+        ),
+        "Pareto rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.8
+        ),
+        "Pareto rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.95
+        ),
+        "Poisson rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.5
+        ),
+        "Poisson rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.8
+        ),
+        "Poisson rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.95
+        ),
         "Convoy": lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
-        "Multi-Burst Process": lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
+        "Multi-Burst Process": lambda s: SyntheticWorkloadGenerator(
+            seed=s
+        ).generate_multiburst_process_workload(10, 10, 1.3, 200),
     }
 
     # Load Supervised Student
-    sup_ckpt = torch.load("ml/checkpoints/supervised_student_v4.pt", map_location="cpu", weights_only=False)
+    sup_ckpt = torch.load(
+        "ml/checkpoints/supervised_student_v4.pt", map_location="cpu", weights_only=False
+    )
     sup_student = CandidateScorer(hidden_dims=[8])
     sup_student.load_state_dict(sup_ckpt["student_state_dict"])
 
     # Load Teacher (Seed 1002 had best balanced performance)
     teacher_ckpts = [
-        torch.load(f"ml/checkpoints/teacher_bc_ppo_s{s}.pt", map_location=device, weights_only=False)
+        torch.load(
+            f"ml/checkpoints/teacher_bc_ppo_s{s}.pt", map_location=device, weights_only=False
+        )
         for s in [1001, 1002, 1003]
     ]
     teachers = []
     for ckpt in teacher_ckpts:
-        p = ScorerPolicy(actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]).to(device)
+        p = ScorerPolicy(
+            actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]
+        ).to(device)
         p.load_state_dict(ckpt["model_state_dict"])
         teachers.append(p)
     teacher_best = teachers[1]  # Seed 1002
 
     # Load Student (Seed 1003 had best multi-burst and Pareto performance)
     student_ckpts = [
-        torch.load(f"ml/checkpoints/student_bc_ppo_s{s}.pt", map_location=device, weights_only=False)
+        torch.load(
+            f"ml/checkpoints/student_bc_ppo_s{s}.pt", map_location=device, weights_only=False
+        )
         for s in [1001, 1002, 1003]
     ]
     students = []
     for ckpt in student_ckpts:
-        p = ScorerPolicy(actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]).to(device)
+        p = ScorerPolicy(
+            actor_hidden_dims=ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]
+        ).to(device)
         p.load_state_dict(ckpt["model_state_dict"])
         students.append(p)
     student_best = students[2]  # Seed 1003
@@ -219,8 +247,12 @@ def main():
         row["FCFS"] = eval_phase1_engine(FCFSScheduler, {}, wl_fn, eval_seeds)
         row["SJF"] = eval_phase1_engine(SJFScheduler, {}, wl_fn, eval_seeds)
         row["SRTF"] = eval_phase1_engine(SRTFScheduler, {}, wl_fn, eval_seeds)
-        row["RR (5ms)"] = eval_phase1_engine(RoundRobinScheduler, {"quantum_us": 5000}, wl_fn, eval_seeds)
-        row["MLFQ (3-lvl)"] = eval_phase1_engine(MLFQScheduler, {"num_levels": 3, "base_quantum_us": 5000}, wl_fn, eval_seeds)
+        row["RR (5ms)"] = eval_phase1_engine(
+            RoundRobinScheduler, {"quantum_us": 5000}, wl_fn, eval_seeds
+        )
+        row["MLFQ (3-lvl)"] = eval_phase1_engine(
+            MLFQScheduler, {"num_levels": 3, "base_quantum_us": 5000}, wl_fn, eval_seeds
+        )
         row["Heuristic-Oracle"] = eval_heuristic_oracle(wl_fn, eval_seeds)
         row["Heuristic-Obs (Real Predictor)"] = eval_heuristic_obs(wl_fn, eval_seeds)
         row["Supervised-Student"] = eval_supervised_student(sup_student, wl_fn, eval_seeds)
@@ -231,9 +263,17 @@ def main():
 
     # 1. Main Canonical Table: Mean Waiting Time
     columns = [
-        "Workload", "FCFS", "SJF", "SRTF", "RR (5ms)", "MLFQ (3-lvl)",
-        "Heuristic-Oracle", "Heuristic-Obs (Real Predictor)", "Supervised-Student",
-        "Teacher (BC+PPO)", "Student (BC+PPO)"
+        "Workload",
+        "FCFS",
+        "SJF",
+        "SRTF",
+        "RR (5ms)",
+        "MLFQ (3-lvl)",
+        "Heuristic-Oracle",
+        "Heuristic-Obs (Real Predictor)",
+        "Supervised-Student",
+        "Teacher (BC+PPO)",
+        "Student (BC+PPO)",
     ]
 
     print("\n" + "=" * 130)
@@ -301,7 +341,9 @@ def main():
     with open("ml/checkpoints/canonical_v4_table.md", "w", encoding="utf-8") as f:
         f.write("\n".join(md_lines) + "\n\n" + "\n".join(mb_lines) + "\n")
 
-    print("\nSaved canonical results to ml/checkpoints/canonical_v4_results.json and ml/checkpoints/canonical_v4_table.md")
+    print(
+        "\nSaved canonical results to ml/checkpoints/canonical_v4_results.json and ml/checkpoints/canonical_v4_table.md"
+    )
 
 
 if __name__ == "__main__":

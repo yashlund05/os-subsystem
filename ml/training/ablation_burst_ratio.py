@@ -12,9 +12,9 @@ import yaml
 
 
 def run_controlled_retraining():
-    print("\n" + "="*70)
+    print("\n" + "=" * 70)
     print("TASK 5: Controlled Feature Ablation (3 Training Seeds: 1001, 1002, 1003)")
-    print("="*70)
+    print("=" * 70)
 
     # 1. Train 3 seeds of Student with new encoder
     # Using 5,000 steps per seed for fast, robust convergence
@@ -36,7 +36,10 @@ def run_controlled_retraining():
         yaml.safe_dump(base_cfg, f)
 
     print("Training Student (16->8->1) across seeds [1001, 1002, 1003] with new encoder...")
-    subprocess.run([sys.executable, "-m", "ml.training.train", "--config", "configs/ppo_v3_student.yaml"], check=True)
+    subprocess.run(
+        [sys.executable, "-m", "ml.training.train", "--config", "configs/ppo_v3_student.yaml"],
+        check=True,
+    )
 
     # Train Teacher (16 -> 64 -> 32 -> 1)
     base_cfg["network"]["architecture"] = "teacher"
@@ -48,16 +51,23 @@ def run_controlled_retraining():
         yaml.safe_dump(base_cfg, f)
 
     print("Training Teacher (16->64->32->1) across seeds [1001, 1002, 1003] with new encoder...")
-    subprocess.run([sys.executable, "-m", "ml.training.train", "--config", "configs/ppo_v3_teacher.yaml"], check=True)
+    subprocess.run(
+        [sys.executable, "-m", "ml.training.train", "--config", "configs/ppo_v3_teacher.yaml"],
+        check=True,
+    )
 
     # Mark old checkpoints invalid
-    old_ckpts = list(Path("ml/checkpoints").glob("*staged*.json")) + list(Path("ml/checkpoints").glob("*mixed*.json"))
+    old_ckpts = list(Path("ml/checkpoints").glob("*staged*.json")) + list(
+        Path("ml/checkpoints").glob("*mixed*.json")
+    )
     for cp_json in old_ckpts:
         if "v3" not in cp_json.name:
             try:
                 data = json.loads(cp_json.read_text())
                 data["validity"] = "INVALID_SUPERSEDED"
-                data["invalidation_reason"] = "Saturated burst_ratio bug fixed in commit 1473244; use v3 checkpoints."
+                data["invalidation_reason"] = (
+                    "Saturated burst_ratio bug fixed in commit 1473244; use v3 checkpoints."
+                )
                 cp_json.write_text(json.dumps(data, indent=2))
             except Exception:
                 pass

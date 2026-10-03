@@ -35,9 +35,17 @@ def pretrain_actor_bc(
 
     for s in train_seeds:
         wl_gen = (
-            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(50, 1.3, 200, 0.8))
-            if s % 2 == 0 else
-            (lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_multiburst_process_workload(10, 10, 1.3, 200))
+            (
+                lambda seed: SyntheticWorkloadGenerator(seed=seed).generate_pareto_bursts(
+                    50, 1.3, 200, 0.8
+                )
+            )
+            if s % 2 == 0
+            else (
+                lambda seed: SyntheticWorkloadGenerator(
+                    seed=seed
+                ).generate_multiburst_process_workload(10, 10, 1.3, 200)
+            )
         )
         env = SchedulerEnv(workload_generator=wl_gen, top_k=16)
         obs, _ = env.reset(seed=s)
@@ -50,7 +58,12 @@ def pretrain_actor_bc(
                 X_list.append(feat)
                 # Target: -pred_burst_norm + 1.0 * age_norm + 2.0 * preempt_cue
                 y_list.append(-feat[1] + 1.0 * feat[2] + 2.0 * feat[9])
-            scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] + 2.0 * obs["candidates"][i, 9] for i in valid]
+            scores = [
+                -obs["candidates"][i, 1]
+                + 1.0 * obs["candidates"][i, 2]
+                + 2.0 * obs["candidates"][i, 9]
+                for i in valid
+            ]
             act = valid[np.argmax(scores)]
             obs, _, term, trunc, _ = env.step(act)
             done = term or trunc
@@ -88,10 +101,16 @@ def evaluate_policy_on_eval_seeds(
 ) -> Dict[str, float]:
     """Evaluates policy on fixed eval seeds across Pareto, Poisson, Convoy, and Multi-burst."""
     workloads = {
-        "pareto_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
-        "poisson_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
+        "pareto_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.8
+        ),
+        "poisson_rho08": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.8
+        ),
         "convoy": lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
-        "multiburst": lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
+        "multiburst": lambda s: SyntheticWorkloadGenerator(
+            seed=s
+        ).generate_multiburst_process_workload(10, 10, 1.3, 200),
     }
 
     results = {}
@@ -125,9 +144,11 @@ def train_bc_ppo_run(
     train_seed: int,
     total_steps: int = 100000,
     eval_interval: int = 25000,
-    device: torch.device = torch.device("cuda"),
+    device: torch.device | None = None,
 ) -> Dict[str, Any]:
     """Runs BC initialization followed by PPO fine-tuning with eval learning curves."""
+    if device is None:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print("\n" + "=" * 70)
     print(f"Starting {arch_name} Seed {train_seed} (Steps: {total_steps}, Device: {device})")
     print("=" * 70)
@@ -158,7 +179,9 @@ def train_bc_ppo_run(
     eval_curves: List[Dict[str, Any]] = []
     e0 = evaluate_policy_on_eval_seeds(policy, eval_seeds, device)
     eval_curves.append({"step": 0, **e0})
-    print(f"  [Step 0 / BC Init] Pareto: {e0['pareto_rho08']:.1f} us | Poisson: {e0['poisson_rho08']:.1f} us | Convoy: {e0['convoy']:.1f} us | MultiBurst: {e0['multiburst']:.1f} us")
+    print(
+        f"  [Step 0 / BC Init] Pareto: {e0['pareto_rho08']:.1f} us | Poisson: {e0['poisson_rho08']:.1f} us | Convoy: {e0['convoy']:.1f} us | MultiBurst: {e0['multiburst']:.1f} us"
+    )
 
     # 3. Setup Vector Scheduler Env with Little's Law Reward
     rew_cfg = RewardConfig(
@@ -186,19 +209,25 @@ def train_bc_ppo_run(
 
     num_envs = 8
     env_fns = [
-        (lambda idx=i: SchedulerEnv(
-            workload_generator=(
-                (lambda seed: SyntheticWorkloadGenerator(
-                    seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
-                ).generate_pareto_bursts(50, 1.3, 200, 0.8))
-                if idx % 2 == 0 else
-                (lambda seed: SyntheticWorkloadGenerator(
-                    seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
-                ).generate_multiburst_process_workload(10, 10, 1.3, 200))
-            ),
-            top_k=16,
-            reward_config=rew_cfg,
-        ))
+        (
+            lambda idx=i: SchedulerEnv(
+                workload_generator=(
+                    (
+                        lambda seed: SyntheticWorkloadGenerator(
+                            seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
+                        ).generate_pareto_bursts(50, 1.3, 200, 0.8)
+                    )
+                    if idx % 2 == 0
+                    else (
+                        lambda seed: SyntheticWorkloadGenerator(
+                            seed=(train_seed * 1000 + idx * 100 + seed) % 1000000
+                        ).generate_multiburst_process_workload(10, 10, 1.3, 200)
+                    )
+                ),
+                top_k=16,
+                reward_config=rew_cfg,
+            )
+        )
         for i in range(num_envs)
     ]
     vec_env = VectorSchedulerEnv(env_fns)
@@ -215,7 +244,10 @@ def train_bc_ppo_run(
         )
         train_metrics = trainer.update(buffers, progress=progress)
 
-        if trainer.total_timesteps - last_eval_step >= eval_interval or trainer.total_timesteps >= total_steps:
+        if (
+            trainer.total_timesteps - last_eval_step >= eval_interval
+            or trainer.total_timesteps >= total_steps
+        ):
             last_eval_step = trainer.total_timesteps
             ev = evaluate_policy_on_eval_seeds(policy, eval_seeds, device)
             eval_curves.append({"step": trainer.total_timesteps, **ev})

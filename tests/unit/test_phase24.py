@@ -113,9 +113,7 @@ def test_scheduling_and_memory_sweeps_small():
     from benchmarks.memory.sweep import run_memory_matrix
     from benchmarks.scheduling.sweep import run_scheduling_matrix
 
-    s = run_scheduling_matrix(
-        num_tasks=10, seed=1, profiles=["pareto_bursts"], load_factors=[0.5]
-    )
+    s = run_scheduling_matrix(num_tasks=10, seed=1, profiles=["pareto_bursts"], load_factors=[0.5])
     assert len(s) == 7  # 7 algorithms
     m = run_memory_matrix(
         heap_bytes=4 * 1024 * 1024, traces=["alternating_odd_even_trigger"], num_pairs=5

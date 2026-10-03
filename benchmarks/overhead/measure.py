@@ -75,4 +75,3 @@ def read_nvml() -> Dict[str, Any]:
         }
     except Exception as e:
         return {"available": False, "reason": f"NVML unavailable: {e}"}
-

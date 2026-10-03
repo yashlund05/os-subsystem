@@ -10,12 +10,13 @@ Extends the uniprocessor cycle-accurate simulation engine to symmetric multiproc
 from __future__ import annotations
 
 import copy
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
+
 try:
     import numpy as np
 except ImportError:
-    np = None
+    np = None  # type: ignore[assignment]
 
 from simulator.scheduling.task import SimulatedTask, TaskState
 
@@ -104,9 +105,11 @@ class SMPSchedulingSimulationEngine:
             return 10
         if self.cpu_to_node[cpu_a] == self.cpu_to_node[cpu_b]:
             return 12  # Same NUMA node, different core
-        return 20      # Cross-NUMA node
+        return 20  # Cross-NUMA node
 
-    def run(self, workload: List[SimulatedTask]) -> Tuple[List[SimulatedTask], SMPSimulationMetrics]:
+    def run(
+        self, workload: List[SimulatedTask]
+    ) -> Tuple[List[SimulatedTask], SMPSimulationMetrics]:
         pending_arrivals = sorted(
             [copy.deepcopy(t) for t in workload], key=lambda t: (t.arrival_time_us, t.pid)
         )
@@ -131,14 +134,20 @@ class SMPSchedulingSimulationEngine:
         if hasattr(self.scheduler, "configure_topology"):
             self.scheduler.configure_topology(self.num_cpus, self.num_numa_nodes, self.cpu_to_node)
 
-        while pending_arrivals or self.scheduler.has_runnable_tasks() or any(t is not None for t in running_tasks):
+        while (
+            pending_arrivals
+            or self.scheduler.has_runnable_tasks()
+            or any(t is not None for t in running_tasks)
+        ):
             # 1. Admit newly arrived tasks and assign to CPUs
             while pending_arrivals and pending_arrivals[0].arrival_time_us <= current_time_us:
                 arrived = pending_arrivals.pop(0)
                 arrived.state = TaskState.READY
                 prev_cpu = last_cpu_of_pid.get(arrived.pid, 0)
                 last_time = last_run_time_of_pid.get(arrived.pid, 0)
-                self.scheduler.add_task(arrived, current_time_us, prev_cpu=prev_cpu, last_run_time_us=last_time)
+                self.scheduler.add_task(
+                    arrived, current_time_us, prev_cpu=prev_cpu, last_run_time_us=last_time
+                )
 
             # 2. Per-core dispatch for any idle core
             for c in range(self.num_cpus):
@@ -147,7 +156,9 @@ class SMPSchedulingSimulationEngine:
 
                     # Work stealing if core queue was empty
                     if next_task is None and hasattr(self.scheduler, "steal_work_for_cpu"):
-                        next_task, quantum_us = self.scheduler.steal_work_for_cpu(c, current_time_us)
+                        next_task, quantum_us = self.scheduler.steal_work_for_cpu(
+                            c, current_time_us
+                        )
 
                     if next_task is not None:
                         # Check migration from another CPU
@@ -155,9 +166,15 @@ class SMPSchedulingSimulationEngine:
                             p_cpu = last_cpu_of_pid[next_task.pid]
                             if p_cpu != c:
                                 total_migrations += 1
-                                is_same_node = (self.cpu_to_node[p_cpu] == self.cpu_to_node[c])
-                                mig_cost = self.intra_node_migration_us if is_same_node else self.inter_node_migration_us
-                                is_hot = (current_time_us - last_run_time_of_pid.get(next_task.pid, 0)) < self.cache_hot_threshold_us
+                                is_same_node = self.cpu_to_node[p_cpu] == self.cpu_to_node[c]
+                                mig_cost = (
+                                    self.intra_node_migration_us
+                                    if is_same_node
+                                    else self.inter_node_migration_us
+                                )
+                                is_hot = (
+                                    current_time_us - last_run_time_of_pid.get(next_task.pid, 0)
+                                ) < self.cache_hot_threshold_us
                                 if is_hot:
                                     mig_cost *= 2
                                 if is_same_node:
@@ -172,7 +189,7 @@ class SMPSchedulingSimulationEngine:
                             next_task.context_switches += 1
 
                         running_tasks[c] = next_task
-                        running_tasks[c].state = TaskState.RUNNING
+                        next_task.state = TaskState.RUNNING
                         slice_remaining[c] = quantum_us
                         last_pid_on_cpu[c] = next_task.pid
                         last_cpu_of_pid[next_task.pid] = c
@@ -289,9 +306,15 @@ class SMPSchedulingSimulationEngine:
             )
 
         tats = [t.turnaround_time_us for t in completed_tasks if t.turnaround_time_us is not None]
-        ntats = [t.normalized_turnaround_time for t in completed_tasks if t.normalized_turnaround_time is not None]
+        ntats = [
+            t.normalized_turnaround_time
+            for t in completed_tasks
+            if t.normalized_turnaround_time is not None
+        ]
         waits = [float(t.waiting_time_us) for t in completed_tasks]
-        resps = [float(t.response_time_us) for t in completed_tasks if t.response_time_us is not None]
+        resps = [
+            float(t.response_time_us) for t in completed_tasks if t.response_time_us is not None
+        ]
 
         def _pct(arr: List[float], q: float) -> float:
             if not arr:
@@ -334,4 +357,3 @@ class SMPSchedulingSimulationEngine:
             inter_node_migrations=inter_node_migrations,
             migration_overhead_us=migration_overhead_us,
         )
-

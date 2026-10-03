@@ -13,7 +13,7 @@ class VectorSchedulerEnv:
     Provides batched reset() and step().
     """
 
-    def __init__(self, env_fns: List[Callable[[], SchedulerEnv]]) -> None:
+    def __init__(self, env_fns: List[Callable[..., SchedulerEnv]]) -> None:
         self.envs = [fn() for fn in env_fns]
         self.num_envs = len(self.envs)
         self.top_k = self.envs[0].top_k

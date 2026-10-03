@@ -48,8 +48,12 @@ def run_benchmark():
     print(f"Running Phase 4 Benchmark across {len(eval_seeds)} eval seeds (50000..50029)...")
 
     # 1. Load Float Student
-    float_ckpt = torch.load("ml/checkpoints/student_bc_ppo_s1003.pt", map_location="cpu", weights_only=False)
-    float_student = ScorerPolicy(actor_hidden_dims=float_ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64])
+    float_ckpt = torch.load(
+        "ml/checkpoints/student_bc_ppo_s1003.pt", map_location="cpu", weights_only=False
+    )
+    float_student = ScorerPolicy(
+        actor_hidden_dims=float_ckpt["actor_hidden_dims"], critic_hidden_dims=[64, 64]
+    )
     float_student.load_state_dict(float_ckpt["model_state_dict"])
     float_student.eval()
 
@@ -64,20 +68,36 @@ def run_benchmark():
     b2 = qdata["b2"]
 
     # 3. Load Supervised Student
-    sup_ckpt = torch.load("ml/checkpoints/supervised_student_v4.pt", map_location="cpu", weights_only=False)
+    sup_ckpt = torch.load(
+        "ml/checkpoints/supervised_student_v4.pt", map_location="cpu", weights_only=False
+    )
     sup_student = CandidateScorer(hidden_dims=[8])
     sup_student.load_state_dict(sup_ckpt["student_state_dict"])
     sup_student.eval()
 
     workloads = {
-        "Pareto rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5),
-        "Pareto rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
-        "Pareto rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.95),
-        "Poisson rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.5),
-        "Poisson rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
-        "Poisson rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.95),
+        "Pareto rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.5
+        ),
+        "Pareto rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.8
+        ),
+        "Pareto rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.95
+        ),
+        "Poisson rho=0.5": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.5
+        ),
+        "Poisson rho=0.8": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.8
+        ),
+        "Poisson rho=0.95": lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.8, 200, 0.95
+        ),
         "Convoy": lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
-        "Multi-Burst (OOD Test)": lambda s: SyntheticWorkloadGenerator(seed=s).generate_multiburst_process_workload(10, 10, 1.3, 200),
+        "Multi-Burst (OOD Test)": lambda s: SyntheticWorkloadGenerator(
+            seed=s
+        ).generate_multiburst_process_workload(10, 10, 1.3, 200),
     }
 
     results = {}
@@ -111,7 +131,9 @@ def run_benchmark():
             m = env._compute_episode_metrics()
             row["Float-Student"]["mean_wt"].append(m["mean_waiting_time_us"])
             row["Float-Student"]["p99_wt"].append(m["p99_waiting_time_us"])
-            row["Float-Student"]["max_wait"].append(max(t.waiting_time_us for t in env.completed_tasks))
+            row["Float-Student"]["max_wait"].append(
+                max(t.waiting_time_us for t in env.completed_tasks)
+            )
             row["Float-Student"]["switches"].append(float(env.total_context_switches))
 
             # B. Quantized-Student (Pure int8 forward)
@@ -130,7 +152,9 @@ def run_benchmark():
             m = env._compute_episode_metrics()
             row["Quantized-Student"]["mean_wt"].append(m["mean_waiting_time_us"])
             row["Quantized-Student"]["p99_wt"].append(m["p99_waiting_time_us"])
-            row["Quantized-Student"]["max_wait"].append(max(t.waiting_time_us for t in env.completed_tasks))
+            row["Quantized-Student"]["max_wait"].append(
+                max(t.waiting_time_us for t in env.completed_tasks)
+            )
             row["Quantized-Student"]["switches"].append(float(env.total_context_switches))
 
             # C. Heuristic-Obs (Real predictor)
@@ -140,14 +164,21 @@ def run_benchmark():
             while not done:
                 mask = obs["action_mask"]
                 valid = np.where(mask == 1)[0]
-                scores = [-obs["candidates"][i, 1] + 1.0 * obs["candidates"][i, 2] + 2.0 * obs["candidates"][i, 9] for i in valid]
+                scores = [
+                    -obs["candidates"][i, 1]
+                    + 1.0 * obs["candidates"][i, 2]
+                    + 2.0 * obs["candidates"][i, 9]
+                    for i in valid
+                ]
                 act = valid[np.argmax(scores)]
                 obs, _, term, trunc, _ = env.step(act)
                 done = term or trunc
             m = env._compute_episode_metrics()
             row["Heuristic-Obs"]["mean_wt"].append(m["mean_waiting_time_us"])
             row["Heuristic-Obs"]["p99_wt"].append(m["p99_waiting_time_us"])
-            row["Heuristic-Obs"]["max_wait"].append(max(t.waiting_time_us for t in env.completed_tasks))
+            row["Heuristic-Obs"]["max_wait"].append(
+                max(t.waiting_time_us for t in env.completed_tasks)
+            )
             row["Heuristic-Obs"]["switches"].append(float(env.total_context_switches))
 
             # D. Supervised-Student
@@ -166,7 +197,9 @@ def run_benchmark():
             m = env._compute_episode_metrics()
             row["Supervised-Student"]["mean_wt"].append(m["mean_waiting_time_us"])
             row["Supervised-Student"]["p99_wt"].append(m["p99_waiting_time_us"])
-            row["Supervised-Student"]["max_wait"].append(max(t.waiting_time_us for t in env.completed_tasks))
+            row["Supervised-Student"]["max_wait"].append(
+                max(t.waiting_time_us for t in env.completed_tasks)
+            )
             row["Supervised-Student"]["switches"].append(float(env.total_context_switches))
 
         results[wl_name] = row

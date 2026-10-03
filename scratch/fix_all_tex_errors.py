@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """Comprehensive, robust parser & fixer for paper/neuroos_lite.tex."""
 
-import re
 from pathlib import Path
 
-tex_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex")
-bib_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\references.bib")
+tex_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"
+)
+bib_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\references.bib"
+)
 
 # The clean, correct body of the LaTeX paper
 full_paper = r"""\begin{filecontents*}{references.bib}

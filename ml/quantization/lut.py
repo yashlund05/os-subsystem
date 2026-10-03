@@ -36,7 +36,9 @@ class QuantumLUT:
         idx = int(np.clip(score_bin, 0, self.num_bins - 1))
         return int(self.table[idx])
 
-    def score_to_quantum(self, score: float, score_min: float = -5.0, score_max: float = 5.0) -> int:
+    def score_to_quantum(
+        self, score: float, score_min: float = -5.0, score_max: float = 5.0
+    ) -> int:
         if self.table is None:
             self.build()
         frac = (float(score) - score_min) / max(1e-9, (score_max - score_min))
@@ -45,7 +47,9 @@ class QuantumLUT:
         return self.lookup(idx)
 
 
-def build_quantum_lut(q_min_us: int = 1000, q_max_us: int = 50000, num_bins: int = 32) -> QuantumLUT:
+def build_quantum_lut(
+    q_min_us: int = 1000, q_max_us: int = 50000, num_bins: int = 32
+) -> QuantumLUT:
     lut = QuantumLUT(q_min_us=q_min_us, q_max_us=q_max_us, num_bins=num_bins)
     lut.build()
     return lut

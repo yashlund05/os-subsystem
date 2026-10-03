@@ -2,10 +2,11 @@
 
 from dataclasses import dataclass
 from typing import List, Optional
+
 try:
     import numpy as np
 except ImportError:
-    np = None
+    np = None  # type: ignore[assignment]
 
 from simulator.scheduling.task import SimulatedTask
 
@@ -14,7 +15,9 @@ from simulator.scheduling.task import SimulatedTask
 class RewardConfig:
     """Configurable weights and ablation toggles for step reward calculation."""
 
-    w_wait: float = 1.0  # Normalized waiting time accumulation penalty (Little's Law: -(N_waiting*dt)/T_norm)
+    w_wait: float = (
+        1.0  # Normalized waiting time accumulation penalty (Little's Law: -(N_waiting*dt)/T_norm)
+    )
     w_completion: float = 0.0  # Dropped completion bonus per user directive
     w_switch: float = 0.02  # Context-switch penalty rescaled to new Little's law magnitudes
     w_starvation: float = 0.1  # Max wait starvation penalty
@@ -29,7 +32,9 @@ class RewardConfig:
     enable_tail_penalty: bool = True
 
     # Reference normalizers
-    norm_step_us: float = 100000.0  # Fixed global constant T_norm (100ms) for Little's law: -(N_waiting*dt)/T_norm
+    norm_step_us: float = (
+        100000.0  # Fixed global constant T_norm (100ms) for Little's law: -(N_waiting*dt)/T_norm
+    )
     norm_starve_wait_us: float = 50000.0
 
 

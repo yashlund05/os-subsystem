@@ -1,26 +1,31 @@
 """Realistic per-process burst prediction module for CPU scheduling without oracle knowledge."""
 
+import random
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
-import random
 
 try:
     import numpy as np
 except ImportError:
+
     class _RNGFallback:
         def __init__(self, seed=None):
             self._r = random.Random(seed)
+
         def normal(self, loc, scale):
             return self._r.gauss(loc, scale)
+
     class _NumpyFallback:
         @staticmethod
         def clip(val, lo, hi):
             return max(lo, min(hi, val))
+
         class random:
             @staticmethod
             def default_rng(seed=None):
                 return _RNGFallback(seed)
-    np = _NumpyFallback()
+
+    np = _NumpyFallback()  # type: ignore[assignment]
 
 
 @dataclass
@@ -83,12 +88,12 @@ class BurstEstimator:
 
             # Priority modulation
             if priority_level != 0:
-                base_estimate *= (1.0 + 0.05 * priority_level)
+                base_estimate *= 1.0 + 0.05 * priority_level
         else:
             # Unseen task prior adjusted by priority
             base_estimate = float(self.default_estimate_us)
             if priority_level != 0:
-                base_estimate *= (1.0 + 0.10 * priority_level)
+                base_estimate *= 1.0 + 0.10 * priority_level
 
         if self.noise_std_frac > 0.0:
             noise = self.rng.normal(0.0, self.noise_std_frac * base_estimate)

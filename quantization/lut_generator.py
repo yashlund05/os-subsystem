@@ -80,22 +80,24 @@ def generate_c_lut_header(
         comma = "," if row_start + 8 < lut.num_entries else ""
         lines.append("    " + ", ".join(chunk) + comma)
 
-    lines.extend([
-        "};",
-        "",
-        "static inline uint32_t neuroos_lut_lookup(int32_t score) {",
-        "    if (score <= NEUROOS_LUT_SCORE_MIN) return neuroos_quantum_lut[0];",
-        "    if (score >= NEUROOS_LUT_SCORE_MAX) return neuroos_quantum_lut[NEUROOS_LUT_ENTRIES - 1];",
-        "    int64_t span = (int64_t)NEUROOS_LUT_SCORE_MAX - (int64_t)NEUROOS_LUT_SCORE_MIN;",
-        "    int64_t offset = (int64_t)score - (int64_t)NEUROOS_LUT_SCORE_MIN;",
-        "    uint32_t idx = (uint32_t)((offset * (NEUROOS_LUT_ENTRIES - 1)) / span);",
-        "    if (idx >= NEUROOS_LUT_ENTRIES) idx = NEUROOS_LUT_ENTRIES - 1;",
-        "    return neuroos_quantum_lut[idx];",
-        "}",
-        "",
-        "#endif /* NEUROOS_LUT_H */",
-        "",
-    ])
+    lines.extend(
+        [
+            "};",
+            "",
+            "static inline uint32_t neuroos_lut_lookup(int32_t score) {",
+            "    if (score <= NEUROOS_LUT_SCORE_MIN) return neuroos_quantum_lut[0];",
+            "    if (score >= NEUROOS_LUT_SCORE_MAX) return neuroos_quantum_lut[NEUROOS_LUT_ENTRIES - 1];",
+            "    int64_t span = (int64_t)NEUROOS_LUT_SCORE_MAX - (int64_t)NEUROOS_LUT_SCORE_MIN;",
+            "    int64_t offset = (int64_t)score - (int64_t)NEUROOS_LUT_SCORE_MIN;",
+            "    uint32_t idx = (uint32_t)((offset * (NEUROOS_LUT_ENTRIES - 1)) / span);",
+            "    if (idx >= NEUROOS_LUT_ENTRIES) idx = NEUROOS_LUT_ENTRIES - 1;",
+            "    return neuroos_quantum_lut[idx];",
+            "}",
+            "",
+            "#endif /* NEUROOS_LUT_H */",
+            "",
+        ]
+    )
 
     content = "\n".join(lines)
     with open(out, "w", encoding="utf-8") as f:

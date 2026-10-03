@@ -174,9 +174,7 @@ class ScorerPolicy(nn.Module):
     ) -> None:
         super().__init__()
         self.actor = CandidateScorer(input_dim=16, hidden_dims=actor_hidden_dims)
-        self.critic = CriticNetwork(
-            candidate_dim=10, global_dim=6, hidden_dims=critic_hidden_dims
-        )
+        self.critic = CriticNetwork(candidate_dim=10, global_dim=6, hidden_dims=critic_hidden_dims)
 
     def get_action_distribution(
         self, candidates: torch.Tensor, action_mask: torch.Tensor
@@ -194,7 +192,9 @@ class ScorerPolicy(nn.Module):
         bool_mask = action_mask.bool()
         # Create masked logits
         masked_logits = torch.where(
-            bool_mask, raw_logits, torch.tensor(-1e9, device=raw_logits.device, dtype=raw_logits.dtype)
+            bool_mask,
+            raw_logits,
+            torch.tensor(-1e9, device=raw_logits.device, dtype=raw_logits.dtype),
         )
 
         dist = Categorical(logits=masked_logits)

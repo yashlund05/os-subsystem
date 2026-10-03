@@ -5,7 +5,9 @@ work_log_path = Path("WORK_LOG.md")
 content = work_log_path.read_text(encoding="utf-8")
 
 idx1 = content.find("### [2026-09-28] — Phase 3")
-idx2 = content.find("### [2026-09-28] — Phase 2B Implementation: Gymnasium CPU Scheduling Environment")
+idx2 = content.find(
+    "### [2026-09-28] — Phase 2B Implementation: Gymnasium CPU Scheduling Environment"
+)
 
 new_block = """### [2026-09-28] — Phase 3 Full Audit & Empirical Resolution: Tasks 1–8 Verified
 - **Status**: `AUDITED, RECONCILED & BENCHMARKED (V3 Canonical)`
@@ -42,7 +44,9 @@ work_log_path.write_text(updated, encoding="utf-8")
 print("Updated WORK_LOG.md successfully!")
 
 # 2. Update walkthrough.md
-walkthrough_path = Path(r"C:/Users/lundy/.gemini/antigravity/brain/ca7e848d-625a-4512-abb8-13035d438a0d/walkthrough.md")
+walkthrough_path = Path(
+    r"C:/Users/lundy/.gemini/antigravity/brain/ca7e848d-625a-4512-abb8-13035d438a0d/walkthrough.md"
+)
 content_wt = walkthrough_path.read_text(encoding="utf-8")
 idx_wt = content_wt.find("## 7. Phase 3")
 

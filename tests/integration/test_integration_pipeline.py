@@ -11,8 +11,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
-
 # Make repo root importable when running pytest from project root.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
@@ -133,8 +131,9 @@ def test_guardrail_boundary_exact_threshold() -> None:
 
 def _make_tasks(n: int = 10, seed: int = 1):
     """Build a simple list of SimulatedTask objects with deterministic bursts."""
-    from simulator.scheduling.task import SimulatedTask  # type: ignore
     import numpy as np
+
+    from simulator.scheduling.task import SimulatedTask  # type: ignore
 
     rng = np.random.default_rng(seed)
     tasks = []
@@ -234,6 +233,4 @@ def test_mlfq_baseline_dispatches_all_tasks() -> None:
         else:
             sched.on_task_preempted(task, current_time)
 
-    assert dispatched == len(tasks), (
-        f"MLFQ: only {dispatched}/{len(tasks)} tasks completed"
-    )
+    assert dispatched == len(tasks), f"MLFQ: only {dispatched}/{len(tasks)} tasks completed"

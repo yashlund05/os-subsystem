@@ -842,9 +842,15 @@ made this research reproducible.
 """
 
 targets = [
-    Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex"),
-    Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\conference_101719.tex"),
-    Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"),
+    Path(
+        r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex"
+    ),
+    Path(
+        r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\conference_101719.tex"
+    ),
+    Path(
+        r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"
+    ),
     Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\neuroos_lite.tex"),
 ]
 

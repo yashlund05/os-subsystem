@@ -11,21 +11,22 @@ Implements multi-core sched_ext dispatch logic:
 from __future__ import annotations
 
 from collections import deque
-from typing import Deque, Dict, List, Optional, Tuple
+from typing import Any, Deque, Dict, List, Optional, Tuple
+
 try:
     import numpy as np
 except ImportError:
-    np = None
+    np = None  # type: ignore[assignment]
 
-from schedulers.base import BaseScheduler
 from schedulers.mlfq.scheduler import MLFQScheduler
 from simulator.scheduling.task import SimulatedTask
+from userspace.drift.online_corrector import OnlineDriftCorrector
 from userspace.trainer.burst_estimator import BurstEstimator
 from userspace.trainer.observation import ObservationEncoder
-from userspace.drift.online_corrector import OnlineDriftCorrector
 
 try:
     from ml.quantization.lut import build_quantum_lut
+
     _LUT_AVAILABLE = True
 except ImportError:
     _LUT_AVAILABLE = False
@@ -73,12 +74,13 @@ class SMPNeuroOSLiteScheduler:
         self.qpolicy = quantized_policy
         self.qscales = quantized_scales or {"s_x": 0.05, "s_w1": 0.05, "s_w2": 0.05, "s_b2": 0.001}
 
+        self._lut: Optional[Any] = None
         if _LUT_AVAILABLE:
             self._lut = build_quantum_lut(q_min_us=q_min_us, q_max_us=q_max_us, num_bins=32)
-        else:
-            self._lut = None
 
-    def configure_topology(self, num_cpus: int, num_numa_nodes: int, cpu_to_node: List[int]) -> None:
+    def configure_topology(
+        self, num_cpus: int, num_numa_nodes: int, cpu_to_node: List[int]
+    ) -> None:
         self.num_cpus = num_cpus
         self.num_numa_nodes = num_numa_nodes
         self.cpu_to_node = list(cpu_to_node)
@@ -104,10 +106,7 @@ class SMPNeuroOSLiteScheduler:
         if prev_cpu >= self.num_cpus:
             prev_cpu = 0
 
-        is_cache_hot = (
-            last_run_time_us > 0
-            and (current_time_us - last_run_time_us) < 500
-        )
+        is_cache_hot = last_run_time_us > 0 and (current_time_us - last_run_time_us) < 500
 
         # If previous CPU is idle or light, keep cache warm
         if is_cache_hot and len(self.runqueues[prev_cpu]) == 0:
@@ -124,10 +123,10 @@ class SMPNeuroOSLiteScheduler:
             if dist > 12:
                 load += 15  # Remote NUMA penalty
             elif dist > 10:
-                load += 5   # Cross-core intra-node penalty
+                load += 5  # Cross-core intra-node penalty
 
             if c == prev_cpu and is_cache_hot:
-                load -= 8   # Cache warmth discount
+                load -= 8  # Cache warmth discount
 
             if load < lowest_load:
                 lowest_load = load
@@ -150,7 +149,9 @@ class SMPNeuroOSLiteScheduler:
         self.runqueues[cpu_id].append(task)
         self.fallbacks[cpu_id].on_task_preempted(task, current_time_us)
 
-    def on_task_completion(self, task: SimulatedTask, current_time_us: int, cpu_id: int = 0) -> None:
+    def on_task_completion(
+        self, task: SimulatedTask, current_time_us: int, cpu_id: int = 0
+    ) -> None:
         predicted = self.burst_estimator.get_estimate(task.pid)
         self.burst_estimator.on_task_completion(
             task.pid, task.total_burst_us, completion_time_us=current_time_us
@@ -164,7 +165,9 @@ class SMPNeuroOSLiteScheduler:
     def has_runnable_tasks(self) -> bool:
         return any(len(q) > 0 for q in self.runqueues)
 
-    def pick_next_task_on_cpu(self, cpu_id: int, current_time_us: int) -> Tuple[Optional[SimulatedTask], int]:
+    def pick_next_task_on_cpu(
+        self, cpu_id: int, current_time_us: int
+    ) -> Tuple[Optional[SimulatedTask], int]:
         rq = self.runqueues[cpu_id]
         if not rq:
             return None, 0
@@ -207,10 +210,12 @@ class SMPNeuroOSLiteScheduler:
 
         if self.qpolicy is not None and np is not None:
             from ml.quantization.quantize import quantized_forward_int
+
             meta = {"scales": self.qscales}
             scores = list(quantized_forward_int(self.qpolicy, meta, mat.astype(np.float64)))
         elif self.student_params is not None and np is not None:
             from ml.distillation.distiller import numpy_student_forward
+
             scores = list(numpy_student_forward(self.student_params, mat.astype(np.float64)))
         else:
             scores = [-float(row[1]) + 0.5 * float(row[2]) for row in mat]
@@ -236,8 +241,9 @@ class SMPNeuroOSLiteScheduler:
         quantum = min(quantum, task.remaining_burst_us)
         return task, max(1, quantum)
 
-
-    def steal_work_for_cpu(self, idle_cpu_id: int, current_time_us: int) -> Tuple[Optional[SimulatedTask], int]:
+    def steal_work_for_cpu(
+        self, idle_cpu_id: int, current_time_us: int
+    ) -> Tuple[Optional[SimulatedTask], int]:
         """Hierarchical work stealing: intra-NUMA first, then inter-NUMA."""
         idle_node = self.cpu_to_node[idle_cpu_id]
 

@@ -11,7 +11,7 @@ Simulator-faithful mirror of kernel/sched_ext/neuroos_sched.c:
 from __future__ import annotations
 
 from collections import deque
-from typing import Deque, Dict, List, Optional, Tuple
+from typing import Any, Deque, Dict, List, Optional, Tuple
 
 import numpy as np
 
@@ -56,10 +56,9 @@ class NeuroOSLiteScheduler(BaseScheduler):
         self.student_params = student_params
         self.qpolicy = quantized_policy
         self.qscales = quantized_scales or {"s_x": 0.05, "s_w1": 0.05, "s_w2": 0.05, "s_b2": 0.001}
+        self._lut: Optional[Any] = None
         if _LUT_AVAILABLE:
             self._lut = build_quantum_lut(q_min_us=q_min_us, q_max_us=q_max_us, num_bins=32)
-        else:
-            self._lut = None
         # Drift tracking: EMA of |pred - elapsed| normalized
         self._drift_ema = 0.0
 
@@ -156,9 +155,9 @@ class NeuroOSLiteScheduler(BaseScheduler):
             fb_list = self.fallback.get_runnable_tasks()
             if task in fb_list:
                 # Rebuild fallback queues without task (MLFQ has no remove API)
-                for q in self.fallback.queues:
+                for fb_queue in self.fallback.queues:
                     try:
-                        q.remove(task)
+                        fb_queue.remove(task)
                     except ValueError:
                         pass
         except Exception:

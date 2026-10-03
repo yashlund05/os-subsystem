@@ -64,7 +64,9 @@ def test_int8_forward_batch_matches_single():
 
     for i in range(20):
         single_out = int8_forward_single(features[i], w1, b1, w2, b2)
-        assert single_out == batch_out[i], f"Mismatch at idx {i}: single={single_out}, batch={batch_out[i]}"
+        assert single_out == batch_out[i], (
+            f"Mismatch at idx {i}: single={single_out}, batch={batch_out[i]}"
+        )
 
 
 def test_requantize_acc1_bit_identical():
@@ -94,7 +96,9 @@ def test_requantize_acc1_bit_identical():
 
 
 def test_quantum_lut_monotonic_and_bounds(tmp_path: Path):
-    lut = QuantumLUT(q_min_us=1000, q_max_us=50000, num_entries=256, score_min=-1000, score_max=1000)
+    lut = QuantumLUT(
+        q_min_us=1000, q_max_us=50000, num_entries=256, score_min=-1000, score_max=1000
+    )
     assert lut.lookup(0) == 1000
     assert lut.lookup(255) == 50000
 
@@ -158,7 +162,14 @@ def test_c_guardrail_check_parity():
 
 
 def test_quantization_pipeline_e2e(tmp_path: Path):
+    import pytest
+
+    pytest.importorskip("torch")
     from quantization.quantize import run_quantization_pipeline
+
+    checkpoint = Path("ml/checkpoints/student_bc_ppo_s1003.pt")
+    if not checkpoint.exists():
+        pytest.skip(f"Checkpoint {checkpoint} not committed (gitignored *.pt); skipping e2e.")
 
     out_dir = tmp_path / "artifacts"
     header_path = tmp_path / "neuroos_weights.h"

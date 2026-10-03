@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 from typing import Dict, List
 
 # Ensure repository root is on sys.path
@@ -23,7 +23,9 @@ from simulator.scheduling.smp_engine import SMPSchedulingSimulationEngine
 from simulator.scheduling.task import SimulatedTask
 
 
-def generate_benchmark_workload(num_tasks: int = 100, burst_scale_us: int = 2500) -> List[SimulatedTask]:
+def generate_benchmark_workload(
+    num_tasks: int = 100, burst_scale_us: int = 2500
+) -> List[SimulatedTask]:
     tasks = []
     for i in range(num_tasks):
         arrival = i * 150
@@ -99,13 +101,18 @@ def run_online_drift_benchmark() -> Dict[str, float]:
     return {
         "trips_without_online_correction": float(sched_no_corr.fallback_trips),
         "trips_with_online_correction": float(sched_with_corr.fallback_trips),
-        "trip_reduction_ratio": 1.0 - (float(sched_with_corr.fallback_trips) / max(1.0, float(sched_no_corr.fallback_trips))),
+        "trip_reduction_ratio": 1.0
+        - (float(sched_with_corr.fallback_trips) / max(1.0, float(sched_no_corr.fallback_trips))),
     }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Run Phase 6 SMP, NUMA, and Online Drift Benchmarks")
-    parser.add_argument("--output", type=str, default="benchmarks/smp/results.json", help="Path to output JSON")
+    parser = argparse.ArgumentParser(
+        description="Run Phase 6 SMP, NUMA, and Online Drift Benchmarks"
+    )
+    parser.add_argument(
+        "--output", type=str, default="benchmarks/smp/results.json", help="Path to output JSON"
+    )
     args = parser.parse_args()
 
     print("[Phase 6 Benchmark] Running SMP Multi-Core Scaling Sweep...")
@@ -131,16 +138,22 @@ def main():
     print(f"\n[Phase 6 Benchmark] Completed successfully. Results written to {out_path}")
     print("\n--- SMP Scaling Summary ---")
     for core, data in scaling_res.items():
-        print(f"  {core}: Makespan = {data['makespan_us']:.0f} us | Mean WT = {data['mean_waiting_us']:.1f} us | Migrations = {data['migrations']:.0f}")
+        print(
+            f"  {core}: Makespan = {data['makespan_us']:.0f} us | Mean WT = {data['mean_waiting_us']:.1f} us | Migrations = {data['migrations']:.0f}"
+        )
 
     print("\n--- NUMA Allocation Summary ---")
-    print(f"  Local Node Hit Rate: {numa_res['local_node_hit_rate']*100:.1f}%")
-    print(f"  External Fragmentation: {numa_res['external_fragmentation']*100:.2f}%")
+    print(f"  Local Node Hit Rate: {numa_res['local_node_hit_rate'] * 100:.1f}%")
+    print(f"  External Fragmentation: {numa_res['external_fragmentation'] * 100:.2f}%")
 
     print("\n--- Online Drift Correction Summary ---")
-    print(f"  Fallback Trips Without Correction: {drift_res['trips_without_online_correction']:.0f}")
-    print(f"  Fallback Trips With Online Correction: {drift_res['trips_with_online_correction']:.0f}")
-    print(f"  Fallback Trip Reduction: {drift_res['trip_reduction_ratio']*100:.1f}%\n")
+    print(
+        f"  Fallback Trips Without Correction: {drift_res['trips_without_online_correction']:.0f}"
+    )
+    print(
+        f"  Fallback Trips With Online Correction: {drift_res['trips_with_online_correction']:.0f}"
+    )
+    print(f"  Fallback Trip Reduction: {drift_res['trip_reduction_ratio'] * 100:.1f}%\n")
 
 
 if __name__ == "__main__":

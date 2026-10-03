@@ -1,7 +1,7 @@
 """Custom GPU-accelerated PPO algorithm with action masking, GAE, and decoupled actor-critic."""
 
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
 import torch
@@ -119,7 +119,7 @@ class PPOTrainer:
 
         # GAE calculation
         b_advantages = torch.zeros_like(b_rewards)
-        last_gae = 0.0
+        last_gae: Any = 0.0
         for t in reversed(range(steps)):
             if t == steps - 1:
                 next_non_terminal = 1.0 - torch.from_numpy(dones).to(self.device)
@@ -194,7 +194,10 @@ class PPOTrainer:
 
                 # Policy loss with PPO clip
                 surr1 = ratio * mb_advantages
-                surr2 = torch.clamp(ratio, 1.0 - self.cfg.clip_epsilon, 1.0 + self.cfg.clip_epsilon) * mb_advantages
+                surr2 = (
+                    torch.clamp(ratio, 1.0 - self.cfg.clip_epsilon, 1.0 + self.cfg.clip_epsilon)
+                    * mb_advantages
+                )
                 pg_loss = -torch.min(surr1, surr2).mean()
 
                 # Value loss with clipping

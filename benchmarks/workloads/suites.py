@@ -69,9 +69,7 @@ def make_scheduling_workload(
 def make_memory_trace(trace: str, num_pairs: int = 50) -> List[MemoryEvent]:
     """Build a REAL memory event trace for given churn profile."""
     if trace == "alternating_odd_even_trigger":
-        return AdversarialWorkloadGenerator.create_memory_fragmentation_churn(
-            num_pairs=num_pairs
-        )
+        return AdversarialWorkloadGenerator.create_memory_fragmentation_churn(num_pairs=num_pairs)
     if trace == "synthetic_churn":
         return AdversarialWorkloadGenerator.create_memory_fragmentation_churn(
             num_pairs=num_pairs, small_size_bytes=8192, large_size_bytes=32768

@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <inttypes.h>
 #include "neuroos_kernel.h"
 #include "micro_infer.h"
 
@@ -45,7 +46,7 @@ int main(void) {
     }
 
     printf("iters,mean_cycles,min_cycles,max_cycles,sink\n");
-    printf("%d,%llu,%llu,%llu,%d\n", ITERS, (unsigned long long)(total / ITERS),
-           (unsigned long long)min_c, (unsigned long long)max_c, (int)sink);
+    printf("%d,%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%d\n", ITERS, total / (uint64_t)ITERS,
+           min_c, max_c, (int)sink);
     return 0;
 }

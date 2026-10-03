@@ -12,7 +12,12 @@ from userspace.trainer.env import SchedulerEnv
 
 
 def audit_unstarted_features():
-    env = SchedulerEnv(workload_generator=lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8), top_k=16)
+    env = SchedulerEnv(
+        workload_generator=lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(
+            50, 1.3, 200, 0.8
+        ),
+        top_k=16,
+    )
 
     feature_vals = {name: [] for name in FEATURE_NAMES}
     true_bursts = []
@@ -48,7 +53,11 @@ def audit_unstarted_features():
         else:
             r, _ = stats.pearsonr(b, arr)
             rho, _ = stats.spearmanr(b, arr)
-            stat = "Kernel estimate" if f_name in ["pred_burst_norm", "burst_ratio"] else ("LEAK!" if abs(r) > 0.1 else "Clean (~0)")
+            stat = (
+                "Kernel estimate"
+                if f_name in ["pred_burst_norm", "burst_ratio"]
+                else ("LEAK!" if abs(r) > 0.1 else "Clean (~0)")
+            )
             print(f"{f_name:<25} | {r:<12.4f} | {rho:<12.4f} | {stat:<25}")
 
 

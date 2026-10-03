@@ -4,16 +4,22 @@ import json
 from pathlib import Path
 
 import numpy as np
-import torch
+import pytest
 
-from ml.training.export import (
+torch = pytest.importorskip("torch")
+
+from ml.training.export import (  # noqa: E402
     export_policy_for_quantization,
     numpy_scorer_forward,
 )
-from ml.training.policy import CandidateScorer, CriticNetwork, ScorerPolicy
-from ml.training.ppo import PPOConfig, PPOTrainer
-from ml.training.vec_env import VectorSchedulerEnv
-from userspace.trainer.env import SchedulerEnv
+from ml.training.policy import (  # noqa: E402
+    CandidateScorer,
+    CriticNetwork,
+    ScorerPolicy,
+)
+from ml.training.ppo import PPOConfig, PPOTrainer  # noqa: E402
+from ml.training.vec_env import VectorSchedulerEnv  # noqa: E402
+from userspace.trainer.env import SchedulerEnv  # noqa: E402
 
 
 def test_candidate_scorer_forward_shapes():
@@ -39,7 +45,9 @@ def test_policy_action_masking_zero_probability():
     """Verify that invalid candidate actions strictly receive probability 0.0."""
     policy = ScorerPolicy(actor_hidden_dims=[64, 32], critic_hidden_dims=[32, 32])
     candidates = torch.randn(2, 8, 16)
-    action_mask = torch.tensor([[1, 1, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0]], dtype=torch.int8)
+    action_mask = torch.tensor(
+        [[1, 1, 0, 0, 0, 0, 0, 0], [1, 1, 1, 1, 0, 0, 0, 0]], dtype=torch.int8
+    )
 
     dist, raw_logits = policy.get_action_distribution(candidates, action_mask)
     probs = dist.probs  # (2, 8)
@@ -88,7 +96,9 @@ def test_export_numpy_matches_pytorch(tmp_path: Path):
     student_scorer = CandidateScorer(input_dim=16, hidden_dims=[8])
     student_scorer.eval()
 
-    npz_p, json_p = export_policy_for_quantization(student_scorer, str(tmp_path), prefix="test_student")
+    npz_p, json_p = export_policy_for_quantization(
+        student_scorer, str(tmp_path), prefix="test_student"
+    )
     assert npz_p.exists()
     assert json_p.exists()
 
@@ -153,6 +163,7 @@ def test_checkpoint_save_and_load_identical_outputs(tmp_path: Path):
 
 def test_smoke_training_few_hundred_steps():
     """Verify end-to-end PPO rollout and update on VectorSchedulerEnv for small step count."""
+
     def env_factory():
         return SchedulerEnv(top_k=8, max_steps=50)
 
@@ -257,5 +268,3 @@ def test_train_cli_smoke():
         main()
     finally:
         sys.argv = orig_argv
-
-

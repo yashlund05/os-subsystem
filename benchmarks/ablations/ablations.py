@@ -103,4 +103,3 @@ def run_all_ablations(seed: int = 7) -> Dict[str, Any]:
         "quantization": ablation_quantization(seed=seed),
         "power": ablation_power(),
     }
-

@@ -198,7 +198,7 @@ def train_single_run(
         if len(logs) % 5 == 0 or trainer.total_timesteps >= total_timesteps_target:
             print(
                 f"[{run_name}] Step {trainer.total_timesteps}/{total_timesteps_target} "
-                f"({progress*100:.1f}%) | Ret: {mean_ret:.2f} | "
+                f"({progress * 100:.1f}%) | Ret: {mean_ret:.2f} | "
                 f"Ploss: {train_metrics['policy_loss']:.4f} | Vloss: {train_metrics['value_loss']:.4f} | "
                 f"Entropy: {train_metrics['entropy']:.3f} | Elapsed: {elapsed_sec:.1f}s"
             )
@@ -220,7 +220,9 @@ def train_single_run(
         "total_timesteps": trainer.total_timesteps,
         "wall_clock_seconds": round(wall_clock, 2),
         "converged": converged,
-        "final_mean_return": round(float(np.mean(ep_returns_window[-30:])) if ep_returns_window else 0.0, 3),
+        "final_mean_return": round(
+            float(np.mean(ep_returns_window[-30:])) if ep_returns_window else 0.0, 3
+        ),
         "logs": logs,
     }
 
@@ -229,10 +231,14 @@ def train_single_run(
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Train NeuroOS PPO Scheduling Policy")
-    parser.add_argument("--config", type=str, default="configs/ppo_quick.yaml", help="Path to YAML config")
+    parser.add_argument(
+        "--config", type=str, default="configs/ppo_quick.yaml", help="Path to YAML config"
+    )
     parser.add_argument("--device", type=str, default=None, help="cpu or cuda override")
     parser.add_argument("--curriculum", type=str, default=None, help="mixed or staged override")
-    parser.add_argument("--architecture", type=str, default=None, help="teacher or student override")
+    parser.add_argument(
+        "--architecture", type=str, default=None, help="teacher or student override"
+    )
     args = parser.parse_args()
 
     with open(args.config, "r", encoding="utf-8") as f:
@@ -307,7 +313,9 @@ def main() -> None:
     # Export best policy for Quantization Lead (npz + JSON)
     if best_policy is not None:
         prefix = f"neuroos_{arch}_{curriculum_mode}"
-        npz_p, json_p = export_policy_for_quantization(best_policy.actor, str(export_dir), prefix=prefix)
+        npz_p, json_p = export_policy_for_quantization(
+            best_policy.actor, str(export_dir), prefix=prefix
+        )
         print(f"Exported quantization package:\n  Weights: {npz_p}\n  Metadata: {json_p}")
 
     # Save summary manifest

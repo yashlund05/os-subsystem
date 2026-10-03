@@ -76,8 +76,8 @@ def quantize_student(
     crc = zlib.crc32(q_b2.tobytes(), crc)
     crc &= 0xFFFFFFFF
 
-    qpolicy = {"w1": q_w1, "b1": q_b1, "w2": q_w2, "b2": q_b2}
-    meta = {
+    qpolicy: Dict[str, np.ndarray] = {"w1": q_w1, "b1": q_b1, "w2": q_w2, "b2": q_b2}
+    meta: Dict[str, Any] = {
         "input_dim": INPUT_DIM,
         "hidden_dim": HIDDEN_DIM,
         "output_dim": OUTPUT_DIM,
@@ -113,16 +113,20 @@ def quantized_forward_int(
     # Layer2: h is in units s_x*s_w1; w2 in s_w2; product in s_x*s_w1*s_w2
     acc2 = h @ w2.T  # int32
     # Rescale to output float: out = acc2 * s_x*s_w1*s_w2 + b2*s_b2
-    out = acc2.astype(np.float64) * (s["s_x"] * s["s_w1"] * s["s_w2"]) + b2.astype(
-        np.float64
-    ) * s["s_b2"]
+    out = (
+        acc2.astype(np.float64) * (s["s_x"] * s["s_w1"] * s["s_w2"])
+        + b2.astype(np.float64) * s["s_b2"]
+    )
     # Add b1 contribution already inside h; b1 rescale handled via acc1 units:
     # acc1 float = acc1 * s_x*s_w1 ; ReLU preserved scale.
     return out.reshape(-1)
 
 
 def save_quantized_policy(
-    qpolicy: Dict[str, np.ndarray], meta: Dict[str, Any], out_dir: str, prefix: str = "neuroos_student"
+    qpolicy: Dict[str, np.ndarray],
+    meta: Dict[str, Any],
+    out_dir: str,
+    prefix: str = "neuroos_student",
 ) -> Tuple[Path, Path]:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)

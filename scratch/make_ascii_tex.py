@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Completely convert neuroos_lite.tex to 100% ASCII LaTeX."""
 
-import re
 from pathlib import Path
 
-tex_path = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex")
+tex_path = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\paper\neuroos_lite.tex"
+)
 
 content = tex_path.read_text(encoding="utf-8")
 
@@ -38,7 +39,7 @@ for k, v in replacements.items():
 
 # Check for any residual non-ascii chars
 residual = []
-for i, char in enumerate(content):
+for _i, char in enumerate(content):
     if ord(char) > 127:
         residual.append((ord(char), hex(ord(char)), char))
 

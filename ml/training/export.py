@@ -115,7 +115,7 @@ def export_policy_for_quantization(
     json_path = out_dir / f"{prefix}_metadata.json"
 
     # Save weights
-    np.savez(npz_path, **params)
+    np.savez(npz_path, **params)  # type: ignore[arg-type]
 
     # Extract layer architectures
     layers_meta: List[Dict[str, Any]] = []

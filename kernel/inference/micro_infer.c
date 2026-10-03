@@ -53,7 +53,7 @@ uint32_t neuroos_score_to_quantum(int32_t score, uint32_t q_min_us, uint32_t q_m
 }
 
 uint64_t neuroos_rdtsc_ordered(void) {
-#if defined(__x86_64__) || defined(__i386__)
+#if defined(__x86_64__) || defined(__i386__) || defined(_M_X64) || defined(_M_IX86)
 #if defined(_MSC_VER)
     /* MSVC: _mm_lfence + __rdtsc (ordered approximately; documented assumption) */
     _mm_lfence();

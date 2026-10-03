@@ -20,13 +20,41 @@ from userspace.trainer.env import SchedulerEnv
 def eval_checkpoint_suite():
     eval_seeds = list(range(50000, 50030))
     scenarios = [
-        ("pareto_0.5", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5), 0.5),
-        ("pareto_0.8", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8), 0.8),
-        ("pareto_0.95", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.95), 0.95),
-        ("poisson_0.5", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.5), 0.5),
-        ("poisson_0.8", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8), 0.8),
-        ("poisson_0.95", lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.95), 0.95),
-        ("convoy_0.8", lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100), 0.8),
+        (
+            "pareto_0.5",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.5),
+            0.5,
+        ),
+        (
+            "pareto_0.8",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.8),
+            0.8,
+        ),
+        (
+            "pareto_0.95",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.3, 200, 0.95),
+            0.95,
+        ),
+        (
+            "poisson_0.5",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.5),
+            0.5,
+        ),
+        (
+            "poisson_0.8",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.8),
+            0.8,
+        ),
+        (
+            "poisson_0.95",
+            lambda s: SyntheticWorkloadGenerator(seed=s).generate_pareto_bursts(50, 1.8, 200, 0.95),
+            0.95,
+        ),
+        (
+            "convoy_0.8",
+            lambda s: AdversarialWorkloadGenerator.create_convoy_workload(49, 50000, 100),
+            0.8,
+        ),
     ]
 
     # Load v3 models
@@ -35,13 +63,21 @@ def eval_checkpoint_suite():
     def load_model(ckpt_path, dims):
         ckpt = torch.load(ckpt_path, map_location=device)
         p = ScorerPolicy(actor_hidden_dims=dims)
-        st = {k[len("actor."):]: v for k, v in ckpt["model_state_dict"].items() if k.startswith("actor.")}
+        st = {
+            k[len("actor.") :]: v
+            for k, v in ckpt["model_state_dict"].items()
+            if k.startswith("actor.")
+        }
         p.actor.load_state_dict(st)
         p.eval()
         return p
 
-    teacher_v3_s1 = load_model("ml/checkpoints/ppo_v3_teacher_teacher_staged_s1001_checkpoint.pt", [64, 32])
-    student_v3_s1 = load_model("ml/checkpoints/ppo_v3_student_student_staged_s1001_checkpoint.pt", [8])
+    teacher_v3_s1 = load_model(
+        "ml/checkpoints/ppo_v3_teacher_teacher_staged_s1001_checkpoint.pt", [64, 32]
+    )
+    student_v3_s1 = load_model(
+        "ml/checkpoints/ppo_v3_student_student_staged_s1001_checkpoint.pt", [8]
+    )
 
     results = {}
 
@@ -103,7 +139,14 @@ def eval_checkpoint_suite():
                     t = cands[i]
                     noise = rng.normal(0.0, 0.30 * t.total_burst_us)
                     est = max(100.0, t.total_burst_us + noise)
-                    scores.append(-(est / 100000.0) + 0.5 * (max(0, env.current_time_us - t.arrival_time_us - t.executed_burst_us) / 500000.0))
+                    scores.append(
+                        -(est / 100000.0)
+                        + 0.5
+                        * (
+                            max(0, env.current_time_us - t.arrival_time_us - t.executed_burst_us)
+                            / 500000.0
+                        )
+                    )
 
                 act = valid[np.argmax(scores)]
                 obs, _, term, trunc, _ = env.step(act)
@@ -141,10 +184,18 @@ def eval_checkpoint_suite():
             "Obs-Heuristic-sig0.3": {"mwt": stat(mwts_h), "p99": stat(p99s_h)},
             "Heuristic-Oracle": {"mwt": stat(mwts_o), "p99": stat(p99s_o)},
         }
-        print(f"  Teacher-v3:           Mean WT = {stat(mwts_t)[0]:8.1f} ± {stat(mwts_t)[1]:5.1f} us | P99 = {stat(p99s_t)[0]:8.1f} us")
-        print(f"  Student-v3:           Mean WT = {stat(mwts_s)[0]:8.1f} ± {stat(mwts_s)[1]:5.1f} us | P99 = {stat(p99s_s)[0]:8.1f} us")
-        print(f"  Obs-Heuristic(sig=0.3):Mean WT = {stat(mwts_h)[0]:8.1f} ± {stat(mwts_h)[1]:5.1f} us | P99 = {stat(p99s_h)[0]:8.1f} us")
-        print(f"  Heuristic-Oracle:     Mean WT = {stat(mwts_o)[0]:8.1f} ± {stat(mwts_o)[1]:5.1f} us | P99 = {stat(p99s_o)[0]:8.1f} us")
+        print(
+            f"  Teacher-v3:           Mean WT = {stat(mwts_t)[0]:8.1f} ± {stat(mwts_t)[1]:5.1f} us | P99 = {stat(p99s_t)[0]:8.1f} us"
+        )
+        print(
+            f"  Student-v3:           Mean WT = {stat(mwts_s)[0]:8.1f} ± {stat(mwts_s)[1]:5.1f} us | P99 = {stat(p99s_s)[0]:8.1f} us"
+        )
+        print(
+            f"  Obs-Heuristic(sig=0.3):Mean WT = {stat(mwts_h)[0]:8.1f} ± {stat(mwts_h)[1]:5.1f} us | P99 = {stat(p99s_h)[0]:8.1f} us"
+        )
+        print(
+            f"  Heuristic-Oracle:     Mean WT = {stat(mwts_o)[0]:8.1f} ± {stat(mwts_o)[1]:5.1f} us | P99 = {stat(p99s_o)[0]:8.1f} us"
+        )
 
     with open("ml/checkpoints/canonical_v3_results.json", "w") as f:
         json.dump(results, f, indent=2)

@@ -4,7 +4,9 @@
 import re
 from pathlib import Path
 
-tex_file = Path(r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex")
+tex_file = Path(
+    r"c:\Users\Aditya\Downloads\os-subsystem-master\os-subsystem-master\conference_101719.tex"
+)
 lines = tex_file.read_text(encoding="ascii").splitlines()
 
 errors = []
@@ -22,18 +24,18 @@ for i, line in enumerate(lines, 1):
         continue
     if in_verbatim:
         continue
-    
+
     # Check for \mathbf outside math mode or \textbf inside math mode
-    text_only = re.sub(r'\$[^$]*\$', '', line)
-    if "\\mathbf" in text_only and not "\\begin{equation}" in line and not "\\mathbf{1}" in line:
+    text_only = re.sub(r"\$[^$]*\$", "", line)
+    if "\\mathbf" in text_only and "\\begin{equation}" not in line and "\\mathbf{1}" not in line:
         errors.append((i, "\\mathbf in text mode", line))
-    if "\\mu" in text_only and not "\\documentclass" in text_only and not "\\approx" in line:
+    if "\\mu" in text_only and "\\documentclass" not in text_only and "\\approx" not in line:
         errors.append((i, "\\mu in text mode", line))
     if "\\rho" in text_only:
         errors.append((i, "\\rho in text mode", line))
     if "\\sigma" in text_only:
         errors.append((i, "\\sigma in text mode", line))
-    if "\\le" in text_only and not "\\tilde" in line and not "\\clip" in line:
+    if "\\le" in text_only and "\\tilde" not in line and "\\clip" not in line:
         errors.append((i, "\\le in text mode", line))
 
     # Count single $
