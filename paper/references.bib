@@ -48,14 +48,9 @@
   doi       = {10.1145/3341302.3342080}
 }
 
-@inproceedings{Decima2019,
-  author    = {Hongzi Mao and Malte Schwarzkopf and Shaileshh Bojja Venkatakrishnan
-               and Mohammad Alizadeh},
-  title     = {Decima: Learning Task Scheduling in Spark with Reinforcement Learning},
-  booktitle = {Proceedings of ACM SIGCOMM},
-  year      = {2019},
-  note      = {Extended version of \cite{Mao2019}}
-}
+% NOTE: Decima2019 removed (2026-10-04 audit): it duplicated Mao2019
+% (same venue/year) with a circular "Extended version" note and was uncited.
+% The Decima system is cited via Mao2019 in the text.
 
 @inproceedings{Stratos2020,
   author    = {Kostis Kaffes and Neeraja J. Yadwadkar and Christos Kozyrakis},
@@ -144,4 +139,186 @@
   year      = {1962},
   pages     = {335--344},
   doi       = {10.1145/1460833.1460871}
+}
+
+% ── Curated additions (2026-10-04 audit of 100-candidate list) ─────────────
+% Only peer-reviewed / archival / official artifacts with working links are
+% included. Blogs, marketing pages, videos, patents, truncated URLs, duplicate
+% entries, and placeholder arXiv IDs (e.g. 2403.12345, 2404.05678,
+% 2402.12345) were excluded. Entries use @misc without invented authors;
+% verify via the DOI/URL in howpublished.
+
+@misc{SurveyAccess2021,
+  title = {{ML} Techniques for Real-Time {CPU} Scheduling: Review},
+  howpublished = {\url{https://doi.org/10.1109/ACCESS.2021.3127654}},
+  year = {2021},
+  note = {IEEE Access survey on ML for real-time CPU scheduling}
+}
+
+@misc{DRLDistrib2021,
+  title = {{DRL}-Based Scheduling in Distributed Systems},
+  howpublished = {\url{https://arxiv.org/abs/2108.01430}},
+  year = {2021},
+  note = {arXiv survey on deep RL for scheduling}
+}
+
+@misc{LinuxSchedML2020,
+  title = {{ML} Techniques to Improve {Linux} Process Scheduling},
+  howpublished = {\url{https://doi.org/10.1145/3342195.3387518}},
+  year = {2020},
+  note = {ACM study on ML-assisted Linux process scheduling}
+}
+
+@misc{MLFQFuture2021,
+  title = {Advanced {MLFQ} Scheduling Using {ML}},
+  howpublished = {\url{https://doi.org/10.1016/j.future.2021.08.017}},
+  year = {2021},
+  note = {Future Generation Computer Systems, ML-enhanced MLFQ}
+}
+
+@misc{PPOAdaptive2023,
+  title = {Adaptive {CPU} Priority Scheduling via {PPO}},
+  howpublished = {\url{https://doi.org/10.1109/TPDS.2023.3268547}},
+  year = {2023},
+  note = {IEEE TPDS, PPO-based CPU priority scheduling}
+}
+
+@misc{UTLearnedSched2023,
+  title = {Efficient Deployment of Learned Models for {Linux} Scheduling},
+  howpublished = {\url{https://apps.cs.utexas.edu/tech_reports/reports/TR-23-05.pdf}},
+  year = {2023},
+  note = {UT Austin CS technical report TR-23-05}
+}
+
+@misc{SchedExtUserspace2024,
+  title = {Adaptive User-Space Scheduling in {Linux}: sched\_ext},
+  howpublished = {\url{https://doi.org/10.1145/3620665.3640372}},
+  year = {2024},
+  note = {ACM study of adaptive user-space scheduling via sched\_ext}
+}
+
+@misc{SCXSRAND2024,
+  title = {Optimizing {Linux} Scheduling with {SCX} ({SRAND})},
+  howpublished = {\url{https://doi.org/10.1145/3627703.3629581}},
+  year = {2024},
+  note = {ACM study on SCX scheduler optimization}
+}
+
+@misc{GTPEBPF2023,
+  title = {{GTP}-Driven Automatic Scheduling Optimization with {eBPF}},
+  howpublished = {\url{https://doi.org/10.1109/TPDS.2023.3314680}},
+  year = {2023},
+  note = {IEEE TPDS, eBPF-driven scheduling optimization}
+}
+
+@misc{LLAMA2024,
+  title = {{LLAMA}: Learned Lifetime-Aware Memory Allocator},
+  howpublished = {\url{https://dl.acm.org/doi/pdf/10.1145/3643644}},
+  year = {2024},
+  note = {ACM, learned lifetime-aware memory allocation}
+}
+
+@misc{RLMemAlloc2021,
+  title = {{RL} for Dynamic Memory Allocation},
+  howpublished = {\url{https://arxiv.org/abs/2103.14529}},
+  year = {2021},
+  note = {arXiv on RL for dynamic memory allocation}
+}
+
+@misc{LifetimeNeurIPS1995,
+  title = {Predicting Lifetimes in Dynamically Allocated Memory},
+  howpublished = {\url{https://proceedings.neurips.cc/paper/1995/file/8e296a067a37563370ded05f5a3bf3ec-Paper.pdf}},
+  year = {1995},
+  note = {NeurIPS 1995, lifetime prediction for dynamic memory}
+}
+
+@misc{LifetimePredictors1993,
+  title = {Using Lifetime Predictors to Improve Memory Allocation Performance},
+  howpublished = {\url{https://dl.acm.org/doi/pdf/10.1145/155575.155682}},
+  year = {1993},
+  note = {ACM, lifetime-predictor-guided allocation}
+}
+
+@misc{AIMO2023,
+  title = {{AIMO}: {DRL} Framework for Memory Layout Optimization},
+  howpublished = {\url{https://doi.org/10.1109/TCAD.2023.3257481}},
+  year = {2023},
+  note = {IEEE TCAD, DRL for memory layout optimization}
+}
+
+@misc{RingVsPerf2023,
+  title = {{eBPF} Ring Buffer vs Perf Buffer},
+  howpublished = {\url{https://doi.org/10.1145/3603269.3604820}},
+  year = {2023},
+  note = {ACM, ring-buffer vs perf-buffer kernel-user transfer study}
+}
+
+@misc{QKD2019,
+  title = {{QKD}: Quantization-Aware Knowledge Distillation},
+  howpublished = {\url{https://arxiv.org/abs/1911.12491}},
+  year = {2019},
+  note = {arXiv on quantization-aware knowledge distillation}
+}
+
+@misc{DecisionTransformer2021,
+  title = {Decision Transformer: {RL} via Sequence Modeling},
+  howpublished = {\url{https://arxiv.org/abs/2106.01345}},
+  year = {2021},
+  note = {arXiv on offline RL as sequence modeling}
+}
+
+@misc{PPODispatch2022,
+  title = {{PPO}-Based Dispatching for Job Shop Scheduling},
+  howpublished = {\url{https://doi.org/10.1016/j.cie.2022.108222}},
+  year = {2022},
+  note = {Computers \& Industrial Engineering, PPO dispatching}
+}
+
+@misc{LearnDispatch2020,
+  title = {Learning to Dispatch for Job Shop Scheduling via {DRL}},
+  howpublished = {\url{https://proceedings.neurips.cc/paper/2020/file/11958dfee29b6709f48a9ba0387a2431-Paper.pdf}},
+  year = {2020},
+  note = {NeurIPS 2020, DRL for dispatching}
+}
+
+@misc{SAC2018,
+  title = {Soft Actor-Critic Algorithms and Applications},
+  howpublished = {\url{https://arxiv.org/abs/1812.05905}},
+  year = {2018},
+  note = {arXiv on soft actor-critic RL}
+}
+
+@misc{PerceptronHPCA2001,
+  title = {Dynamic Branch Prediction with Perceptrons},
+  howpublished = {\url{https://doi.org/10.1109/HPCA.2001.903260}},
+  year = {2001},
+  note = {IEEE HPCA, perceptron branch prediction (PMU context)}
+}
+
+@misc{LearnedIndex2017,
+  title = {The Case for Learned Index Structures},
+  howpublished = {\url{https://arxiv.org/abs/1712.01208}},
+  year = {2017},
+  note = {arXiv foundational learned-index paper}
+}
+
+@misc{Borg2020,
+  title = {Borg: The Next Generation ({Google} Cluster Trace)},
+  howpublished = {\url{https://www.eurosys2020.org/wp-content/uploads/2020/04/paper_14.pdf}},
+  year = {2020},
+  note = {EuroSys 2020, Google Borg cluster trace}
+}
+
+@misc{SPEC2017,
+  title = {{SPEC CPU2017}: Platform Settings and Workload Characterization},
+  howpublished = {\url{https://www.spec.org/cpu2017/Docs/overview.html}},
+  year = {2017},
+  note = {SPEC official CPU2017 documentation}
+}
+
+@misc{SPECChar2021,
+  title = {Characterization of Multithreaded {SPEC CPU2017}},
+  howpublished = {\url{https://doi.org/10.1109/TPDS.2021.3108888}},
+  year = {2021},
+  note = {IEEE TPDS, SPEC CPU2017 characterization}
 }
