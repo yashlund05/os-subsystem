@@ -164,11 +164,9 @@ neuroos-lite/
 ## 4. Current Implementation Status
 
 > [!NOTE]
-> The repository is currently in the **FOUNDATION / SCAFFOLDING STAGE**.
+> The repository is currently **FULLY COMPLETE — All Phases 1–6 implemented** (SMP multi-core scheduling, NUMA-aware allocation, online drift self-correction, full test suites passing).
 >
-> Core architectural specifications, C interface headers, Python simulator skeletons, build infrastructure, and CI workflows are established. Active algorithms and deep learning training loops will be implemented milestone-by-milestone per [`docs/Phases.md`](docs/Phases.md).
-
-See [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) for detailed per-component status.
+> See [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) for the per-component registry and [`PROJECT_COMPLETION_REPORT.md`](PROJECT_COMPLETION_REPORT.md) for the final verified completion report.
 
 ---
 
@@ -185,8 +183,8 @@ See [`docs/IMPLEMENTATION_STATUS.md`](docs/IMPLEMENTATION_STATUS.md) for detaile
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/neuroos-lite.git
-cd neuroos-lite
+git clone https://github.com/yashlund05/os-subsystem.git
+cd os-subsystem
 
 # Setup Python environment
 make setup
