@@ -16,6 +16,12 @@
 
 import warnings
 
+from ml.distillation.distiller import (
+    DistillationConfig,
+    distill_student_from_teacher,
+    numpy_student_forward,
+)
+
 warnings.warn(
     "ml.distillation is DEPRECATED and unreferenced. "
     "Use the top-level 'quantization/' package instead. "
@@ -24,10 +30,5 @@ warnings.warn(
     stacklevel=2,
 )
 
-from ml.distillation.distiller import (
-    DistillationConfig,
-    distill_student_from_teacher,
-    numpy_student_forward,
-)
-
 __all__ = ["DistillationConfig", "distill_student_from_teacher", "numpy_student_forward"]
+

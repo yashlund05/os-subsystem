@@ -16,20 +16,20 @@
 
 import warnings
 
-warnings.warn(
-    "ml.quantization is DEPRECATED and unreferenced. "
-    "Use the top-level 'quantization/' package instead. "
-    "(Remediation item 1.4 — will be removed in a future cleanup.)",
-    DeprecationWarning,
-    stacklevel=2,
-)
-
 from ml.quantization.lut import QuantumLUT, build_quantum_lut
 from ml.quantization.quantize import (
     c_header_bytes,
     quantize_student,
     quantized_forward_int,
     save_quantized_policy,
+)
+
+warnings.warn(
+    "ml.quantization is DEPRECATED and unreferenced. "
+    "Use the top-level 'quantization/' package instead. "
+    "(Remediation item 1.4 — will be removed in a future cleanup.)",
+    DeprecationWarning,
+    stacklevel=2,
 )
 
 __all__ = [
@@ -40,3 +40,4 @@ __all__ = [
     "QuantumLUT",
     "build_quantum_lut",
 ]
+

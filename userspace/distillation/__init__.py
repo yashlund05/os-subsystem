@@ -18,6 +18,10 @@ Separation per docs/Rules.md Rule 9: prototype training in ml/, daemon in usersp
 
 import warnings
 
+from userspace.distillation.distiller import run_distillation_job
+from userspace.distillation.lut import build_kernel_tables
+from userspace.distillation.quantize import quantize_and_export
+
 warnings.warn(
     "userspace.distillation is DEPRECATED and unreferenced. "
     "Use the top-level 'quantization/' package instead. "
@@ -26,8 +30,5 @@ warnings.warn(
     stacklevel=2,
 )
 
-from userspace.distillation.distiller import run_distillation_job
-from userspace.distillation.lut import build_kernel_tables
-from userspace.distillation.quantize import quantize_and_export
-
 __all__ = ["run_distillation_job", "quantize_and_export", "build_kernel_tables"]
+

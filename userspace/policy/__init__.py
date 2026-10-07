@@ -15,6 +15,8 @@
 
 import warnings
 
+from userspace.policy.policy_table import DoubleBufferedPolicyTable, PolicySnapshot
+
 warnings.warn(
     "userspace.policy is DEPRECATED and unreferenced. "
     "The live policy struct is defined in kernel/include/neuroos_kernel.h. "
@@ -23,6 +25,5 @@ warnings.warn(
     stacklevel=2,
 )
 
-from userspace.policy.policy_table import DoubleBufferedPolicyTable, PolicySnapshot
-
 __all__ = ["DoubleBufferedPolicyTable", "PolicySnapshot"]
+
