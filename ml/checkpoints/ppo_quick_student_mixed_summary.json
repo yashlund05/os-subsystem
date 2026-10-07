@@ -2,7 +2,7 @@
   "experiment": "ppo_quick",
   "architecture": "student",
   "curriculum_mode": "mixed",
-  "git_hash": "9e5d7cc7fc99081b9c2e3c1e68c5ccfcc26aa2b8",
+  "git_hash": "15f9cd46ff8a075a71eea312ceda583716a1b764",
   "runs": [
     {
       "run_name": "ppo_quick_student_mixed_s42",
@@ -20,7 +20,7 @@
           "value_loss": 0.03872,
           "entropy": 0.5613,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.12
+          "elapsed_seconds": 0.1
         },
         {
           "timesteps": 512,
@@ -30,7 +30,7 @@
           "value_loss": 0.02675,
           "entropy": 0.5419,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.23
+          "elapsed_seconds": 0.21
         },
         {
           "timesteps": 768,
@@ -40,7 +40,7 @@
           "value_loss": 0.0279,
           "entropy": 0.6188,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.35
+          "elapsed_seconds": 0.34
         },
         {
           "timesteps": 1024,
@@ -50,7 +50,7 @@
           "value_loss": 0.02357,
           "entropy": 0.5488,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.48
+          "elapsed_seconds": 0.44
         },
         {
           "timesteps": 1280,
@@ -60,7 +60,7 @@
           "value_loss": 0.01916,
           "entropy": 0.5134,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.6
+          "elapsed_seconds": 0.57
         },
         {
           "timesteps": 1536,
@@ -70,7 +70,7 @@
           "value_loss": 0.02131,
           "entropy": 0.5555,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.71
+          "elapsed_seconds": 0.69
         },
         {
           "timesteps": 1792,
@@ -80,7 +80,7 @@
           "value_loss": 0.02246,
           "entropy": 0.5242,
           "approx_kl": 0.0,
-          "elapsed_seconds": 0.83
+          "elapsed_seconds": 0.82
         },
         {
           "timesteps": 2048,

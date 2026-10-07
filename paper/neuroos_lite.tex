@@ -52,22 +52,9 @@
 % (same venue/year) with a circular "Extended version" note and was uncited.
 % The Decima system is cited via Mao2019 in the text.
 
-@inproceedings{Stratos2020,
-  author    = {Kostis Kaffes and Neeraja J. Yadwadkar and Christos Kozyrakis},
-  title     = {Centralizing No-Cost Scheduling Decisions in the OS Scheduler},
-  booktitle = {Proceedings of the ACM Symposium on Cloud Computing (SoCC)},
-  year      = {2020},
-  doi       = {10.1145/3419111.3421285}
-}
+% Removed Stratos2020 due to unverified citation.
 
-@inproceedings{Park2020,
-  author    = {Soo-Young Park and Seunghwan Jo and Youngsam Shin and Heon Y. Yeom},
-  title     = {$\mu$-Sched: Latency-Sensitive Process Scheduling via Reinforcement Learning},
-  booktitle = {Proceedings of the IEEE International Conference on High Performance Computing and Communications (HPCC)},
-  year      = {2020},
-  pages     = {234--241},
-  doi       = {10.1109/HPCC-SmartCity-DSS50907.2020.00042}
-}
+% Removed Park2020 due to unverified citation.
 
 @inproceedings{Jacob2018,
   author    = {Benoit Jacob and Skirmantas Kligys and Bo Chen and Menglong Zhu and Matthew Tang and Andrew Howard and Hartwig Adam and Dmitry Kalenichenko},
@@ -132,115 +119,49 @@
 % Only peer-reviewed / archival / official artifacts with working links are
 % included. Blogs, marketing pages, videos, patents, truncated URLs, duplicate
 % entries, and placeholder arXiv IDs (e.g. 2403.12345, 2404.05678,
-% 2402.12345) were excluded. Entries use @misc without invented authors;
+% 2402.12345) were excluded. Entries use the misc type without invented authors;
 % verify via the DOI/URL in howpublished.
 
-@misc{SurveyAccess2021,
-  title = {{ML} Techniques for Real-Time {CPU} Scheduling: Review},
-  howpublished = {\url{https://doi.org/10.1109/ACCESS.2021.3127654}},
-  year = {2021},
-  note = {IEEE Access survey on ML for real-time CPU scheduling}
+% Removed LLAMA2024
+
+@misc{LimMaddukuri2024,
+  author       = {Arisrei Lim and Abhiram Maddukuri},
+  title        = {Reinforcement Learning for Dynamic Memory Allocation},
+  howpublished = {arXiv preprint arXiv:2410.15492},
+  year         = {2024},
+  url          = {https://arxiv.org/abs/2410.15492}
 }
 
-@misc{DRLDistrib2021,
-  title = {{DRL}-Based Scheduling in Distributed Systems},
-  howpublished = {\url{https://arxiv.org/abs/2108.01430}},
-  year = {2021},
-  note = {arXiv survey on deep RL for scheduling}
+@inproceedings{CohnSingh1996,
+  author    = {David A. Cohn and Satinder Singh},
+  title     = {Predicting Lifetimes in Dynamically Allocated Memory},
+  booktitle = {Advances in Neural Information Processing Systems 9 (NIPS 1996)},
+  pages     = {939--945},
+  year      = {1996},
+  url       = {https://papers.neurips.cc/paper_files/paper/1996/hash/a9078e8653368c9c291ae2f8b74012e7-Abstract.html}
 }
 
-@misc{LinuxSchedML2020,
-  title = {{ML} Techniques to Improve {Linux} Process Scheduling},
-  howpublished = {\url{https://doi.org/10.1145/3342195.3387518}},
-  year = {2020},
-  note = {ACM study on ML-assisted Linux process scheduling}
+@inproceedings{BarrettZorn1993,
+  author    = {David A. Barrett and Benjamin G. Zorn},
+  title     = {Using Lifetime Predictors to Improve Memory Allocation Performance},
+  booktitle = {Proceedings of the ACM SIGPLAN 1993 Conference on Programming Language Design and Implementation (PLDI)},
+  year      = {1993},
+  url       = {https://doi.org/10.1145/155090.155108}
 }
 
-@misc{MLFQFuture2021,
-  title = {Advanced {MLFQ} Scheduling Using {ML}},
-  howpublished = {\url{https://doi.org/10.1016/j.future.2021.08.017}},
-  year = {2021},
-  note = {Future Generation Computer Systems, ML-enhanced MLFQ}
-}
-
-@misc{PPOAdaptive2023,
-  title = {Adaptive {CPU} Priority Scheduling via {PPO}},
-  howpublished = {\url{https://doi.org/10.1109/TPDS.2023.3268547}},
-  year = {2023},
-  note = {IEEE TPDS, PPO-based CPU priority scheduling}
-}
-
-@misc{UTLearnedSched2023,
-  title = {Efficient Deployment of Learned Models for {Linux} Scheduling},
-  howpublished = {\url{https://apps.cs.utexas.edu/tech_reports/reports/TR-23-05.pdf}},
-  year = {2023},
-  note = {UT Austin CS technical report TR-23-05}
-}
-
-@misc{SchedExtUserspace2024,
-  title = {Adaptive User-Space Scheduling in {Linux}: sched\_ext},
-  howpublished = {\url{https://doi.org/10.1145/3620665.3640372}},
-  year = {2024},
-  note = {ACM study of adaptive user-space scheduling via sched\_ext}
-}
-
-@misc{SCXSRAND2024,
-  title = {Optimizing {Linux} Scheduling with {SCX} ({SRAND})},
-  howpublished = {\url{https://doi.org/10.1145/3627703.3629581}},
-  year = {2024},
-  note = {ACM study on SCX scheduler optimization}
-}
-
-@misc{GTPEBPF2023,
-  title = {{GTP}-Driven Automatic Scheduling Optimization with {eBPF}},
-  howpublished = {\url{https://doi.org/10.1109/TPDS.2023.3314680}},
-  year = {2023},
-  note = {IEEE TPDS, eBPF-driven scheduling optimization}
-}
-
-@misc{LLAMA2024,
-  title = {{LLAMA}: Learned Lifetime-Aware Memory Allocator},
-  howpublished = {\url{https://dl.acm.org/doi/pdf/10.1145/3643644}},
-  year = {2024},
-  note = {ACM, learned lifetime-aware memory allocation}
-}
-
-@misc{RLMemAlloc2021,
-  title = {{RL} for Dynamic Memory Allocation},
-  howpublished = {\url{https://arxiv.org/abs/2103.14529}},
-  year = {2021},
-  note = {arXiv on RL for dynamic memory allocation}
-}
-
-@misc{LifetimeNeurIPS1995,
-  title = {Predicting Lifetimes in Dynamically Allocated Memory},
-  howpublished = {\url{https://proceedings.neurips.cc/paper/1995/file/8e296a067a37563370ded05f5a3bf3ec-Paper.pdf}},
-  year = {1995},
-  note = {NeurIPS 1995, lifetime prediction for dynamic memory}
-}
-
-@misc{LifetimePredictors1993,
-  title = {Using Lifetime Predictors to Improve Memory Allocation Performance},
-  howpublished = {\url{https://dl.acm.org/doi/pdf/10.1145/155575.155682}},
-  year = {1993},
-  note = {ACM, lifetime-predictor-guided allocation}
-}
-
-@misc{AIMO2023,
-  title = {{AIMO}: {DRL} Framework for Memory Layout Optimization},
-  howpublished = {\url{https://doi.org/10.1109/TCAD.2023.3257481}},
-  year = {2023},
-  note = {IEEE TCAD, DRL for memory layout optimization}
-}
-
-@misc{RingVsPerf2023,
-  title = {{eBPF} Ring Buffer vs Perf Buffer},
-  howpublished = {\url{https://doi.org/10.1145/3603269.3604820}},
-  year = {2023},
-  note = {ACM, ring-buffer vs perf-buffer kernel-user transfer study}
+@article{Sha2026AIMO,
+  author  = {Letian Sha and Xiao Chen and Hongmei Zheng and Jiaye Pan and Jiankuo Dong and Fu Xiao},
+  title   = {A Reinforcement Learning-Based Framework for Memory Layout Optimization in Ubiquitous Operating Systems},
+  journal = {Acta Electronica Sinica},
+  volume  = {54},
+  number  = {4},
+  pages   = {1626--1642},
+  year    = {2026},
+  url     = {https://doi.org/10.12263/DZXB.20250835}
 }
 
 @misc{QKD2019,
+  author = {Jangho Kim and Yash Bhalgat and Jinwon Lee and Chirag Patel and Nojun Kwak},
   title = {{QKD}: Quantization-Aware Knowledge Distillation},
   howpublished = {\url{https://arxiv.org/abs/1911.12491}},
   year = {2019},
@@ -248,41 +169,41 @@
 }
 
 @misc{DecisionTransformer2021,
+  author = {Lili Chen and Kevin Lu and Aravind Rajeswaran and Kimin Lee and Aditya Grover and Michael Laskin and Pieter Abbeel and Aravind Srinivas and Igor Mordatch},
   title = {Decision Transformer: {RL} via Sequence Modeling},
   howpublished = {\url{https://arxiv.org/abs/2106.01345}},
   year = {2021},
   note = {arXiv on offline RL as sequence modeling}
 }
 
-@misc{PPODispatch2022,
-  title = {{PPO}-Based Dispatching for Job Shop Scheduling},
-  howpublished = {\url{https://doi.org/10.1016/j.cie.2022.108222}},
-  year = {2022},
-  note = {Computers \& Industrial Engineering, PPO dispatching}
-}
-
-@misc{LearnDispatch2020,
-  title = {Learning to Dispatch for Job Shop Scheduling via {DRL}},
-  howpublished = {\url{https://proceedings.neurips.cc/paper/2020/file/11958dfee29b6709f48a9ba0387a2431-Paper.pdf}},
-  year = {2020},
-  note = {NeurIPS 2020, DRL for dispatching}
+@inproceedings{Zhang2020Dispatch,
+  author    = {Cong Zhang and Wen Song and Zhiguang Cao and Jie Zhang and Puay Siew Tan and Chi Xu},
+  title     = {Learning to Dispatch for Job Shop Scheduling via Deep Reinforcement Learning},
+  booktitle = {Advances in Neural Information Processing Systems 33 (NeurIPS 2020)},
+  pages     = {1621--1632},
+  year      = {2020},
+  url       = {https://papers.nips.cc/paper/2020/hash/11958dfee29b6709f48a9ba0387a2431-Abstract.html}
 }
 
 @misc{SAC2018,
+  author = {Tuomas Haarnoja and Aurick Zhou and Kristian Hartikainen and George Tucker and Sehoon Ha and Jie Tan and Vikash Kumar and Henry Zhu and Abhishek Gupta and Pieter Abbeel and Sergey Levine},
   title = {Soft Actor-Critic Algorithms and Applications},
   howpublished = {\url{https://arxiv.org/abs/1812.05905}},
   year = {2018},
   note = {arXiv on soft actor-critic RL}
 }
 
-@misc{PerceptronHPCA2001,
-  title = {Dynamic Branch Prediction with Perceptrons},
-  howpublished = {\url{https://doi.org/10.1109/HPCA.2001.903260}},
-  year = {2001},
-  note = {IEEE HPCA, perceptron branch prediction (PMU context)}
+@inproceedings{JimenezLin2001,
+  author    = {Daniel A. Jim{\'e}nez and Calvin Lin},
+  title     = {Dynamic Branch Prediction with Perceptrons},
+  booktitle = {Proceedings of the 7th International Symposium on High-Performance Computer Architecture (HPCA)},
+  pages     = {197--206},
+  year      = {2001},
+  url       = {https://people.engr.tamu.edu/djimenez/pdfs/hpca7_dist.pdf}
 }
 
 @misc{LearnedIndex2017,
+  author = {Tim Kraska and Alex Beutel and Ed H. Chi and Jeffrey Dean and Neoklis Polyzotis},
   title = {The Case for Learned Index Structures},
   howpublished = {\url{https://arxiv.org/abs/1712.01208}},
   year = {2017},
@@ -290,30 +211,22 @@
 }
 
 @misc{Borg2020,
+  author = {Muhammad Tirmazi and Adam Barker and Nan Deng and Md E. Haque and Zhijing Gene Qin and Steven Hand and Mor Harchol-Balter and John Wilkes},
   title = {Borg: The Next Generation ({Google} Cluster Trace)},
   howpublished = {\url{https://www.eurosys2020.org/wp-content/uploads/2020/04/paper_14.pdf}},
   year = {2020},
   note = {EuroSys 2020, Google Borg cluster trace}
 }
 
-@misc{SPEC2017,
-  title = {{SPEC CPU2017}: Platform Settings and Workload Characterization},
-  howpublished = {\url{https://www.spec.org/cpu2017/Docs/overview.html}},
-  year = {2017},
-  note = {SPEC official CPU2017 documentation}
-}
-
-@misc{SPECChar2021,
-  title = {Characterization of Multithreaded {SPEC CPU2017}},
-  howpublished = {\url{https://doi.org/10.1109/TPDS.2021.3108888}},
-  year = {2021},
-  note = {IEEE TPDS, SPEC CPU2017 characterization}
-}
+% Removed SPEC2017 and SPECChar2021
 \end{filecontents*}
 
 \documentclass[conference]{IEEEtran}
 \IEEEoverridecommandlockouts
-\usepackage{mathptmx} % Times (New Roman clone) for all text and math — IEEE compliant
+\usepackage{mathptmx} % Times (New Roman clone) for all text and math
+\usepackage[T1]{fontenc}
+\usepackage{courier} % Times-compatible monospace for code
+\usepackage[protrusion=true,expansion=true]{microtype}
 \usepackage{cite}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
@@ -324,6 +237,8 @@
 \usepackage{multirow}
 \usepackage{url}
 
+\emergencystretch=2em
+\hyphenpenalty=50
 \graphicspath{{./}{figures/}{paper/figures/}}
 
 % Safe image inclusion macro
@@ -348,67 +263,57 @@
 
 \title{NeuroOS-Lite: Asymmetric Local GPU-Trained Neural Preemption and Memory Partitioning for Low-Latency OS Subsystems}
 
-\author{
-\IEEEauthorblockN{Vyankatesh Dattatray Dawale}
-\IEEEauthorblockA{\textit{Department of Computer Engineering}\\
-Vishwakarma University\\
-Pune, India\\
-ORCID: 0009-0008-8773-9604}
-\and
-\IEEEauthorblockN{Aditya Santosh Adhikar}
-\IEEEauthorblockA{\textit{Department of Computer Engineering}\\
-Vishwakarma University\\
-Pune, India\\
-ORCID: 0009-0006-3756-1727}
-\and
-\IEEEauthorblockN{Saim Kotkar}
-\IEEEauthorblockA{\textit{Department of AI}\\
-Vishwakarma University\\
-Pune, India\\
-ORCID: 0009-0000-4572-8765}
-\\[1.5ex]
-\IEEEauthorblockN{Yash Dilip Lund}
-\IEEEauthorblockA{\textit{Department of AI}\\
-Vishwakarma University\\
-Pune, India\\
-ORCID: 0009-0004-8796-4271}
-\and
-\IEEEauthorblockN{Prof.\ Sarika Patil}
-\IEEEauthorblockA{\textit{Department of AI}\\
-Vishwakarma University\\
-Pune, India\\
-sarika.patil@vupune.ac.in}
+\newcommand{\authcell}[3]{\parbox[t]{0.315\textwidth}{\centering\small
+  \textit{#1}\\[0.3ex]
+  \textit{#2}\\
+  Vishwakarma University\\
+  Pune, India\\
+  #3}}
+
+\author{%
+\authcell{Prof.\ Sarika Patil}{Department of AI}{sarika.patil@vupune.ac.in}%
+\hfill
+\authcell{Yash Dilip Lund}{Department of AI}{ORCID: 0009-0004-8796-4271}%
+\hfill
+\authcell{Vyankatesh Dattatray Dawale}{Department of Computer Engineering}{ORCID: 0009-0008-8773-9604}
+\\[2.5ex]
+\authcell{Aditya Santosh Adhikar}{Department of Computer Engineering}{ORCID: 0009-0006-3756-1727}%
+\hspace{0.06\textwidth}%
+\authcell{Saim Kotkar}{Department of AI}{ORCID: 0009-0000-4572-8765}
 }
 
 \maketitle
 
 \begin{abstract}
-Operating system CPU scheduling and dynamic memory allocation rely on static
-heuristics (\textit{e.g.}, Round Robin, Shortest Remaining Time First,
-Best-Fit, Buddy allocators) that cannot adapt to non-stationary, heavy-tailed
-burst dynamics. Applying deep learning inside OS kernels historically
-introduces tens-to-hundreds of microseconds of inference overhead---dwarfing the
-$0.8\text{--}2.5\,\mu\text{s}$ uniprocessor context-switch they seek to
-optimize (\textit{the Overhead Paradox}). We present \textbf{NeuroOS-Lite},
-an asymmetric decoupled architecture that resolves this trade-off. Off-path
-Deep Reinforcement Learning (Proximal Policy Optimization; PPO) trains a deep
-neural policy on a local discrete GPU ingesting hardware Performance Monitoring
-Unit (PMU) telemetry across a lock-free Single-Producer Single-Consumer (SPSC)
-ring buffer. The converged policy is distilled into a two-layer
-\mbox{$16\to 8\to 1$} Multi-Layer Perceptron (MLP) and quantized to
-symmetric \texttt{int8} weights, achieving deterministic decision latency below
-$50\,\text{ns}$ via AVX2 SIMD integer arithmetic inside the Linux
-\texttt{sched\_ext} kernel dispatch hook. Bounded $O(1)$ guardrails revert to
-MLFQ/Buddy allocators if queue depth exceeds 1{,}024 or model drift exceeds
-$3\sigma$. Across 30 disjoint evaluation seeds and eight canonical workload
-profiles---including heavy-tailed Pareto, Poisson, adversarial convoy, and
-out-of-distribution alternating multi-burst---the \texttt{int8} Student model
-achieves mean waiting times of $702.8\,\mu\text{s}$ ($\rho = 0.5$) and
-$1238.8\,\mu\text{s}$ ($\rho = 0.8$) on Pareto workloads, outperforming
-MLFQ by up to \textbf{47.1\%} and Round Robin by up to \textbf{59.1\%},
-with bit-exact quantization parity on six of eight benchmarks. Quantization
-degrades mean waiting time by at most $8.48\%$ on the most adversarial
-condition, statistically indistinguishable within confidence intervals.
+Conventional OS task schedulers and heap allocators depend on stationary
+assumptions baked into fixed policies---time-slicing, shortest-job-first,
+best-fit, and buddy splitting---that break down under the non-stationary,
+heavy-tailed job-size distributions typical of contemporary cloud workloads.
+Neural scheduling policies could close this gap, yet embedding inference inside
+a kernel dispatch hook historically incurs latency in the tens-to-hundreds of
+microsecond range, dwarfing the sub-$3\,\mu\text{s}$ uniprocessor context-switch
+that any scheduler must fit inside---a tension we term the \textit{Overhead
+Paradox}. We introduce \textbf{NeuroOS-Lite}, a \emph{proposed} asymmetric
+architecture that resolves this tension by strict spatial separation: a
+GPU-resident daemon trains a reinforcement-learning policy completely
+off the kernel critical path, while only a tiny quantized integer network
+inhabits the fast path. Hardware PMU telemetry reaches the daemon via a
+wait-free 16-byte SPSC ring buffer; the trained policy is compressed to a
+two-layer $16\to 8\to 1$ MLP with \texttt{int8} weights and a sub-$50\,\text{ns}$
+dispatch-latency design target---achieved without a single floating-point
+instruction via AVX2 integer SIMD. $O(1)$ guardrails bound worst-case
+behaviour by falling back to classical policies. All scheduling and quantization
+results in this paper derive from a Gymnasium-based simulator evaluated over
+30 disjoint seeds across eight workload profiles; the in-kernel deployment,
+nanosecond latency harness, QuantumLUT, and lifetime allocator are design-stage
+components that are \emph{not} validated here. In simulation the \texttt{int8}
+Student achieves mean waiting times of $702.8\,\mu\text{s}$ ($\rho = 0.5$)
+and $1238.8\,\mu\text{s}$ ($\rho = 0.8$) on Pareto workloads---outperforming
+MLFQ by $7.1\text{--}24.2\%$ and RR-5ms by $27.9\text{--}29.3\%$---while
+failing on Convoy and OOD Multi-Burst scenarios, which we surface as explicit
+failure modes. \texttt{Int8} quantization meets its thresholds on seven of
+eighth workloads; the Pareto $\rho = 0.95$ case is flagged at $+8.48\%$
+degradation with overlapping confidence intervals.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -419,23 +324,21 @@ distillation, reinforcement learning, PPO, guardrails, SIMD, ring buffer.
 \section{Introduction}
 \label{sec:intro}
 
-Modern operating systems dispatch CPU tasks and satisfy memory allocation
-requests using decades-old heuristics: First-Come First-Served (FCFS),
-Shortest Remaining Time First (SRTF), Round Robin (RR), Multi-Level Feedback
-Queues (MLFQ), First-Fit, Best-Fit, and Binary Buddy allocators. Although
-computationally negligible ($O(1)$ to $O(n)$ pointer operations), these
-heuristics were designed under stationarity assumptions that fail under
-contemporary cloud workloads exhibiting heavy-tailed Pareto burst distributions
-with shape parameter $\alpha \in [1.1, 1.8]$ and Poisson arrival
-bursts~\cite{Tsafrir2007,Arpaci2018}. The consequences are well-documented:
-convoy delays, starvation of short interactive jobs, preemption thrashing, and
-severe external fragmentation slivers that degrade heap utilization by up to
-$40\%$ under alternating allocation/deallocation
-patterns~\cite{Wilson1995,Johnstone1998}.
+Every production OS kernel contains a scheduler and a heap allocator whose
+critical-path complexity is deliberately constrained to $O(1)$--$O(\log n)$
+operations: preemptive time-slicing (FCFS, SRTF, RR, MLFQ) for CPU dispatch
+and segregated-fit or buddy-system policies for memory~\cite{Arpaci2018}.
+These policies were engineered for predictable, lightly-loaded workloads;
+contemporary cloud deployments violate that premise with Pareto-distributed
+burst sizes ($\alpha \in [1.1, 1.8]$) and bursty Poisson arrivals~\cite{Tsafrir2007}
+that induce convoy effects, starvation of short interactive tasks, preemption
+thrashing, and heap fragmentation reaching 40\% under
+alternating allocation-deallocation
+stress~\cite{Wilson1995,Johnstone1998}.
 
 Machine learning offers a natural remedy: a policy that observes hardware
 performance counters can anticipate burst phase transitions and schedule
-accordingly. However, prior art~\cite{Mao2019,Stratos2020}
+accordingly. However, prior art~\cite{Mao2019}
 uniformly confronts the \emph{Overhead Paradox}:
 
 \begin{quote}
@@ -446,25 +349,28 @@ $<500\,\text{ns}$ memory allocation), turning theoretical queue-theoretic
 efficiency gains into net throughput collapses.''}
 \end{quote}
 
-NeuroOS-Lite resolves the Overhead Paradox through an \textit{asymmetric
+NeuroOS-Lite proposes to address the Overhead Paradox through an \textit{asymmetric
 decoupled} architecture: heavy DRL training executes asynchronously off-path on
-a local discrete GPU, while the fast-path kernel decision is evaluated as a
-two-layer quantized integer MLP in under $50\,\text{ns}$.
+a local discrete GPU, while the fast-path kernel decision is intended to be
+evaluated as a two-layer quantized integer MLP with a design target of under
+$50\,\text{ns}$. This latency target has not been independently validated in
+this manuscript (Section~\ref{sec:limits}).
 
 \subsection*{Contributions}
 
 This paper makes the following contributions:
 
 \begin{enumerate}
-  \item \textbf{System Design}: An asymmetric architecture cleanly separating
-    off-path GPU training from sub-$50\,\text{ns}$ kernel inference, connected
+  \item \textbf{Architectural Framework}: A decoupled paradigm isolating
+    off-path GPU training from kernel inference with a sub-$50\,\text{ns}$
+    design target, connected
     by a wait-free 16-byte SPSC ring buffer and low-frequency ($\sim 1\text{--}5\,\text{Hz}$)
     atomic policy swap (\S\ref{sec:design}).
 
-  \item \textbf{MDP Formulation}: Formal Markov Decision Process (MDP)
-    specification of uniprocessor preemptive scheduling with a
-    Little's-Law-aligned reward function achieving Pearson correlation
-    $r = 1.000$ with ground-truth total waiting time (\S\ref{sec:design}).
+  \item \textbf{Mathematical Formulation}: A rigorous MDP model for uniprocessor
+    preemptive scheduling, incorporating a reward metric mathematically consistent with
+    Little's Law that yields an exact Pearson coefficient of $r = 1.000$ relative to
+    empirical cumulative wait times (\S\ref{sec:design}).
 
   \item \textbf{Compact Student Model}: A $16\to 8\to 1$ MLP trained via
     Behavior Cloning pre-training followed by PPO fine-tuning, achieving
@@ -475,16 +381,29 @@ This paper makes the following contributions:
     quantization with per-feature input scaling, layer-1 fixed-point
     requantization ($M = 3333,\,S = 20$), and CRC32-validated weight export to
     \texttt{kernel/include/neuroos\_weights.h} with zero FPU instructions in
-    the kernel path (\S\ref{sec:impl}).
+    the kernel path by design (\S\ref{sec:impl}).
 
-  \item \textbf{Empirical Validation}: 30-seed evaluation across eight canonical
-    workloads demonstrating bit-exact quantization parity on six workloads and
-    statistically indistinguishable degradation on the remaining two
-    (\S\ref{sec:eval}).
+  \item \textbf{Empirical Validation}: 30-seed \emph{simulated} evaluation across eight
+    canonical workloads. \texttt{Int8} quantization passes its degradation
+    thresholds on seven workloads and is flagged on one (Pareto
+    $\rho = 0.95$); Convoy and Multi-Burst (OOD) are reported as failure modes
+    for the learned policy (\S\ref{sec:eval}).
 \end{enumerate}
+
+\subsection*{Scope and Verification Status}
+
+To avoid overstating the evidence, we separate what this manuscript supports
+from what it does not. \emph{Supported (simulation):} the Gymnasium-based
+uniprocessor simulator results in Tables~\ref{tab:phase4} and~\ref{tab:v4} and
+the associated figures. \emph{Not validated here (design stage):} the in-kernel
+\texttt{sched\_ext} implementation and its nanosecond latency figures, the
+QuantumLUT quantum-sizing table, and the lifetime-affinity memory allocator.
+Section~\ref{sec:limits} lists these and other open items in full.
 
 \section{Related Work}
 \label{sec:related}
+
+
 
 \subsection{Classical OS Scheduling \& Allocation}
 
@@ -494,36 +413,26 @@ Wilson~\cite{Johnstone1998} provide the seminal characterization of external
 fragmentation under real allocator traces, reporting fragmentation ratios up to
 $60\%$ for fragmentation-susceptible patterns. Lifetime-aware allocation has
 a long history: lifetime prediction for dynamically allocated
-memory~\cite{LifetimeNeurIPS1995} and lifetime-predictor-guided
-allocation~\cite{LifetimePredictors1993} motivate our lifetime-affinity
-clustering, recently revisited by LLAMA~\cite{LLAMA2024} and RL-based dynamic
-allocation~\cite{RLMemAlloc2021} and layout optimization~\cite{AIMO2023}.
+memory~\cite{CohnSingh1996} and lifetime-predictor-guided
+allocation~\cite{BarrettZorn1993} motivate our lifetime-affinity
+clustering, recently revisited by RL-based dynamic
+allocation~\cite{LimMaddukuri2024} and layout optimization~\cite{Sha2026AIMO}.
 Workload realism is grounded in the Google Borg
-trace~\cite{Borg2020} and SPEC CPU2017~\cite{SPEC2017,SPECChar2021}.
+trace~\cite{Borg2020}.
 
 \subsection{ML-Based System Optimization}
 
-Mao \textit{et al.}~\cite{Mao2019} (Decima) apply graph neural networks to
-data-parallel cluster job scheduling, demonstrating $21\%$ average JCT
-reduction on Spark traces, but require centralized scheduling infrastructure
-with millisecond-scale decision latency far exceeding uniprocessor tick budgets.
-Stratos \textit{et al.}~\cite{Stratos2020} propose learned OS scheduling under
-heterogeneous server workloads, relying on full floating-point neural network
-evaluation in user space with context switch notification latency measured in
-microseconds. Neither system satisfies the sub-$50\,\text{ns}$
-kernel-path constraint.
+Mao \textit{et al.}~\cite{Mao2019} (Decima) use a graph neural network to
+coordinate coarse-grained stage placement across a 25-node Spark cluster,
+demonstrating job-completion time reductions exceeding $21\%$ relative to
+manually tuned heuristics. Decima targets cluster-level resource allocation
+with millisecond-scale decisions; it is architecturally mismatched to the
+uniprocessor per-tick dispatch problem where decisions must fit inside a
+sub-microsecond budget---and neither system approaches the sub-$50\,\text{ns}$
+kernel-hook constraint that motivates NeuroOS-Lite.
 
-Park \textit{et al.}~\cite{Park2020} propose $\mu$-Sched for latency-sensitive
-workloads using reinforcement learning with a compact LSTM policy; however,
-LSTM recurrence introduces $>1\,\mu\text{s}$ latency per step due to
-floating-point gated updates. This line of work is surveyed for real-time CPU
-scheduling~\cite{SurveyAccess2021} and distributed
-scheduling~\cite{DRLDistrib2021}, with concrete points including ML-assisted
-Linux scheduling~\cite{LinuxSchedML2020}, ML-enhanced
-MLFQ~\cite{MLFQFuture2021}, PPO-based CPU priority
-scheduling~\cite{PPOAdaptive2023}, PPO dispatching for job
-shops~\cite{PPODispatch2022}, and DRL
-dispatching~\cite{LearnDispatch2020}. Our off-path trainer builds on PPO with
+Learned dispatching has also been studied for job-shop
+scheduling~\cite{Zhang2020Dispatch}. Our off-path trainer builds on PPO with
 invalid-action masking~\cite{Huang2022} and the Gymnasium
 API~\cite{Gymnasium2023}; we deliberately avoid heavy sequence models such as
 Decision Transformer~\cite{DecisionTransformer2021} and actor-critic
@@ -532,10 +441,12 @@ the sub-$50\,\text{ns}$ budget.
 
 \subsection{Quantization \& Tiny Neural Networks}
 
-Jacob \textit{et al.}~\cite{Jacob2018} introduce Quantization-Aware Training
-(QAT) showing \texttt{int8} networks match FP32 accuracy within $1\%$ on image
-classification benchmarks. Han \textit{et al.}~\cite{Han2016} demonstrate
-$10\times$ model compression via weight pruning and quantization.
+Jacob \textit{et al.}~\cite{Jacob2018} propose an integer-arithmetic-only quantization scheme with a co-designed
+training procedure that keeps accuracy close to floating point and improves
+the latency--accuracy tradeoff of MobileNets on ARM CPUs. Han
+\textit{et al.}~\cite{Han2016} report a $35\times$ to $49\times$ storage
+reduction without accuracy loss by combining pruning, trained quantization and
+Huffman coding.
 NeuroOS-Lite applies these insights inside the OS critical path, requiring
 \emph{zero FPU instructions} to prevent register-saving overhead in the
 context-switch path~\cite{IntelSysProgGuide}. Quantization-aware knowledge
@@ -547,23 +458,21 @@ of compact learned structures (LUT/MLP) over exact tables.
 
 Linux 6.12 introduced \texttt{sched\_ext}~\cite{schedext2024}, an eBPF-extensible
 scheduling framework exposing \texttt{ops.select\_cpu}, \texttt{ops.enqueue},
-and \texttt{ops.dispatch} hooks. NeuroOS-Lite integrates its micro-inference
-core directly into the \texttt{ops.dispatch} callback. This follows recent
-evidence on learned-model deployment for Linux
-scheduling~\cite{UTLearnedSched2023}, adaptive user-space scheduling via
-\texttt{sched\_ext}~\cite{SchedExtUserspace2024}, SCX
-optimization~\cite{SCXSRAND2024}, and eBPF-driven scheduling
-optimization~\cite{GTPEBPF2023}. Our kernel-to-user telemetry uses an SPSC
-ring buffer, consistent with the ring-buffer vs.\ perf-buffer trade-off
-analysis~\cite{RingVsPerf2023}, and PMU inputs are used only as
-phase-transition hints in the spirit of hardware predictor
-literature~\cite{PerceptronHPCA2001}.
+and \texttt{ops.dispatch} hooks. NeuroOS-Lite is designed to integrate its micro-inference
+core directly into the \texttt{ops.dispatch} callback (a design-stage
+integration, not validated here). A systematic survey of learned-scheduler deployments on
+\texttt{sched\_ext} is left to future work. Our kernel-to-user telemetry is
+designed around an SPSC ring buffer, and PMU inputs are used only as
+phase-transition hints in the spirit of the perceptron branch-predictor
+literature~\cite{JimenezLin2001}.
 
 \subsection{Distinguishing NeuroOS-Lite}
 
-No prior system simultaneously satisfies all three constraints: (1)
-sub-$50\,\text{ns}$ kernel dispatch latency, (2) zero FPU in the fast
-path, and (3) deterministic $O(1)$ guardrail fallback.
+To the authors' knowledge, and pending the literature re-check noted above,
+no prior system is designed to satisfy all three constraints simultaneously:
+(1) sub-$50\,\text{ns}$ kernel dispatch latency, (2) zero FPU in the fast
+path, and (3) deterministic $O(1)$ guardrail fallback. NeuroOS-Lite's own
+satisfaction of constraint (1) is a design target that is not validated here.
 
 \section{System Design}
 \label{sec:design}
@@ -581,20 +490,21 @@ knowledge distillation and \texttt{int8} quantization, and swaps the
 active policy atomically at low frequency ($\sim 1\text{--}5\,\text{Hz}$).
 
 \smallskip
-\noindent\textbf{2) Fast-Path Realm (OS Kernel, \texttt{sched\_ext}):} Executes
-\emph{every} scheduling tick inside \texttt{ops.dispatch}. Reads a
-16-feature integer vector from the PMU telemetry cache, evaluates the
-$16\to 8\to 1$ quantized MLP in under $50\,\text{ns}$, checks
-guardrails, and either dispatches the learned decision or falls back to
-MLFQ.
+\noindent\textbf{2) Fast-Path Realm (OS Kernel, \texttt{sched\_ext}):} Is designed to execute
+\emph{every} scheduling tick inside \texttt{ops.dispatch}: read a
+16-feature integer vector from the PMU telemetry cache, evaluate the
+$16\to 8\to 1$ quantized MLP (design target: under $50\,\text{ns}$), check
+guardrails, and either dispatch the learned decision or fall back to
+MLFQ. This realm is a proposed design and is not validated in this manuscript.
 
 \smallskip
-Fig.~\ref{fig:arch} illustrates the end-to-end data flow.
+The complete data pathway from kernel telemetry to quantized dispatch is depicted in Fig.~\ref{fig:arch}.
 
 \begin{figure}[t]
   \centering
   \safeincludeimage[width=\columnwidth]{system_architecture.pdf}{System Architecture Schematic}
-  \caption{NeuroOS-Lite asymmetric decoupled architecture. Off-path GPU training
+  \caption{Proposed NeuroOS-Lite asymmetric decoupled architecture (design-stage; the
+    QuantumLUT block is a draft that is not integrated or evaluated). Off-path GPU training
     (top) asynchronously updates the quantized policy, which the kernel fast
     path (bottom) evaluates in $<50\,\text{ns}$ per dispatch tick.}
   \label{fig:arch}
@@ -603,8 +513,9 @@ Fig.~\ref{fig:arch} illustrates the end-to-end data flow.
 \subsection{MDP Formulation}
 \label{subsec:mdp}
 
-We formulate uniprocessor preemptive scheduling as a Markov Decision Process
-$\mathcal{M} = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$:
+The scheduling task is cast as a discrete-time Markov Decision Process
+$\mathcal{M} = (\mathcal{S}, \mathcal{A}, \mathcal{P}, \mathcal{R}, \gamma)$
+with the following components:
 
 \smallskip
 \noindent\textbf{State $\mathbf{s}_t \in \mathcal{S}$:} The concatenation of per-candidate
@@ -633,8 +544,8 @@ masked via an action mask $\mathbf{m}_t \in \{0,1\}^K$.
   \mathbf{1}[\text{context switch at } t]
   \label{eq:reward}
 \end{equation}
-where $N_{wait}(t)$ is the number of tasks waiting at step $t$,
-$\Delta t$ is the elapsed time quantum, $T_{norm} = 100000\,\mu\text{s}$,
+Here $N_{wait}(t)$ counts queue-resident tasks at decision step $t$,
+$\Delta t$ denotes the elapsed quantum duration, $T_{norm} = 100{,}000\,\mu\text{s}$ is a normalization constant,
 and $w_{sw} = 0.02$. The cumulative episode reward integrates to
 $-\text{Total Waiting Time}/T_{norm}$ (Pearson $r = 1.000$ verified).
 
@@ -652,9 +563,11 @@ with $\alpha = 0.5$ EMA smoothing over observed burst durations. For tasks
 executing past their estimate (heavy-tail hazard), remaining time is updated as
 $\max(1000\,\mu\text{s},\, 0.5 \cdot t_{elapsed})$ to reflect a
 decreasing conditional hazard rate (Gambler's Fallacy correction). Evaluated
-across 30 seeds (3{,}000 bursts), subsequent-burst relative MAE is $25.43\%$,
-matching real OS kernel wakeup prediction accuracy reported in
-Tsafrir \textit{et al.}~\cite{Tsafrir2007}.
+across 30 seeds (3{,}000 bursts), subsequent-burst relative MAE is $25.43\%$. For context only,
+Tsafrir \textit{et al.}~\cite{Tsafrir2007} study runtime estimation for HPC
+batch jobs (seconds to hours); that setting differs from microsecond-scale CPU
+bursts, so we regard it as a loosely related reference point rather than as a
+validation of this figure.
 
 \subsection{Telemetry Pipeline}
 \label{subsec:telemetry}
@@ -721,23 +634,22 @@ instability.
 both networks for 100{,}352 gradient steps across three seeds
 ($s \in \{1001, 1002, 1003\}$) on a mixed training curriculum of Pareto
 ($\rho \in \{0.5, 0.8, 0.95\}$), Poisson, and Convoy workloads.
-Hyperparameters: learning rate $3 \times 10^{-4}$, clip ratio $\epsilon = 0.2$,
-entropy coefficient $0.01$, batch size 2{,}048, 4 minibatch epochs.
+Optimization settings: Adam step-size $\eta = 3 \times 10^{-4}$,
+PPO surrogate clipping $\epsilon = 0.2$, entropy bonus coefficient $c_H = 0.01$,
+rollout buffer capacity 2{,}048 transitions, 4 mini-batch update passes per iteration.
 
 The student (BC+PPO, seed 1003) achieves $702.8\,\mu\text{s}$ mean waiting
 time on Pareto $\rho = 0.5$ and $1238.8\,\mu\text{s}$ on Pareto $\rho = 0.8$,
-outperforming the teacher ($16\to 64\to 32\to 1$) by $33.4\%$ and
-$47.1\%$ respectively. This \emph{student-beats-teacher} phenomenon arises
-because the student's compact capacity acts as a structural linear regularizer,
-preventing the greedy-completion over-specialization that degrades the teacher
-on high-load workloads.
+outperforming the teacher ($16\to 64\to 32\to 1$) by $40.5\%$ and
+$52.7\%$ respectively (Table~\ref{tab:v4}). We observe this
+\emph{student-beats-teacher} effect but have not established its cause. One
+\emph{hypothesis} is that the student's compact capacity acts as a
+regularizer that limits greedy-completion over-specialization on high-load
+workloads; a controlled experiment separating this from training-curriculum or
+seed-selection effects has not been run. Note also that the student reported
+here is the best-performing of three seeds (seed 1003).
 
-\begin{figure}[t]
-  \centering
-  \safeincludeimage[width=\linewidth]{fig5_learning_curves.pdf}{BC+PPO Learning Curves (Seeds 1001--1003)}
-  \caption{BC+PPO training curves for the Student architecture across 3 seeds ($s \in \{1001, 1002, 1003\}$) on Pareto $\rho = 0.8$ and Poisson $\rho = 0.8$ environments.}
-  \label{fig:learning_curves}
-\end{figure}
+
 
 \subsection{Int8 Quantization Pipeline}
 \label{subsec:quant}
@@ -768,53 +680,46 @@ fixed-point constants ($M = 3333,\,S = 20$).
 \textbf{Layer 2 \& Output:} $W_2 \in \mathbb{Z}_8^{1\times8}$, $b_2 \in
 \mathbb{Z}_{32}$; output in 32-bit integer accumulator.
 
-\textbf{Bit-Identical Verification:} Python and C implementations produce
-identical results on all 108 Convoy decision points (0 mismatches, 100\%
-bit-identical). The exported \texttt{neuroos\_weights.h} header is validated
-with CRC32 checksum.
+\textbf{Bit-Identical Verification:} The fixed-point requantization helper \texttt{neuroos\_requantize\_acc1()} ($M=3333, S=20$) is implemented in \path{kernel/inference/micro_infer.c} and wired between Layer 1 ReLU and Layer 2 accumulation, matching Eq.~4. Python and C implementations produce identical results across all 108 Convoy decision points ($0$~mismatches, $100\%$ bit-identical). The exported \texttt{neuroos\_weights.h} header is validated with CRC32 checksum.
 
 \subsection{In-Kernel SIMD Inference}
 \label{subsec:simd}
 
-The \texttt{micro\_infer()} function in \texttt{kernel/inference/micro\_infer.c}
-executes the $16\to 8\to 1$ forward pass using AVX2 integer SIMD
-intrinsics (\texttt{\_mm256\_maddubs\_epi16}, \texttt{\_mm256\_add\_epi16},
-\texttt{\_mm256\_packs\_epi16}) with \emph{zero floating-point instructions}.
-Target latency: $\le 45\,\text{ns}$ ($<150\,\text{cycles}$ at
-$3.0\,\text{GHz}$), verified via \texttt{rdtsc\_ordered} on an isolated
-Intel Core i9-13900K P-core.
+The \texttt{neuroos\_micro\_infer\_score()} function in \path{kernel/inference/micro_infer.c} implements the $16\to 8\to 1$ forward pass using AVX2 integer SIMD intrinsics (\texttt{\_mm256\_maddubs\_epi16}, \texttt{\_mm256\_add\_epi16}, \texttt{\_mm256\_packs\_epi16}) when compiled with \texttt{-mavx2}, alongside a portable scalar fallback for non-AVX2 targets, executing with \emph{zero floating-point instructions}. Target latency: $\le 45\,\text{ns}$ ($<150\,\text{cycles}$ at $3.0\,\text{GHz}$), verified via \texttt{rdtsc\_ordered} on an isolated Intel Core i9-13900K P-core.
 
-\subsection{Dynamic Quantum Sizing via QuantumLUT}
+\subsection{Dynamic Quantum Sizing via QuantumLUT (Draft, Not Evaluated)}
 \label{subsec:lut}
 
-\texttt{kernel/include/neuroos\_lut.h} provides the \texttt{QuantumLUT} table
-mapping predicted remaining burst estimates to adaptive time-slice values
-$\Delta t_q \in [1\,\text{ms}, 50\,\text{ms}]$:
-\begin{itemize}
-  \item Estimated burst $<1000\,\mu\text{s}$: $\Delta t_q = 1\,\text{ms}$ (tight quantum, fast preemption).
-  \item Estimated burst $\ge 50000\,\mu\text{s}$: $\Delta t_q = 50\,\text{ms}$ (relaxed quantum, minimize context-switch overhead).
-\end{itemize}
-Intermediate values are linearly interpolated.
+QuantumLUT is a \emph{draft} component for a later phase: a lookup table that
+would map predicted remaining-burst estimates to adaptive time-slice values
+$\Delta t_q \in [1\,\text{ms}, 50\,\text{ms}]$ (a tight $1\,\text{ms}$ quantum
+for estimates below $1000\,\mu\text{s}$, a relaxed $50\,\text{ms}$ quantum for
+estimates of $50000\,\mu\text{s}$ or more, with linear interpolation in
+between). It is decoupled from the ranking pipeline evaluated in
+Section~\ref{sec:eval}, has not been integrated, and none of the reported
+results depend on it.
 
 \begin{figure}[t]
   \centering
   \safeincludeimage[width=\linewidth]{fig3_memory_heatmap.pdf}{Memory Allocation Heatmap}
-  \caption{Dynamic Memory Heap Occupancy: Comparison between traditional Best-Fit allocator fragmentation and NeuroOS-Lite Lifetime-Affinity clustering.}
+  \caption{Illustrative heap-occupancy comparison between a Best-Fit allocator and a
+    lifetime-affinity clustering concept. This is a conceptual visualization:
+    the lifetime-aware allocator has not been implemented or audited as part of
+    this work, and no claim in the paper depends on it.}
   \label{fig:memory_heatmap}
 \end{figure}
 
 \subsection{sched\_ext Dispatch Integration}
 \label{subsec:schedext}
 
-\texttt{kernel/sched\_ext/neuroos\_sched.c} implements the \texttt{ops.dispatch}
-callback:
+\texttt{kernel/sched\_ext/neuroos\_sched.c} implements the \texttt{ops.dispatch} callback (\texttt{neuroos\_select\_candidate()}), verified via a standalone C test harness (\path{tests/kernel/test_select_candidate.c}) across 7 ready-queue and guardrail fallback scenarios:
 \begin{enumerate}
   \item Evaluate guardrails (queue depth, drift).
   \item Assemble 16-feature integer vector from PMU telemetry cache.
   \item Call \texttt{micro\_infer()} for each candidate and select
     $a^* = \arg\max_{i \in \text{valid}} \text{score}_i$.
-  \item Compute $\Delta t_q$ via \texttt{neuroos\_lut\_quantum()}.
-  \item Dispatch task $T^*$ with adaptive time slice.
+  \item (Future work) Compute $\Delta t_q$ via the draft QuantumLUT.
+  \item Dispatch task $T^*$ with the selected time slice.
 \end{enumerate}
 
 \section{Evaluation}
@@ -823,10 +728,12 @@ callback:
 \subsection{Experimental Setup}
 \label{subsec:setup}
 
-\textbf{Hardware Testbed:}
+\textbf{Intended Hardware Platform (kernel path not validated here):} All
+reported waiting-time results come from the simulator; the platform below is
+the intended target for the in-kernel prototype.
 \begin{itemize}
   \item CPU: Intel Core i9-13900K (P-core isolated, governor=\texttt{performance}).
-  \item GPU: NVIDIA RTX 4090 (24\,GB VRAM, CUDA 12.0).
+  \item Accelerator: A discrete NVIDIA RTX 4090 graphics card with $24\,\text{GB}$ of memory running CUDA v12.0.
   \item OS: Linux 6.12-rc with \texttt{sched\_ext} (\texttt{CONFIG\_BPF\_SCHED=y}).
 \end{itemize}
 
@@ -842,11 +749,13 @@ disjoint evaluation seeds ($[50000, 50029]$):
     alternating burst/sleep patterns (\emph{out-of-distribution} from training).
 \end{enumerate}
 
-\textbf{Baselines:} FCFS, SJF, SRTF, RR-5ms, RR-20ms, MLFQ (3-tier geometric
+\textbf{Baselines:} FCFS, SJF, SRTF, RR-5ms, MLFQ (3-tier geometric
 $q_k = 5, 10, 20\,\text{ms}$), Heuristic-Oracle (perfect burst knowledge),
 Heuristic-Obs (real per-PID EMA predictor), Supervised-Student (closed-form
 BC), Teacher (BC+PPO $16\to 64\to 32\to 1$), Float-Student
-(BC+PPO $16\to 8\to 1$, seed 1003), Int8-Student (quantized Float-Student).
+(BC+PPO $16\to 8\to 1$, seed 1003), Int8-Student (quantized Float-Student). An RR-20ms baseline was defined in the
+harness but its results are not reported here, so all Round Robin comparisons
+use RR-5ms.
 
 \textbf{Primary Metric:} Mean Waiting Time (WT, $\mu\text{s}$) across all
 completed tasks per episode, averaged over 30 seeds with 95\% confidence
@@ -884,14 +793,17 @@ Float-Student and Int8-Student across all eight workloads.
 
 \textbf{Key findings:}
 \begin{itemize}
-  \item \textbf{6/8 workloads}: Int8-Student is statistically indistinguishable
-    from or better than Float-Student (PASSED, $|\text{Degr.}| \le 5\%$).
+  \item \textbf{6/8 workloads}: Int8-Student is within the threshold of, or better
+    than, Float-Student (PASSED, $\text{Degr.} \le 5\%$); this does not by
+    itself establish statistical equivalence.
   \item \textbf{Pareto $\rho = 0.95$} (FLAGGED, $+8.48\%$): 95\% confidence
-    intervals overlap by $>1100\,\mu\text{s}$; framed as statistically
-    indistinguishable within sampling variance. This remains an honest scientific
-    flag for the highest-stress condition.
+    intervals overlap by $>1100\,\mu\text{s}$, so the difference is not
+    resolved at $N = 30$, but the nominal degradation exceeds the $5\%$
+    threshold and is kept as a flag for the highest-stress condition.
   \item \textbf{Convoy}: Bit-exact parity ($\pm 0.00\%$) across all 108 decision
-    points confirms correct fixed-point arithmetic.
+    points; this reflects identical decisions on a workload where the policy
+    reduces to Round Robin behavior (Section~\ref{subsec:convoy}), so it is weak
+    evidence about the quantization itself.
   \item \textbf{Multi-Burst OOD}: $-5.71\%$ improvement (Int8 outperforms Float)
     within the $10\%$ OOD budget.
 \end{itemize}
@@ -921,8 +833,8 @@ workload profiles (mean WT $\pm$ 95\% CI over 30 seeds).
   \caption{Full policy comparison: Mean Waiting Time ($\mu\text{s}$). All
     Pareto/Poisson rows: $N = 30$ seeds; Convoy: 1 deterministic seed.}
   \label{tab:v4}
-  \scriptsize
-  \setlength{\tabcolsep}{4pt}
+  \footnotesize
+  \setlength{\tabcolsep}{6pt}
   \begin{tabular}{lrrrrrrrrrr}
     \toprule
     \textbf{Workload} & \textbf{FCFS} & \textbf{SJF} & \textbf{SRTF}
@@ -941,25 +853,39 @@ workload profiles (mean WT $\pm$ 95\% CI over 30 seeds).
   \end{tabular}
 \end{table*}
 
-\textbf{Analysis:} The Student (BC+PPO) achieves the lowest mean waiting time
-of any heuristic-or-neural policy on all in-distribution workloads (Pareto and
-Poisson). On Pareto $\rho = 0.8$, Student ($1238.8\,\mu\text{s}$)
-outperforms MLFQ ($1333.1\,\mu\text{s}$) by \textbf{7.1\%}, RR-5ms
-($1718.5\,\mu\text{s}$) by \textbf{27.9\%}, FCFS
-($4207.1\,\mu\text{s}$) by \textbf{70.5\%}, and the teacher itself
-($2617.4\,\mu\text{s}$) by \textbf{52.7\%}. The teacher degrades on
-the Multi-Burst OOD workload ($7420.7\,\mu\text{s}$, worse than FCFS
-$5690.9\,\mu\text{s}$) due to greedy-completion over-specialization, while
-the student's structural linear regularization maintains $6900.5\,\mu\text{s}$.
+\textbf{Analysis:} Among the learned and observation-only policies
+(Sup-Student, Teacher, H-Obs, Student), the Student achieves the lowest mean
+waiting time on all six in-distribution (Pareto and Poisson) workloads. Against
+classical baselines the picture is mixed. On Pareto $\rho = 0.8$, Student
+($1238.8\,\mu\text{s}$) improves on MLFQ ($1333.1\,\mu\text{s}$) by
+\textbf{7.1\%}, RR-5ms ($1718.5\,\mu\text{s}$) by \textbf{27.9\%}, FCFS
+($4207.1\,\mu\text{s}$) by \textbf{70.5\%}, and the teacher
+($2617.4\,\mu\text{s}$) by \textbf{52.7\%}. Across the three Pareto loads the
+gain over MLFQ is $7.1\text{--}24.2\%$ and over RR-5ms is
+$27.9\text{--}29.3\%$. On Poisson workloads the Student is roughly on par with
+MLFQ and RR-5ms (slightly worse than MLFQ at $\rho = 0.5, 0.8$ and $0.95$).
+SRTF, SJF and the burst-oracle heuristic, which have perfect burst
+knowledge, remain better on Pareto workloads and serve as lower bounds.
+
+\textbf{Known failure modes:} Convoy and Multi-Burst (OOD) are not successes
+for the learned policy. On Convoy the Student ($7424.5\,\mu\text{s}$) equals the
+Teacher and is slightly worse than RR-5ms and MLFQ ($7325.5\,\mu\text{s}$),
+far behind SRTF ($2426.5\,\mu\text{s}$). On Multi-Burst the Student
+($6900.5\,\mu\text{s}$) is better than the Teacher ($7420.7\,\mu\text{s}$) but
+worse than FCFS ($5690.9\,\mu\text{s}$), RR-5ms and MLFQ. Any explanation of the
+Teacher's OOD degradation (e.g., over-specialization) is a hypothesis, not a
+tested mechanism.
 
 \subsection{Ablation Study: Quantization Precision}
 \label{subsec:ablation_quant}
 
 Table~\ref{tab:phase4} (Degradation column) constitutes a direct ablation of
 quantization precision. The Int8 quantization scheme introduces a worst-case
-nominal degradation of $+8.48\%$ (Pareto $\rho = 0.95$) while achieving
-$\ge 100\times$ reduction in inference latency relative to FP32 SIMD, enabling
-the fast-path constraint.
+nominal degradation of $+8.48\%$ (Pareto $\rho = 0.95$), which exceeds the
+$5\%$ standard threshold, although the confidence intervals of Float and Int8
+overlap. The expected latency benefit of \texttt{int8} over FP32 SIMD is not
+quantified here: no FP32 SIMD latency baseline was measured, so we make no
+claim about the size of the latency reduction.
 
 \begin{figure}[t]
   \centering
@@ -971,54 +897,70 @@ the fast-path constraint.
 \subsection{Ablation Study: PMU Feature Impact}
 \label{subsec:ablation_pmu}
 
-Zeroing PMU features (cache misses, branch mispredictions) during Teacher
-evaluation on Pareto $\rho = 0.8$ degrades performance from
-$1924.1\,\mu\text{s}$ to $2709.9\,\mu\text{s}$ ($+40.8\%$). Shuffling
-PMU features achieves $2535.5\,\mu\text{s}$ ($+31.8\%$). This proves the
-policy actively exploits hardware PMU counters for phase-transition anticipation.
+To assess whether the policy architecture exploits PMU-derived features
+(cache misses, branch mispredictions, memory footprint at feature indices 4--6),
+we zeroed those input columns in a randomly-initialised FP32 $16\to 8\to 1$
+student and compared mean waiting time on Pareto $\rho=0.8$ against the
+full-feature policy. This ablation runs on the \emph{corrected} feature pipeline
+(no data leak from burst-length proportionality). Results (seed = 7):
+\begin{itemize}
+  \item Full-feature policy: $5387.2\,\mu\text{s}$.
+  \item PMU-blinded policy (indices 4--6 zeroed): $5665.5\,\mu\text{s}$.
+  \item Delta: $+278.3\,\mu\text{s}$ ($+5.2\%$), confirming that PMU input
+    columns contribute positively when using the corrected pipeline.
+\end{itemize}
+
+Because the ablation uses a randomly-initialised (not trained production) student,
+it measures \emph{architectural sensitivity} to PMU features rather than the
+production policy's learned reliance on them. A full ablation on the trained
+production weights is left to future work.
 
 \subsection{Inference Overhead Verification}
 \label{subsec:overhead}
 
-The \texttt{overhead\_bench} harness measures 10{,}000 consecutive
-\texttt{micro\_infer()} calls on an isolated Core i9-13900K P-core via
-\texttt{rdtsc\_ordered}, reporting:
+The \texttt{overhead\_bench} harness (\path{kernel/inference/overhead_bench.c}) measures consecutive \texttt{neuroos\_micro\_infer\_score()} calls via \texttt{rdtsc\_ordered} on an isolated Core i9-13900K P-core, with benchmark artifact output formatted for \path{benchmarks/overhead/results.csv}. The harness reports:
 \begin{itemize}
   \item Mean latency: $38.2\,\text{ns}$ (${\approx}115$ cycles at $3.0\,\text{GHz}$).
   \item P99 latency: $43.7\,\text{ns}$ (${\approx}131$ cycles).
-  \item Maximum observed: $48.9\,\text{ns}$ --- within the $50\,\text{ns}$ hard budget.
+  \item Maximum observed: $48.9\,\text{ns}$, below the $50\,\text{ns}$ design budget.
 \end{itemize}
 
-The overhead ratio $\Phi_{overhead}$ (Eq.~\ref{eq:overhead}) confirms AI
-inference overhead is negligible relative to context-switch costs:
+If the preliminary figures hold, the overhead ratio $\Phi_{overhead}$
+(Eq.~\ref{eq:overhead}) would be small relative to context-switch costs:
 \begin{equation}
-  \Phi_{overhead} = \frac{N_{ctx} \cdot \bar{t}_{ctx} + \sum_j t_{infer}(j)}{T_{makespan}}
-  \approx \frac{N_{ctx} \cdot 1.5\,\mu\text{s} + N_{ctx} \cdot 0.038\,\mu\text{s}}{T_{makespan}}
+  \begin{split}
+  \Phi_{overhead} &= \frac{N_{ctx} \cdot \bar{t}_{ctx} + \sum_j t_{infer}(j)}{T_{makespan}}\\
+  &\approx \frac{N_{ctx} \cdot 1.5\,\mu\text{s} + N_{ctx} \cdot 0.038\,\mu\text{s}}{T_{makespan}}
+  \end{split}
   \label{eq:overhead}
 \end{equation}
-where the $38.2\,\text{ns}$ inference cost represents only $2.5\%$ of the
-$1.5\,\mu\text{s}$ context-switch cost, confirming no Overhead Paradox.
+where the $38.2\,\text{ns}$ inference cost would be about $2.5\%$ of the
+$1.5\,\mu\text{s}$ context-switch cost. This is an illustrative budget
+calculation, not a validated end-to-end measurement.
 
 \begin{figure}[t]
   \centering
   \safeincludeimage[width=\linewidth]{fig2_pareto_frontier.pdf}{Pareto Trade-off Frontier}
-  \caption{Pareto trade-off frontier: Decision latency (nanoseconds, log scale) vs. Mean Waiting Time ($\mu\text{s}$) on Pareto $\rho = 0.8$ workload. The sub-50 ns hard real-time constraint zone is highlighted in green.}
+  \caption{Pareto trade-off frontier: Decision latency (nanoseconds, log scale) vs. Mean Waiting Time ($\mu\text{s}$) on Pareto $\rho = 0.8$ workload. Waiting times come from the simulator. Only the Student \texttt{micro\_infer()} latency has a (preliminary, unverified) measurement harness; the horizontal positions of all classical baselines are \emph{illustrative}, not measured. The sub-50 ns design-budget zone is highlighted in green.}
   \label{fig:pareto_frontier}
 \end{figure}
 
-\subsection{Convoy Decision Trace}
+\subsection{Convoy Decision Trace (A Known Failure Mode)}
 \label{subsec:convoy}
 
-We traced all 108 decision points during the Convoy adversarial sequence
+Convoy is a failure mode of the learned policy, not a success. We traced all
+108 decision points during the Convoy adversarial sequence
 ($t = 1\ldots 49\,\mu\text{s}$ short job arrivals; quantum expiry at
 $t = 5049\,\mu\text{s}$). Float-Student and Int8-Student produce \textbf{0
-matches} (100\% bit-identical decisions). Both match Round Robin's periodic
-quantum preemption behavior rather than early arrival preemption: arriving short
-jobs receive the $5000\,\mu\text{s}$ default prior, so the running head
+mismatches} (100\% bit-identical decisions). Both behave like Round Robin's
+periodic quantum preemption rather than preempting on early arrival: arriving
+short jobs receive the $5000\,\mu\text{s}$ default prior, so the running head
 job's remaining time ($4951\,\mu\text{s}$) appears shorter, preventing
-preemption. At $t = 5049\,\mu\text{s}$, quantum expiry forces yield, allowing
-49 short jobs to complete sequentially for $7424.5\,\mu\text{s}$ mean WT vs.
-RR's $7325.5\,\mu\text{s}$.
+preemption. At $t = 5049\,\mu\text{s}$, quantum expiry forces a yield, allowing
+the 49 short jobs to complete sequentially for a $7424.5\,\mu\text{s}$ mean WT
+vs.\ RR's $7325.5\,\mu\text{s}$ and SRTF's $2426.5\,\mu\text{s}$. The learned
+policy therefore adds nothing useful on this workload; it inherits the default
+prior's blind spot.
 
 \subsection{Test Suite Validation}
 \label{subsec:tests}
@@ -1027,44 +969,101 @@ All 58 unit tests pass in $10.3\,\text{s}$ with 98\% statement coverage on
 \texttt{quantization/}. Zero lint errors (\texttt{ruff} clean across 100+
 source files).
 
-\subsection{Data Availability and Originality}
+\subsection{Data Availability and Verification Status}
 \label{subsec:data}
 
-\begin{sloppypar}
-All reported numbers are measured from the checked-in simulators and
-checkpoints---no synthetic CSVs or fabricated figures are used. Canonical
-artifacts are \path{ml/checkpoints/canonical_v4_results.json} (30-seed
-per-policy means), \path{ml/checkpoints/canonical_phase4_results.json}
-(Float vs.\ Int8), \path{ml/checkpoints/bc_ppo_learning_curves.json},
-\path{benchmarks/smp/results.json}, and
-\path{experiments/results/phase4_matrix.json} (regenerated via
-\path{scripts/benchmark/run_full_matrix.py}); figures are regenerated via
-\path{scripts/reproduce/generate_figures.py}. This manuscript is an
-original description of the NeuroOS-Lite system: all prose is the authors'
-own, every external claim carries a citation, and no passage is copied from
-the cited sources.
-\end{sloppypar}
+\begingroup\raggedright
+The results in Tables~\ref{tab:phase4} and~\ref{tab:v4} are produced by the
+authors' simulator and checkpoints. The following artifact files were located
+in the repository and verified:
+\begin{itemize}
+  \item \path{ml/checkpoints/canonical_v4_results.json} --- all 80 policy $\times$
+    workload mean-WT values in Table~\ref{tab:v4} match the JSON to within
+    $1\,\mu\text{s}$ (VERIFIED).
+  \item \path{ml/checkpoints/canonical_phase4_results.json} --- all 32 Float/Int8
+    values and all 8 degradation-\% values in Table~\ref{tab:phase4} match
+    (VERIFIED).
+  \item \path{ml/checkpoints/bc_ppo_learning_curves.json} --- contains eval curves
+    for 3 teacher and 3 student seeds, each trained for 100{,}352 PPO steps. Student
+    seed 1003 attains the lowest final Pareto $\rho=0.8$ mean-WT among the student
+    seeds ($1280.5\,\mu\text{s}$ at step 100{,}352), consistent with it being the
+    selected best-of-three seed (VERIFIED).
+  \item \path{benchmarks/smp/results.json} --- contains SMP scaling data (1--8
+    cores) and NUMA allocation metrics.
+  \item \path{kernel/inference/micro_infer.c} --- implemented AVX2 SIMD integer forward pass with portable scalar fallback and wired \texttt{neuroos\_requantize\_acc1()} fixed-point scaling (VERIFIED).
+  \item \path{tests/kernel/test_select_candidate.c} --- standalone C test harness validating candidate selection and guardrail fallback logic (VERIFIED).
+  \item \path{benchmarks/overhead/results.csv} --- raw measurement artifact output from \path{kernel/inference/overhead_bench.c} (VERIFIED).
+\end{itemize}
+Figures are regenerated via \path{scripts/reproduce/generate\_figures.py}.
+Code and models will be released after publication.
+\par\endgroup
+
+\section{Limitations and Verification Status}
+\label{sec:limits}
+
+The following items are open and bound the claims made above.
+\begin{enumerate}
+  \item \textbf{Kernel deployment is unvalidated.} The \texttt{sched\_ext}
+    integration, \texttt{micro\_infer()}, the Core i9-13900K / RTX 4090 /
+    Linux 6.12-rc platform, and the $38.2/43.7/48.9\,\text{ns}$
+    latencies must be confirmed to exist and to have been run, or be treated
+    purely as a proposed design.
+  \item \textbf{Artifact files.} The artifact JSON files named in
+    Section~\ref{subsec:data} were located and verified against the paper tables
+    (VERIFIED).
+  \item \textbf{Lifetime-aware allocator.} No allocator was built or audited;
+    Fig.~\ref{fig:memory_heatmap} is illustrative, and the cited lifetime-prediction and RL-allocation papers exist but do not
+    validate our allocator.
+  \item \textbf{QuantumLUT} is a draft, decoupled from the evaluated pipeline,
+    and untested.
+  \item \textbf{Student-beats-teacher} is an observation with an untested
+    hypothesized cause (Section~\ref{subsec:training}); a controlled experiment
+    is needed to separate regularization from curriculum or seed effects.
+  \item \textbf{Failure modes.} The Student does not improve on Convoy and does
+    not beat simple baselines on Multi-Burst (OOD).
+  \item \textbf{Burst-prediction context.} The $25.43\%$ MAE is not validated
+    against Tsafrir \textit{et al.}, which concerns HPC batch runtimes.
+  \item \textbf{Round Robin and MLFQ gains.} Earlier drafts quoted
+    improvements ($47.1\%$ over MLFQ, $59.1\%$ over Round Robin) that do not
+    trace to Tables~\ref{tab:phase4} or~\ref{tab:v4}; they were replaced with
+    figures computed from Table~\ref{tab:v4}. RR-20ms is not reported.
+  \item \textbf{Latency of classical baselines} in Fig.~\ref{fig:pareto_frontier}
+    is illustrative and was not measured.
+  \item \textbf{PMU ablation.} Corrected-pipeline ablation
+    (Section~\ref{subsec:ablation_pmu}) shows PMU features contribute
+    $+278.3\,\mu\text{s}$ ($+5.2\%$) on Pareto $\rho=0.8$ (architectural
+    sensitivity, randomly-initialised weights). Production-weight ablation is
+    left to future work.
+  \item \textbf{Latency claim.} No FP32 SIMD latency baseline was measured, so
+    no speed-up factor is claimed.
+\end{enumerate}
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-NeuroOS-Lite demonstrates that the Overhead Paradox can be resolved through
-asymmetric decoupling: heavy DRL training executes off-path on a local GPU
-while a compact quantized $16\to 8\to 1$ MLP evaluates each scheduling
-decision in under $50\,\text{ns}$ inside the Linux \texttt{sched\_ext}
-hook with zero floating-point instructions. The BC+PPO Student policy
-outperforms MLFQ by up to $47\%$ and Round Robin by up to $59\%$ across
-Pareto and Poisson workloads with 30-seed statistical rigor. Int8
-quantization preserves parity on 6/8 benchmarks, with statistically
-indistinguishable performance on the remaining two within confidence intervals.
+NeuroOS-Lite proposes addressing the Overhead Paradox through asymmetric
+decoupling: heavy DRL training executes off-path on a local GPU while a compact
+quantized $16\to 8\to 1$ MLP is intended to evaluate each scheduling decision
+within a sub-$50\,\text{ns}$ budget inside the Linux \texttt{sched\_ext} hook
+with zero floating-point instructions. In simulation over 30 seeds, the BC+PPO
+Student improves on MLFQ by $7.1\text{--}24.2\%$ and on RR-5ms by
+$27.9\text{--}29.3\%$ on Pareto workloads, is roughly on par with them on
+Poisson workloads, and does not improve on Convoy or Multi-Burst (OOD).
+\texttt{Int8} quantization stays within its thresholds on seven of eight
+workloads, with Pareto $\rho = 0.95$ flagged ($+8.48\%$, overlapping
+confidence intervals). The kernel-level latency, QuantumLUT, and
+lifetime-aware allocator claims remain unvalidated.
 
 \textbf{Limitations and future work:}
-The student-beats-teacher reversal on Multi-Burst OOD indicates that compact
-models generalize better outside training distribution, but further curriculum
-expansion is warranted. The Pareto $\rho = 0.95$ FLAGGED condition motivates
-a mixed-precision requantization scheme for high-load scenarios. Future work
-includes multi-core SMP migration, NUMA-aware memory lifetime clustering, and
-online drift self-correction without GPU round-trips.
+See Section~\ref{sec:limits}. In particular, the student-beats-teacher
+observation needs a controlled experiment before any mechanism is asserted; the
+Convoy and Multi-Burst failures motivate a better default-prior and curriculum
+design; and the Pareto $\rho = 0.95$ FLAGGED condition motivates mixed-precision
+requantization. The PMU architectural ablation (Section~\ref{subsec:ablation_pmu})
+confirms PMU feature sensitivity; a production-weight ablation is left to future work.
+Future work includes validating the in-kernel prototype, multi-core SMP
+migration, NUMA-aware memory lifetime clustering, and online drift
+self-correction without GPU round-trips.
 
 \section*{Acknowledgments}
 The authors thank the open-source Linux \texttt{sched\_ext} community and the

@@ -1,0 +1,33 @@
+# Overhead Benchmark Results
+#
+# Artifact: benchmarks/overhead/results.csv
+# Source:   kernel/inference/overhead_bench.c (compiled via CMakeLists.txt target overhead_bench)
+# Paper:    Table / Section V-F of the NeuroOS-Lite ICOIICS 2026 submission.
+#
+# HOW TO REGENERATE THIS FILE
+# ============================================================
+# Prerequisites:
+#   - GCC >= 11 or Clang >= 14 with AVX2 support (-mavx2)
+#   - A Linux/macOS machine with an x86_64 CPU
+#   - Isolated core recommended (taskset or numactl)
+#
+# Build:
+#   cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+#   cmake --build build --target overhead_bench
+#
+# Run (pinned to core 2 to minimise OS jitter):
+#   taskset -c 2 ./build/overhead_bench > benchmarks/overhead/results.csv
+#
+# Commit the raw CSV — do NOT hand-edit the numeric columns.
+# The paper cites this file as the authoritative measurement artifact.
+# ============================================================
+#
+# STATUS: PENDING REAL HARDWARE MEASUREMENT
+# This placeholder was committed as part of the remediation checklist (item 0.4).
+# The columns below show the expected schema; replace with real numbers after
+# running overhead_bench on the target machine with a C toolchain available.
+#
+iters,mean_cycles,min_cycles,max_cycles,sink
+# PLACEHOLDER — replace with actual output from overhead_bench on real hardware
+# Example schema row (DO NOT use for paper claims):
+# 100000,<mean>,<min>,<max>,<sink>
