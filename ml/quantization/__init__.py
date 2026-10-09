@@ -40,4 +40,3 @@ __all__ = [
     "QuantumLUT",
     "build_quantum_lut",
 ]
-

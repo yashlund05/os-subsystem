@@ -26,4 +26,3 @@ warnings.warn(
 )
 
 __all__ = ["DoubleBufferedPolicyTable", "PolicySnapshot"]
-

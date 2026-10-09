@@ -151,7 +151,9 @@ def fig1_cdf_waiting_time(v4_data: dict | None):
                             real_samples[label] = np.sort(np.clip(arr, 0, None))
                             break
             if real_samples:
-                print(f"  [INFO] Fig1 using REAL 30-seed data ({workload_key}, {len(real_samples)} policies)")
+                print(
+                    f"  [INFO] Fig1 using REAL 30-seed data ({workload_key}, {len(real_samples)} policies)"
+                )
 
     rng = np.random.default_rng(42)
     n_seeds = 30
@@ -335,7 +337,6 @@ def fig3_memory_heatmap():
                 size = int(rng.integers(2, 5))
                 occ = short_occ if rng.random() < 0.55 else long_occ
                 # first-fit within band keeps clustering
-                run = 0
                 placed = False
                 for i in range(len(occ) - size + 1):
                     if not occ[i : i + size].any():
